@@ -1,700 +1,786 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" class="dark scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AutoBridge — The Open Source Alternative to SPS Commerce</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AutoBridge — ANSI X12 856 Pre-Flight Validation Firewall</title>
   <link rel="icon" type="image/png" href="logo_icon.png">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <script>
     tailwind.config = {
       darkMode: 'class',
       theme: {
         extend: {
           fontFamily: {
-            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-            mono: ['"JetBrains Mono"', 'monospace']
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
           },
           colors: {
-            brand: {
-              DEFAULT: '#3ECF8E',
-              hover: '#34B27B',
-              dark: '#0e2b1e',
-              muted: 'rgba(62, 207, 142, 0.15)'
-            },
-            surface: {
-              canvas: '#121212',
-              card: '#181818',
-              cardHover: '#202020',
-              deep: '#0F0F0F',
-              border: '#282828',
-              borderLight: '#363636'
-            }
+            void: '#000000',
+            surface: '#0A0A0A',
+            elevated: '#111111',
+            border: '#1F1F1F',
+            borderHover: '#2E2E2E',
+            ink: '#EDEDED',
+            muted: '#888888',
+            subtle: '#555555',
+            crimson: '#E5484D',
+            sage: '#30A46C',
           }
         }
       }
     }
   </script>
   <style>
-    body { background-color: #121212; color: #EDEDED; font-family: 'Plus Jakarta Sans', sans-serif; }
-    .mono { font-family: 'JetBrains Mono', monospace; }
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #121212; }
-    ::-webkit-scrollbar-thumb { background: #282828; border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: #3ECF8E; }
-    .glow-green { box-shadow: 0 0 35px -5px rgba(62, 207, 142, 0.25); }
-    .glow-red { box-shadow: 0 0 35px -5px rgba(239, 68, 68, 0.25); }
-    .supabase-gradient { background: radial-gradient(circle at 50% -20%, rgba(62, 207, 142, 0.12) 0%, transparent 70%); }
+    body {
+      background-color: #000000;
+      color: #EDEDED;
+      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    }
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+    /* Radial hairline grid fading smoothly into #000000 */
+    .geist-grid {
+      background-size: 64px 64px;
+      background-image:
+        linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+      mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, #000 35%, transparent 100%);
+      -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, #000 35%, transparent 100%);
+    }
+    /* Minimalist monochrome range sliders (light surface variant) */
+    input[type="range"].light-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 2px;
+      background: #D4D4D4;
+      outline: none;
+    }
+    input[type="range"].light-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 15px;
+      height: 15px;
+      border-radius: 9999px;
+      background: #000000;
+      border: 2px solid #FFFFFF;
+      box-shadow: 0 0 0 1px #000000;
+      cursor: pointer;
+      transition: transform 0.12s ease;
+    }
+    input[type="range"].light-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+    input[type="range"].light-slider::-moz-range-thumb {
+      width: 15px;
+      height: 15px;
+      border-radius: 9999px;
+      background: #000000;
+      border: 2px solid #FFFFFF;
+      box-shadow: 0 0 0 1px #000000;
+      cursor: pointer;
+    }
   </style>
 </head>
-<body class="min-h-screen flex flex-col bg-[#121212] antialiased selection:bg-[#3ECF8E] selection:text-black">
+<body class="antialiased selection:bg-white selection:text-black">
 
-  <!-- Top Navigation (Exact Supabase Style) -->
-  <nav class="border-b border-[#242424] bg-[#121212]/90 backdrop-blur-md sticky top-0 z-50 px-6 h-16 flex items-center justify-between">
-    <div class="flex items-center space-x-8">
-      <!-- Supabase-Style Brand Logo -->
-      <a href="#" class="flex items-center space-x-3 group">
-        <img src="logo_icon.png" alt="AutoBridge Logo" class="w-8 h-8 rounded-lg object-cover border border-[#2E2E2E] shadow-md shadow-[#3ECF8E]/20 transition group-hover:scale-105" />
-        <span class="font-extrabold text-lg tracking-tight text-white">AutoBridge</span>
+  <!-- 1. MINIMAL 64PX TOP BAR -->
+  <header class="sticky top-0 z-50 h-16 bg-black/85 backdrop-blur-md border-b border-border">
+    <div class="max-w-6xl mx-auto h-full px-4 sm:px-6 flex items-center justify-between">
+      <!-- High-Contrast Geometric Bridge + Validation Shield Logo -->
+      <a href="#" class="flex items-center gap-3 group">
+        <div class="w-9 h-9 rounded-lg bg-white text-black flex items-center justify-center shadow-xs group-hover:scale-[1.03] transition-transform overflow-hidden">
+          <svg width="24" height="24" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="AutoBridge Emblem">
+            <!-- Solid Bridge Towers -->
+            <rect x="6" y="7" width="3.5" height="22" rx="1" fill="#000000"/>
+            <rect x="26.5" y="7" width="3.5" height="22" rx="1" fill="#000000"/>
+            <!-- Main Suspension Arch -->
+            <path d="M3 13.5C6.5 13.5 8 9 9.5 9C12 16 24 16 26.5 9C28 9 29.5 13.5 33 13.5" stroke="#000000" stroke-width="2.6" stroke-linecap="round"/>
+            <!-- Heavy Roadway Deck -->
+            <path d="M3 20.5H33" stroke="#000000" stroke-width="2.8" stroke-linecap="round"/>
+            <!-- Center Validation Check Portal -->
+            <path d="M14.5 25.5L17 28L22 23" stroke="#000000" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="flex items-baseline gap-2">
+          <span class="font-bold text-[17px] tracking-[-0.035em] text-white">AutoBridge</span>
+          <span class="hidden sm:inline-block font-mono text-[11px] text-muted border border-border bg-surface px-1.5 py-0.5 rounded">X12-856</span>
+        </div>
       </a>
 
-      <!-- Navigation Links -->
-      <div class="hidden md:flex items-center space-x-6 text-sm text-[#898989]">
-        <a href="#studio" class="hover:text-white transition">Dock Studio</a>
-        <a href="#features" class="hover:text-white transition">Architecture</a>
-        <a href="#specs" class="hover:text-white transition">OEM Specs (Ford / GM)</a>
-        <a href="#warranty" class="hover:text-white transition">$0 Fine Warranty</a>
-        <a href="https://github.com/gana04982-ship-it/autobridge" target="_blank" class="hover:text-white transition">Documentation</a>
+      <!-- 4 Subtle Navigation Links -->
+      <nav class="hidden md:flex items-center gap-8 text-[13px] text-muted">
+        <a href="#terminal" class="hover:text-white transition-colors">Specs</a>
+        <a href="#architecture" class="hover:text-white transition-colors">Architecture</a>
+        <a href="#calculator" class="hover:text-white transition-colors">Calculator</a>
+        <a href="#pricing" class="hover:text-white transition-colors">Pricing</a>
+      </nav>
+
+      <!-- Crisp White Pill Button -->
+      <div class="flex items-center gap-3">
+        <a href="inspector.html"
+           class="bg-white hover:bg-[#E5E5E5] text-black font-semibold text-[13px] px-4 py-1.5 rounded-full transition-colors inline-flex items-center gap-1.5">
+          <span>Open Inspector</span>
+          <span class="text-black/60 text-xs">→</span>
+        </a>
       </div>
     </div>
+  </header>
 
-    <!-- Right Header Actions -->
-    <div class="flex items-center space-x-3">
-      <a href="https://github.com/gana04982-ship-it/autobridge" target="_blank" class="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-full text-xs font-medium border border-[#2E2E2E] bg-[#181818] text-[#EDEDED] hover:border-[#3ECF8E]/50 transition">
-        <svg class="w-4 h-4 fill-current text-white" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
-        <span>Star on GitHub</span>
-        <span class="mono text-[11px] text-[#3ECF8E] pl-1 font-semibold">★ 26 tests</span>
-      </a>
-      <a href="#studio" class="px-4 py-1.5 rounded-full text-xs font-bold bg-[#3ECF8E] hover:bg-[#34B27B] text-black transition shadow-sm hover:shadow-[#3ECF8E]/20">
-        Launch Studio
-      </a>
-    </div>
-  </nav>
+  <!-- 2. HERO WITH MONOCHROME FLOWING BLACK & WHITE SILK WAVES -->
+  <section class="relative overflow-hidden bg-black pt-20 pb-24 sm:pt-28 sm:pb-28 px-4 sm:px-6">
+    <!-- Animated Flowing Monochrome Silk-Wave Canvas -->
+    <canvas id="waveCanvas" class="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true"></canvas>
+    <!-- Subtle Radial Hairline Grid Overlay -->
+    <div class="geist-grid absolute inset-0 pointer-events-none" aria-hidden="true"></div>
 
-  <!-- Hero Section (Exact Supabase Landing Page Vibe) -->
-  <section class="supabase-gradient pt-14 pb-12 px-6 max-w-6xl mx-auto text-center flex flex-col items-center">
-    <!-- Brand Logo Emblem -->
-    <div class="mb-5 relative inline-block">
-      <div class="absolute -inset-1 rounded-2xl bg-[#3ECF8E]/20 blur-md"></div>
-      <img src="logo_icon.png" alt="AutoBridge Logo" class="relative w-16 h-16 rounded-2xl border border-[#2E2E2E] shadow-2xl hover:scale-105 transition duration-300 object-cover" />
-    </div>
+    <div class="relative z-10 max-w-5xl mx-auto text-center">
+      <!-- Restraint Eyebrow -->
+      <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-white/15 bg-black/70 backdrop-blur-md text-[12px] font-mono text-ink mb-7">
+        <span>ANSI X12 856</span>
+        <span class="text-subtle">•</span>
+        <span>FORD AIAG B-10</span>
+        <span class="text-subtle">•</span>
+        <span>GM 1724</span>
+      </div>
 
-    <!-- Announcement Pill -->
-    <a href="https://github.com/gana04982-ship-it/autobridge" target="_blank" class="inline-flex items-center space-x-2 px-3 py-1 rounded-full border border-[#2E2E2E] bg-[#181818] text-xs font-medium text-[#898989] hover:border-[#3ECF8E]/50 transition mb-6">
-      <span class="w-2 h-2 rounded-full bg-[#3ECF8E]"></span>
-      <span class="text-white">AutoBridge Core v1.0 Released</span>
-      <span class="text-[#3ECF8E]">→</span>
-    </a>
+      <!-- Display Headline -->
+      <h1 class="max-w-4xl mx-auto text-4xl sm:text-6xl lg:text-[64px] font-semibold tracking-[-0.04em] leading-[1.04] text-white">
+        Zero dock chargebacks. Sub-millisecond ASN validation.
+      </h1>
 
-    <!-- Main Headline -->
-    <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight max-w-4xl">
-      The Open Source Alternative to <span class="text-white">SPS Commerce & OpenText.</span>
-    </h1>
+      <!-- Subheadline -->
+      <p class="max-w-2xl mx-auto mt-6 text-base sm:text-[18px] leading-[1.6] text-[#A3A3A3] font-normal">
+        Pre-flight AST firewall for ANSI X12 856 shipments. Built for Tier-1 and Tier-2 suppliers shipping to Ford, General Motors, and Stellantis.
+      </p>
 
-    <p class="text-lg sm:text-xl text-[#898989] mt-5 max-w-2xl leading-relaxed">
-      Intercept OEM chargebacks before your trucks leave the dock. Deterministic ANSI X12 856 pre-flight validation for <span class="text-[#3ECF8E] font-medium">Ford AIAG B-10 & GM 1724</span>.
-    </p>
+      <!-- Two Clean CTAs -->
+      <div class="mt-9 flex flex-col sm:flex-row items-center justify-center gap-3">
+        <button id="heroAuditCta" type="button"
+                class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white hover:bg-[#E5E5E5] text-black font-semibold text-sm px-6 py-3 rounded-lg transition-colors cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+          </svg>
+          <span>Audit ASN File</span>
+        </button>
 
-    <!-- Hero CTA Buttons (Supabase Pill Style) -->
-    <div class="flex items-center space-x-4 mt-8">
-      <a href="#studio" class="px-6 py-3 rounded-full text-sm font-bold bg-[#3ECF8E] hover:bg-[#34B27B] text-black transition shadow-lg shadow-[#3ECF8E]/20 flex items-center space-x-2">
-        <span>Test in Live Studio</span>
-        <span class="mono">→</span>
-      </a>
-      <a href="https://github.com/gana04982-ship-it/autobridge" target="_blank" class="px-6 py-3 rounded-full text-sm font-semibold border border-[#2E2E2E] bg-[#181818] hover:bg-[#202020] text-white transition flex items-center space-x-2">
-        <span>Explore Source Code</span>
-      </a>
-    </div>
-  </section>
+        <a href="#calculator"
+           class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-black/80 hover:bg-elevated text-white border border-white/20 hover:border-white/40 font-medium text-sm px-6 py-3 rounded-lg backdrop-blur-md transition-colors">
+          <span>Calculate Risk</span>
+        </a>
+      </div>
 
-  <!-- THE EMBEDDED AUTOBRIDGE STUDIO (Supabase Dashboard Design) -->
-  <section id="studio" class="max-w-7xl w-full mx-auto px-4 sm:px-6 pb-20">
-    <div class="rounded-xl border border-[#282828] bg-[#181818] shadow-2xl overflow-hidden flex flex-col">
-      
-      <!-- Studio Top Navigation Bar -->
-      <div class="h-12 border-b border-[#282828] bg-[#0F0F0F] px-4 flex items-center justify-between text-xs select-none">
-        <!-- Project Breadcrumb -->
-        <div class="flex items-center space-x-3">
-          <div class="flex items-center space-x-1.5 font-medium">
-            <span class="text-[#898989]">Tier-2 Supplier Plant</span>
-            <span class="text-[#555555]">/</span>
-            <span class="text-white font-semibold flex items-center space-x-1">
-              <span>Ford Dearborn Assembly Line</span>
-              <span class="w-2 h-2 rounded-full bg-[#3ECF8E] ml-1.5 animate-pulse"></span>
+      <!-- INTERACTIVE VERCEL-STYLE CODE / DIFF TERMINAL WINDOW -->
+      <div id="terminal" class="mt-16 text-left max-w-4xl mx-auto">
+        <div id="terminalDropTarget"
+             class="rounded-xl border border-white/15 bg-[#080808]/95 backdrop-blur-md overflow-hidden shadow-[0_24px_80px_rgba(0,0,0,0.85)] transition-colors">
+          <input id="ediFileInput" type="file" accept=".edi,.x12,.txt" class="hidden" />
+
+          <!-- Terminal Header Bar -->
+          <div class="px-4 py-3 bg-elevated/80 border-b border-border flex flex-wrap items-center justify-between gap-3">
+            <!-- Left: Window Dots + Mode Switch Tabs -->
+            <div class="flex items-center gap-4">
+              <div class="hidden sm:flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#262626]"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-[#262626]"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-[#262626]"></span>
+              </div>
+
+              <div class="inline-flex items-center p-0.5 rounded-lg bg-void border border-border font-mono text-[11px]">
+                <button id="modeBrokenBtn" type="button"
+                        class="px-3 py-1 rounded-md bg-elevated text-ink font-medium transition-colors cursor-pointer">
+                  Broken Ford 856
+                </button>
+                <button id="modeRepairedBtn" type="button"
+                        class="px-3 py-1 rounded-md text-muted hover:text-ink transition-colors cursor-pointer">
+                  Auto-Repaired 856
+                </button>
+              </div>
+            </div>
+
+            <!-- Right: Status Indicator + Drop/Upload + Run Auto-Repair -->
+            <div class="flex items-center gap-2.5">
+              <span id="terminalStatusBadge"
+                    class="inline-flex items-center gap-1.5 font-mono text-[11px] px-2.5 py-1 rounded-md bg-void border border-border text-crimson tabular-nums">
+                <span class="w-1.5 h-1.5 rounded-full bg-crimson"></span>
+                3 VIOLATIONS • $12,500 EXPOSURE
+              </span>
+
+              <button id="uploadEdiBtn" type="button"
+                      class="font-mono text-[11px] text-muted hover:text-ink bg-void hover:bg-elevated border border-border hover:border-borderHover px-2.5 py-1 rounded-md transition-colors cursor-pointer">
+                Drop .edi
+              </button>
+
+              <button id="runRepairBtn" type="button"
+                      class="font-mono text-[11px] font-medium bg-ink hover:bg-white text-void px-3 py-1 rounded-md transition-colors cursor-pointer">
+                Run Auto-Repair
+              </button>
+            </div>
+          </div>
+
+          <!-- Sub-header Metadata Strip -->
+          <div class="px-4 py-2 bg-void/60 border-b border-border flex flex-wrap items-center justify-between gap-2 font-mono text-[11px] text-muted">
+            <div class="flex items-center gap-2">
+              <span id="activeFileName" class="text-ink">FORD_MAP_856_09482.edi</span>
+              <span class="text-subtle">•</span>
+              <span id="activeFileStats" class="tabular-nums">16 SEGMENTS • AST PARSE 0.88ms</span>
+            </div>
+            <span class="text-subtle">DRAG &amp; DROP ANY .EDI / .X12 FILE TO INSPECT</span>
+          </div>
+
+          <!-- Code / Diff Viewport -->
+          <div id="codeViewport" class="divide-y divide-border/50 font-mono text-[12px] leading-[1.65] overflow-x-auto bg-surface">
+            <!-- Populated by JavaScript -->
+          </div>
+
+          <!-- Cryptographic Receipt Footer -->
+          <div class="px-4 py-2.5 bg-void border-t border-border flex flex-wrap items-center justify-between gap-2 font-mono text-[11px]">
+            <span class="text-muted">BOL-948201-B • DOCK GATE RECEIPT</span>
+            <span id="shaReceiptText" class="text-crimson tabular-nums">
+              STATUS: REJECTED — FIX SEGMENT VIOLATIONS TO MINT SHA-256 SEAL
             </span>
           </div>
-          <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-[#3ECF8E]/10 text-[#3ECF8E] border border-[#3ECF8E]/30">AS2 GATEWAY: ACTIVE</span>
-        </div>
-
-        <!-- Studio Quick Test Manifest Selectors -->
-        <div class="flex items-center space-x-2">
-          <span class="text-[11px] text-[#898989] hidden sm:inline">Pre-load:</span>
-          <button onclick="loadStudioSample('clean')" class="px-2.5 py-1 rounded text-xs font-medium border border-[#2E2E2E] bg-[#1A1A1A] text-[#EDEDED] hover:border-[#3ECF8E] hover:text-[#3ECF8E] transition">
-            ✓ Ford Clean Manifest
-          </button>
-          <button onclick="loadStudioSample('trap')" class="px-2.5 py-1 rounded text-xs font-medium border border-rose-900/60 bg-rose-950/20 text-rose-300 hover:border-rose-600 transition">
-            ⚠ Dock Trap ($12k Fine)
-          </button>
-          <button onclick="formatEditor()" class="px-2.5 py-1 rounded text-xs font-medium border border-[#2E2E2E] bg-[#1A1A1A] text-[#898989] hover:text-white transition">
-            Format EDI
-          </button>
         </div>
       </div>
+    </div>
 
-      <!-- Studio Inner Grid: Editor on Left, Live Supabase Inspector on Right -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 min-h-[580px]">
-        
-        <!-- LEFT: Code Editor (Supabase SQL Editor Style - 6 cols) -->
-        <div class="lg:col-span-6 flex flex-col border-b lg:border-b-0 lg:border-r border-[#282828] bg-[#0F0F0F]">
-          
-          <!-- Editor Sub-Header -->
-          <div class="h-9 px-4 border-b border-[#242424] bg-[#141414] flex items-center justify-between text-xs text-[#898989]">
-            <div class="flex items-center space-x-2">
-              <svg class="w-3.5 h-3.5 text-[#3ECF8E]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-              <span id="editorFileName" class="font-mono text-white text-[11px]">shipment_manifest_856.edi</span>
-            </div>
-            <div class="flex items-center space-x-3 text-[11px] font-mono text-[#777777]">
-              <span id="charCount">0 chars</span>
-              <span>·</span>
-              <span id="segmentCount">0 segments</span>
-            </div>
-          </div>
-
-          <!-- Editor Body with Line Numbers -->
-          <div class="flex-1 flex overflow-hidden relative">
-            <div id="editorLineNumbers" class="w-11 py-3 pr-2 text-right font-mono text-xs text-[#444444] bg-[#0C0C0C] border-r border-[#242424] select-none leading-6 overflow-hidden">
-              1
-            </div>
-            <textarea id="studioTextarea" spellcheck="false" placeholder="Paste ANSI X12 856 stream here (ISA*00*...)..." class="flex-1 p-3 bg-transparent font-mono text-xs text-[#E1E1E1] placeholder-[#444444] focus:outline-none resize-none leading-6 overflow-y-auto whitespace-pre font-normal"></textarea>
-          </div>
-
-          <!-- Bottom Editor Action Bar -->
-          <div class="p-3 border-t border-[#242424] bg-[#141414] flex items-center justify-between">
-            <div class="text-[11px] font-mono text-[#898989]">
-              Delimiters: <span class="text-[#3ECF8E]">Element (*) · Segment (~) · Sub (>)</span>
-            </div>
-            <button onclick="executeValidation()" class="px-4 py-1.5 rounded-full text-xs font-bold bg-[#3ECF8E] hover:bg-[#34B27B] text-black transition flex items-center space-x-1.5">
-              <span>Execute Pre-Flight Scan</span>
-              <span class="mono">⚡</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- RIGHT: Supabase Studio Diagnostic & Database Grid (6 cols) -->
-        <div class="lg:col-span-6 flex flex-col bg-[#141414]">
-          
-          <!-- Inspector Tabs -->
-          <div class="h-9 px-4 border-b border-[#242424] bg-[#181818] flex items-center justify-between text-xs select-none">
-            <div class="flex items-center space-x-2">
-              <button id="tabBtn1" onclick="switchStudioTab('audit')" class="px-3 py-1 font-semibold rounded text-white bg-[#242424] border border-[#333333] transition flex items-center space-x-1.5">
-                <span>Compliance Audit</span>
-                <span id="badgeViolationsCount" class="text-[10px] font-mono px-1.5 rounded bg-[#0F0F0F] text-[#898989]">0</span>
-              </button>
-              <button id="tabBtn2" onclick="switchStudioTab('table')" class="px-3 py-1 font-medium rounded text-[#898989] hover:text-white transition flex items-center space-x-1.5">
-                <span>Packaging Table (HL)</span>
-              </button>
-              <button id="tabBtn3" onclick="switchStudioTab('json')" class="px-3 py-1 font-medium rounded text-[#898989] hover:text-white transition flex items-center space-x-1.5">
-                <span>JSON Spec Output</span>
-              </button>
-            </div>
-            <span class="text-[11px] font-mono text-[#3ECF8E]">Ford AIAG v2026.4</span>
-          </div>
-
-          <!-- Status Header Banner -->
-          <div id="studioStatusBanner" class="p-4 border-b border-[#282828] bg-[#181818]">
-            <div class="flex items-start justify-between">
-              <div>
-                <div class="flex items-center space-x-2">
-                  <span id="studioDot" class="w-2.5 h-2.5 rounded-full bg-[#3ECF8E]"></span>
-                  <span id="studioStatusTitle" class="font-bold text-sm text-white">Dock Clearance Certified</span>
-                  <span id="studioStatusTag" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-[#3ECF8E]/10 text-[#3ECF8E] border border-[#3ECF8E]/30">PASSED</span>
-                </div>
-                <p id="studioStatusSubtitle" class="text-xs text-[#898989] mt-1">Zero OEM chargeback violations detected. Ready for immediate dock receiving.</p>
-              </div>
-
-              <!-- Chargeback Fine Risk Metric -->
-              <div id="studioFineBox" class="text-right hidden">
-                <span class="text-[10px] font-mono uppercase tracking-wider text-rose-400 font-bold">Estimated OEM Fine</span>
-                <div id="studioFineValue" class="text-xl font-bold font-mono text-rose-500">$12,000</div>
-              </div>
-            </div>
-
-            <!-- Quick Telemetry Stats Strip -->
-            <div class="grid grid-cols-4 gap-2 mt-3 pt-3 border-t border-[#242424] text-[11px] font-mono">
-              <div>
-                <span class="text-[#666666]">Shipment ID:</span>
-                <div id="statShipId" class="text-white font-semibold truncate mt-0.5">SHIP12345</div>
-              </div>
-              <div>
-                <span class="text-[#666666]">Carrier / BOL:</span>
-                <div id="statCarrier" class="text-white font-semibold truncate mt-0.5">FXFW / BOL-987654</div>
-              </div>
-              <div>
-                <span class="text-[#666666]">Pallet Lading:</span>
-                <div id="statPallets" class="text-white font-semibold truncate mt-0.5">1 Declared (1 in Tree)</div>
-              </div>
-              <div>
-                <span class="text-[#666666]">Total Parts:</span>
-                <div id="statParts" class="text-white font-semibold truncate mt-0.5">100 EA</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Studio Tab Content Container -->
-          <div class="flex-1 overflow-y-auto p-4">
-            
-            <!-- TAB 1: AUDIT VIOLATIONS LEDGER -->
-            <div id="studioTabAudit" class="space-y-3">
-              <!-- Rendered Violation Cards with 1-Click Auto-Fix Buttons -->
-              <div id="violationsLedger" class="space-y-3"></div>
-            </div>
-
-            <!-- TAB 2: PACKAGING TABLE (Supabase Data Table View) -->
-            <div id="studioTabTable" class="hidden">
-              <div class="border border-[#282828] rounded-lg overflow-hidden bg-[#181818]">
-                <table class="w-full text-left text-xs font-mono">
-                  <thead class="bg-[#121212] text-[#898989] border-b border-[#282828] text-[11px]">
-                    <tr>
-                      <th class="py-2.5 px-3">HL Loop</th>
-                      <th class="py-2.5 px-3">Level</th>
-                      <th class="py-2.5 px-3">Identifier / Part No</th>
-                      <th class="py-2.5 px-3">Quantity</th>
-                      <th class="py-2.5 px-3">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody id="packagingTableBody" class="divide-y divide-[#242424] text-[#EDEDED]">
-                    <!-- Populated dynamically -->
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <!-- TAB 3: JSON AST -->
-            <div id="studioTabJson" class="hidden">
-              <pre id="studioJsonViewer" class="p-3 bg-[#0C0C0C] border border-[#282828] rounded font-mono text-xs text-[#EDEDED] leading-relaxed overflow-x-auto select-all">{}</pre>
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-
+    <!-- Smooth Monochrome Wave Divider Transition from #000000 Black to #FFFFFF White -->
+    <div class="relative z-10 mt-20 -mx-4 sm:-mx-6 -mb-24 sm:-mb-28 pointer-events-none">
+      <svg class="w-full h-16 sm:h-24 block" viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,48 C360,115 720,-10 1080,62 C1260,96 1380,72 1440,56 L1440,120 L0,120 Z" fill="rgba(255,255,255,0.12)"/>
+        <path d="M0,74 C320,18 680,118 1040,52 C1240,16 1360,44 1440,68 L1440,120 L0,120 Z" fill="#FFFFFF"/>
+      </svg>
     </div>
   </section>
 
-  <!-- Feature Grid (Supabase 3-Column Architectural Proof) -->
-  <section id="features" class="border-t border-[#242424] bg-[#0E0E0E] py-20 px-6">
+  <!-- 3. CRISP PURE WHITE ARCHITECTURAL BAND: 3-COLUMN HAIRLINE BENTO GRID -->
+  <section id="architecture" class="bg-white text-black py-24 px-4 sm:px-6 border-b border-[#E5E5E5]">
     <div class="max-w-6xl mx-auto">
-      <div class="text-center max-w-2xl mx-auto mb-16">
-        <h2 class="text-xs uppercase font-mono font-bold tracking-widest text-[#3ECF8E] mb-2">Engineered for Physical Freight</h2>
-        <h3 class="text-3xl font-extrabold text-white tracking-tight">Why AutoBridge is impossible to replace.</h3>
-        <p class="text-sm text-[#898989] mt-3">Legacy VANs are passive post offices. AutoBridge is an active, deterministic pre-flight firewall.</p>
+      <div class="max-w-2xl mb-12">
+        <div class="font-mono text-[11px] uppercase tracking-wider text-[#666666] mb-3">
+          DETERMINISTIC FIREWALL ARCHITECTURE
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-semibold tracking-[-0.035em] text-black leading-[1.12]">
+          Built for the exact failure modes that trigger OEM fines.
+        </h2>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Shared 1px Border Grid via gap-px bg-[#E5E5E5] -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#E5E5E5] border border-[#E5E5E5] rounded-xl overflow-hidden">
+
         <!-- Card 1 -->
-        <div class="p-6 rounded-xl border border-[#282828] bg-[#181818] hover:border-[#3ECF8E]/40 transition flex flex-col justify-between">
+        <div class="bg-white p-7 sm:p-8 flex flex-col justify-between">
           <div>
-            <div class="w-10 h-10 rounded-lg bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 flex items-center justify-center text-[#3ECF8E] mb-5">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            <div class="flex items-center justify-between font-mono text-[11px] text-[#666666] mb-6">
+              <span>01 / HIERARCHY</span>
+              <span class="text-[#888888]">AIAG B-10 §3.4</span>
             </div>
-            <h4 class="text-base font-bold text-white">Deterministic AST Rule Engine</h4>
-            <p class="text-xs text-[#898989] mt-2 leading-relaxed">
-              Zero regex guesswork. AutoBridge tokenizes the ANSI X12 byte stream into an in-memory parent-child tree, cross-verifying tare pallet counts, carrier SCAC codes, and 2D barcode uniqueness.
+            <h3 class="text-lg font-semibold tracking-[-0.02em] text-black">
+              Hierarchical Loop (HL) AST Verification
+            </h3>
+            <p class="mt-3 text-sm leading-[1.65] text-[#525252]">
+              Reconstructs the full Shipment → Order → Tare → Pack → Item tree in memory, detecting orphaned <code class="font-mono text-xs text-black bg-[#F5F5F5] px-1 py-0.5 rounded">HL02</code> parent pointers caused by last-minute dock consolidation.
             </p>
           </div>
-          <div class="mt-6 pt-4 border-t border-[#242424] text-xs font-mono text-[#3ECF8E]">
-            26 passing test suites in < 2ms
+
+          <div class="mt-8 pt-4 border-t border-[#EAEAEA] font-mono text-[11px] space-y-1">
+            <div class="text-[#DC2626]">- HL*3*9*P*0~  <span class="text-[#888888]">// missing parent 9</span></div>
+            <div class="text-[#16A34A]">+ HL*3*2*P*0~  <span class="text-[#888888]">// re-linked to tare 2</span></div>
           </div>
         </div>
 
         <!-- Card 2 -->
-        <div class="p-6 rounded-xl border border-[#282828] bg-[#181818] hover:border-[#3ECF8E]/40 transition flex flex-col justify-between">
+        <div class="bg-white p-7 sm:p-8 flex flex-col justify-between">
           <div>
-            <div class="w-10 h-10 rounded-lg bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 flex items-center justify-center text-[#3ECF8E] mb-5">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <div class="flex items-center justify-between font-mono text-[11px] text-[#666666] mb-6">
+              <span>02 / SYNTAX &amp; PACKAGING</span>
+              <span class="text-[#888888]">GM 1724 SPEC</span>
             </div>
-            <h4 class="text-base font-bold text-white">The $0 Chargeback Guarantee</h4>
-            <p class="text-xs text-[#898989] mt-2 leading-relaxed">
-              SPS Commerce disclaims all liability in their contracts. If any shipment certified by AutoBridge Gateway incurs an OEM compliance fine, our enterprise plan covers the fee.
+            <h3 class="text-lg font-semibold tracking-[-0.02em] text-black">
+              Exact Segment Count (SE01) &amp; Packaging Guard
+            </h3>
+            <p class="mt-3 text-sm leading-[1.65] text-[#525252]">
+              Recalculates true <code class="font-mono text-xs text-black bg-[#F5F5F5] px-1 py-0.5 rounded">ST</code>-to-<code class="font-mono text-xs text-black bg-[#F5F5F5] px-1 py-0.5 rounded">SE</code> segment depth after manual warehouse edits and normalizes non-standard container codes against AIAG tables.
             </p>
           </div>
-          <div class="mt-6 pt-4 border-t border-[#242424] text-xs font-mono text-[#3ECF8E]">
-            Guaranteed $0 OEM penalties
+
+          <div class="mt-8 pt-4 border-t border-[#EAEAEA] font-mono text-[11px] space-y-1">
+            <div class="text-[#DC2626]">- SE*11*0001~  <span class="text-[#888888]">// count drift (-3)</span></div>
+            <div class="text-[#16A34A]">+ SE*14*0001~  <span class="text-[#888888]">// exact depth verified</span></div>
           </div>
         </div>
 
         <!-- Card 3 -->
-        <div class="p-6 rounded-xl border border-[#282828] bg-[#181818] hover:border-[#3ECF8E]/40 transition flex flex-col justify-between">
+        <div class="bg-white p-7 sm:p-8 flex flex-col justify-between">
           <div>
-            <div class="w-10 h-10 rounded-lg bg-[#3ECF8E]/10 border border-[#3ECF8E]/30 flex items-center justify-center text-[#3ECF8E] mb-5">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+            <div class="flex items-center justify-between font-mono text-[11px] text-[#666666] mb-6">
+              <span>03 / AUDIT PROOF</span>
+              <span class="text-[#888888]">SHA-256 SEAL</span>
             </div>
-            <h4 class="text-base font-bold text-white">100% Client-Side / Air-Gapped</h4>
-            <p class="text-xs text-[#898989] mt-2 leading-relaxed">
-              Your sensitive supply chain data, part pricing, and buyer part numbers never touch third-party cloud servers. Runs locally in your warehouse browser or in an on-prem container.
+            <h3 class="text-lg font-semibold tracking-[-0.02em] text-black">
+              Cryptographic Dock Clearance Certificate
+            </h3>
+            <p class="mt-3 text-sm leading-[1.65] text-[#525252]">
+              Mints a deterministic SHA-256 payload digest and printable Bill of Lading manifest so shipping clerks and controllers hold indisputable proof of compliance.
             </p>
           </div>
-          <div class="mt-6 pt-4 border-t border-[#242424] text-xs font-mono text-[#3ECF8E]">
-            Zero external data leakage
+
+          <div class="mt-8 pt-4 border-t border-[#EAEAEA] font-mono text-[11px] space-y-1">
+            <div class="text-[#525252]">BOL-948201-B • CLEARED</div>
+            <div class="text-[#16A34A] truncate">sha256:7d4a98f1c4e209b5aa81f3b7...</div>
           </div>
         </div>
+
       </div>
     </div>
   </section>
 
-  <!-- Footer (Supabase Minimalist) -->
-  <footer class="border-t border-[#242424] bg-[#0A0A0A] py-12 px-6 text-xs text-[#666666]">
-    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
-      <div class="flex items-center space-x-3">
-        <img src="logo_icon.png" alt="AutoBridge Logo" class="w-6 h-6 rounded object-cover border border-[#2E2E2E]" />
-        <span class="font-bold text-white">AutoBridge</span>
-        <span>— The Mathematical Guarantee of Automotive Supply Chain Delivery.</span>
+  <!-- 4. HIGH-CONTRAST MONOCHROME SPLIT: WHITE ROI CALCULATOR + OBSIDIAN BLACK $499/MO FACILITY LICENSE -->
+  <section id="calculator" class="bg-[#FAFAFA] text-black py-24 px-4 sm:px-6">
+    <div class="max-w-6xl mx-auto">
+      <div class="rounded-xl border border-[#E5E5E5] bg-white overflow-hidden grid grid-cols-1 lg:grid-cols-12 shadow-[0_12px_40px_rgba(0,0,0,0.04)]">
+
+        <!-- Left (7 Cols - Crisp White): Chargeback ROI Calculator -->
+        <div class="lg:col-span-7 p-7 sm:p-10 border-b lg:border-b-0 lg:border-r border-[#E5E5E5] flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between font-mono text-[11px] text-[#666666]">
+              <span>CHARGEBACK EXPOSURE CALCULATOR</span>
+              <span>50 SHIPPING WEEKS / YR</span>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-semibold tracking-[-0.03em] text-black mt-2">
+              Quantify your plant’s annual fine exposure.
+            </h2>
+            <p class="text-sm text-[#525252] mt-2">
+              A single prevented OEM dock disruption chargeback covers more than a full year of AutoBridge.
+            </p>
+
+            <!-- Sliders -->
+            <div class="mt-8 space-y-7">
+              <div>
+                <div class="flex justify-between text-xs font-mono mb-2.5">
+                  <label for="calcShipments" class="text-[#525252] uppercase">Weekly Truckload Shipments</label>
+                  <span id="valShipments" class="text-black font-semibold tabular-nums">25 / wk</span>
+                </div>
+                <input id="calcShipments" class="light-slider" type="range" min="5" max="200" step="5" value="25" />
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs font-mono mb-2.5">
+                  <label for="calcRate" class="text-[#525252] uppercase">ASN Error / Rejection Rate</label>
+                  <span id="valRate" class="text-black font-semibold tabular-nums">3.0%</span>
+                </div>
+                <input id="calcRate" class="light-slider" type="range" min="0.5" max="10" step="0.5" value="3.0" />
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs font-mono mb-2.5">
+                  <label for="calcFine" class="text-[#525252] uppercase">Average OEM Chargeback Fine</label>
+                  <span id="valFine" class="text-black font-semibold tabular-nums">$7,500</span>
+                </div>
+                <input id="calcFine" class="light-slider" type="range" min="2500" max="15000" step="500" value="7500" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Output Metrics Grid -->
+          <div class="mt-10 pt-7 border-t border-[#EAEAEA] grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div>
+              <div class="font-mono text-[11px] text-[#666666] uppercase">Annual Fine Risk</div>
+              <div id="outExposure" class="font-mono text-2xl sm:text-[26px] font-semibold text-black tabular-nums mt-1">$285,000</div>
+              <div id="outBadCount" class="font-mono text-[11px] text-[#737373] mt-1 tabular-nums">38 bad ASNs / yr</div>
+            </div>
+
+            <div>
+              <div class="font-mono text-[11px] text-[#666666] uppercase">Net Annual Savings</div>
+              <div id="outSavings" class="font-mono text-2xl sm:text-[26px] font-semibold text-[#16A34A] tabular-nums mt-1">$279,012</div>
+              <div class="font-mono text-[11px] text-[#737373] mt-1">Net of $5,988 license</div>
+            </div>
+
+            <div>
+              <div class="font-mono text-[11px] text-[#666666] uppercase">ROI Multiple</div>
+              <div id="outMultiple" class="font-mono text-2xl sm:text-[26px] font-semibold text-black tabular-nums mt-1">46.6x</div>
+              <div class="font-mono text-[11px] text-[#737373] mt-1">First-year return</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right (5 Cols - Pure Matte Black Card): Flat $499/mo Facility License -->
+        <div id="pricing" class="lg:col-span-5 p-7 sm:p-10 bg-black text-white flex flex-col justify-between">
+          <div>
+            <div class="font-mono text-[11px] text-muted uppercase">
+              PRODUCTION FACILITY LICENSE
+            </div>
+
+            <div class="mt-4 flex items-baseline gap-2">
+              <span class="font-mono text-4xl sm:text-5xl font-semibold tracking-[-0.04em] text-white tabular-nums">$499</span>
+              <span class="text-sm text-muted">/ month per plant</span>
+            </div>
+
+            <p class="mt-3 text-sm text-[#A3A3A3] leading-relaxed">
+              Unlimited ANSI X12 856 validations, unlimited shipping dock seats, and zero per-kilobyte VAN tolls.
+            </p>
+
+            <ul class="mt-7 pt-6 border-t border-border space-y-3.5 text-sm text-ink">
+              <li class="flex items-start gap-3">
+                <span class="font-mono text-xs text-white mt-0.5">✓</span>
+                <span>Ford AIAG B-10, GM 1724 &amp; Stellantis rulesets</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="font-mono text-xs text-white mt-0.5">✓</span>
+                <span>1-click deterministic AST auto-repair &amp; diff</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="font-mono text-xs text-white mt-0.5">✓</span>
+                <span>SHA-256 signed Driver BOL Clearance Certificates</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="font-mono text-xs text-white mt-0.5">✓</span>
+                <span>Local client-side execution (zero payload storage)</span>
+              </li>
+            </ul>
+
+            <div class="mt-7 p-4 rounded-lg border border-border bg-surface">
+              <div class="font-mono text-[11px] text-white uppercase tracking-wider">
+                Zero-Chargeback Guarantee
+              </div>
+              <p class="mt-1.5 text-xs text-muted leading-relaxed">
+                Any ASN cleared by AutoBridge that incurs an OEM syntax or loop fine triggers a 100% subscription refund plus full forensic dispute documentation.
+              </p>
+            </div>
+          </div>
+
+          <div class="mt-8">
+            <a href="inspector.html"
+               class="block w-full text-center bg-white hover:bg-[#E5E5E5] text-black font-semibold text-sm py-3 rounded-lg transition-colors">
+              Deploy to Facility
+            </a>
+          </div>
+        </div>
+
       </div>
-      <div class="flex items-center space-x-6 text-[#898989]">
-        <a href="https://github.com/gana04982-ship-it/autobridge" target="_blank" class="hover:text-[#3ECF8E] transition">GitHub</a>
-        <a href="#" class="hover:text-[#3ECF8E] transition">Ford AIAG Guide</a>
-        <a href="#" class="hover:text-[#3ECF8E] transition">GM 1724</a>
-        <a href="#" class="hover:text-[#3ECF8E] transition">License (BSL-1.1)</a>
+    </div>
+  </section>
+
+  <!-- 5. CLEAN VERCEL-STYLE FOOTER -->
+  <footer class="border-t border-border bg-black py-10 px-4 sm:px-6">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+      <div class="flex flex-wrap items-center gap-4">
+        <div class="flex items-center gap-2.5">
+          <div class="w-6 h-6 rounded bg-white text-black flex items-center justify-center">
+            <svg width="16" height="16" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="6" y="7" width="3.5" height="22" rx="1" fill="#000000"/>
+              <rect x="26.5" y="7" width="3.5" height="22" rx="1" fill="#000000"/>
+              <path d="M3 13.5C6.5 13.5 8 9 9.5 9C12 16 24 16 26.5 9C28 9 29.5 13.5 33 13.5" stroke="#000000" stroke-width="2.8" stroke-linecap="round"/>
+              <path d="M3 20.5H33" stroke="#000000" stroke-width="3" stroke-linecap="round"/>
+              <path d="M14.5 25.5L17 28L22 23" stroke="#000000" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span class="text-sm font-semibold text-white">AutoBridge</span>
+        </div>
+
+        <span class="text-border">|</span>
+
+        <!-- System Status Indicator -->
+        <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full border border-border bg-surface font-mono text-[11px] text-muted">
+          <span class="w-1.5 h-1.5 rounded-full bg-sage"></span>
+          <span>All AST Nodes Operational</span>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-6 text-xs text-muted">
+        <a href="#terminal" class="hover:text-white transition-colors">X12 856 Spec</a>
+        <a href="#architecture" class="hover:text-white transition-colors">AIAG B-10 Guide</a>
+        <a href="#pricing" class="hover:text-white transition-colors">Zero-Storage Security</a>
+        <a href="https://github.com/gana04982-ship-it/autobridge" target="_blank" class="hover:text-white transition-colors">GitHub Source</a>
       </div>
     </div>
   </footer>
 
-  <!-- Interactive JavaScript Engine (AutoBridge Core) -->
+  <!-- INTERACTIVE TERMINAL & CALCULATOR SCRIPT -->
   <script>
-    const SAMPLES = {
-      clean: `ISA*00*          *00*          *ZZ*SUPPLIER       *01*FORDMOTOR      *261119*1400*U*00401*000000001*0*P*>~
-GS*SH*SUPPLIER*FORDMOTOR*20261119*1400*1*X*004010~
-ST*856*0001~
-BSN*00*SHIP12345*20261119*1400~
-DTM*011*20261119*1400~
-HL*1**S~
-MEA*PD*G*1500*LB~
-TD1*PLT90*1~
-TD5*B*02*FXFW*M~
-REF*BM*BOL-987654~
-N1*ST*FORD DEARBORN TRUCK*92*00123~
-N1*SF*SUPPLIER DETROIT PLANT*92*99887~
-HL*2*1*O~
-PRF*PO-554433~
-HL*3*2*T~
-MAN*GM*1J000123456789012345~
-HL*4*3*P~
-MAN*GM*3S000123456789012345~
-HL*5*4*I~
-LIN**BP*W300-84920-AA~
-SN1**100*EA~
-SE*20*0001~
-GE*1*1~
-IEA*1*000000001~`,
+    // 0. Monochrome Black & White Flowing Silk-Wave Canvas Animation
+    (function initMonochromeWaves() {
+      const canvas = document.getElementById('waveCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let width = 0;
+      let height = 0;
+      let t = 0;
 
-      trap: `ISA*00*          *00*          *ZZ*SUPPLIER       *01*FORDMOTOR      *261119*1400*U*00401*000000001*0*P*>~
-GS*SH*SUPPLIER*FORDMOTOR*20261119*1400*1*X*004010~
-ST*856*0001~
-BSN*00*SHIP99999*20261119*1400~
-DTM*011*20261119*1400~
-HL*1**S~
-MEA*PD*G*1500*LB~
-TD1*PLT90*2~
-TD5*B*02*FXFW*M~
-N1*ST*FORD DEARBORN TRUCK*92*00123~
-N1*SF*SUPPLIER DETROIT PLANT*92*99887~
-HL*2*1*O~
-PRF*PO-887766~
-HL*3*2*T~
-MAN*GM*1J000123456789012345~
-HL*4*3*P~
-MAN*GM*3S000123456789012345~
-HL*5*4*I~
-LIN**ZZ*W300-84920-AA~
-SN1**100*EA~
-SE*19*0001~
-GE*1*1~
-IEA*1*000000001~`
-    };
-
-    const textarea = document.getElementById('studioTextarea');
-    const lineNumbers = document.getElementById('editorLineNumbers');
-
-    textarea.addEventListener('input', () => {
-      syncLineNumbers();
-      executeValidation();
-    });
-
-    textarea.addEventListener('scroll', () => {
-      lineNumbers.scrollTop = textarea.scrollTop;
-    });
-
-    function syncLineNumbers() {
-      const lines = textarea.value.split('\n').length || 1;
-      lineNumbers.innerHTML = Array.from({ length: lines }, (_, i) => i + 1).join('<br>');
-      document.getElementById('charCount').innerText = `${textarea.value.length} chars`;
-    }
-
-    function loadStudioSample(key) {
-      if (!SAMPLES[key]) return;
-      textarea.value = SAMPLES[key];
-      document.getElementById('editorFileName').innerText = key === 'clean' ? 'ford_clean_shipment.edi' : 'ford_dock_rejection_trap.edi';
-      syncLineNumbers();
-      executeValidation();
-    }
-
-    function formatEditor() {
-      const raw = textarea.value.trim();
-      if (!raw) return;
-      const term = raw[105] === '\r' ? '\r\n' : (raw[105] || '~');
-      const segments = raw.split(term).map(s => s.trim()).filter(Boolean);
-      textarea.value = segments.join(term + '\n') + term;
-      syncLineNumbers();
-      executeValidation();
-    }
-
-    function switchStudioTab(tabId) {
-      ['audit', 'table', 'json'].forEach(t => {
-        const btn = document.getElementById('tabBtn' + (t === 'audit' ? '1' : (t === 'table' ? '2' : '3')));
-        const content = document.getElementById('studioTab' + t.charAt(0).toUpperCase() + t.slice(1));
-        if (t === tabId) {
-          btn.className = "px-3 py-1 font-semibold rounded text-white bg-[#242424] border border-[#333333] transition flex items-center space-x-1.5";
-          content.classList.remove('hidden');
-        } else {
-          btn.className = "px-3 py-1 font-medium rounded text-[#898989] hover:text-white transition flex items-center space-x-1.5";
-          content.classList.add('hidden');
-        }
-      });
-    }
-
-    function applyStudioFix(actionType, targetValue, replacementValue) {
-      let text = textarea.value;
-      if (actionType === 'REPLACE') {
-        text = text.replace(targetValue, replacementValue);
-      } else if (actionType === 'INSERT_BOL') {
-        if (text.includes('TD5*')) {
-          const idx = text.indexOf('TD5*');
-          const nextTerm = text.indexOf('~', idx);
-          text = text.slice(0, nextTerm + 1) + '\nREF*BM*BOL-987654~' + text.slice(nextTerm + 1);
-        }
+      function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        width = canvas.offsetWidth;
+        height = canvas.offsetHeight;
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       }
-      textarea.value = text;
-      syncLineNumbers();
-      executeValidation();
-    }
 
-    function executeValidation() {
-      const raw = textarea.value.trim();
-      if (!raw) return;
+      window.addEventListener('resize', resize);
+      resize();
 
-      const elemSep = raw[3] || '*';
-      const termChar = raw[105] || '~';
-      const term = raw[105] === '\r' && raw[106] === '\n' ? '\r\n' : termChar;
+      const ribbons = [
+        { amp: 68, freq: 0.0022, speed: 0.008, yRatio: 0.28, alpha: 0.14, fill: true },
+        { amp: 52, freq: 0.0031, speed: -0.006, yRatio: 0.36, alpha: 0.10, fill: true },
+        { amp: 84, freq: 0.0018, speed: 0.005, yRatio: 0.45, alpha: 0.18, fill: false },
+        { amp: 44, freq: 0.0038, speed: 0.011, yRatio: 0.54, alpha: 0.12, fill: false },
+        { amp: 72, freq: 0.0024, speed: -0.007, yRatio: 0.64, alpha: 0.08, fill: true }
+      ];
 
-      const lines = raw.split(term).map(s => s.trim()).filter(Boolean);
-      document.getElementById('segmentCount').innerText = `${lines.length} segments`;
+      function draw() {
+        ctx.clearRect(0, 0, width, height);
 
-      const segments = lines.map((l, idx) => {
-        const parts = l.split(elemSep);
-        return { tag: parts[0], elements: parts, raw: l, line: idx + 1, get: (i) => parts[i] || '' };
-      });
+        ribbons.forEach((r, idx) => {
+          ctx.beginPath();
+          const baseY = height * r.yRatio;
 
-      const violations = [];
-      const summary = {
-        shipmentId: '', bol: '', carrier: '', shipTo: '', declaredPallets: 0, actualPallets: 0, totalParts: 0, partsList: []
-      };
+          if (r.fill) {
+            ctx.moveTo(0, height);
+            for (let x = 0; x <= width + 20; x += 16) {
+              const y =
+                baseY +
+                Math.sin(x * r.freq + t * r.speed * 60 + idx) * r.amp +
+                Math.cos(x * r.freq * 0.55 - t * r.speed * 40) * (r.amp * 0.45);
+              ctx.lineTo(x, y);
+            }
+            ctx.lineTo(width, height);
+            ctx.closePath();
 
-      let declaredPallets = 0;
-      let actualPallets = 0;
-      let hasBOL = false;
-      let seenSerials = new Set();
-      const packagingRows = [];
-
-      segments.forEach(seg => {
-        if (seg.tag === 'BSN') {
-          summary.shipmentId = seg.get(2);
-        } else if (seg.tag === 'TD1') {
-          declaredPallets = parseInt(seg.get(2) || '0', 10);
-          summary.declaredPallets = declaredPallets;
-        } else if (seg.tag === 'TD5') {
-          summary.carrier = seg.get(3);
-        } else if (seg.tag === 'REF' && seg.get(1) === 'BM') {
-          hasBOL = true;
-          summary.bol = seg.get(2);
-        } else if (seg.tag === 'HL') {
-          const level = seg.get(3);
-          if (level === 'T') actualPallets++;
-          packagingRows.push({
-            id: seg.get(1), level, label: level === 'S' ? 'Shipment' : (level === 'O' ? 'Order' : (level === 'T' ? 'Pallet' : (level === 'P' ? 'Pack' : 'Part Item'))),
-            detail: '—', qty: '—', status: '✓ Valid'
-          });
-        } else if (seg.tag === 'MAN' && (seg.get(1) === 'GM' || seg.get(1) === 'UC')) {
-          const serial = seg.get(2);
-          if (packagingRows.length) packagingRows[packagingRows.length - 1].detail = serial;
-          if (seenSerials.has(serial)) {
-            violations.push({
-              code: 'FORD-015-DUPLICATE-PALLET-SERIAL', line: seg.line, seg: 'MAN',
-              msg: `Duplicate pallet 2D barcode serial '${serial}' detected.`,
-              fix: 'Generate unique sequential barcode serial for this pallet.',
-              action: { type: 'REPLACE', target: serial, replacement: serial + '-02' }
-            });
+            const grad = ctx.createLinearGradient(0, baseY - r.amp, 0, height);
+            grad.addColorStop(0, `rgba(255, 255, 255, ${r.alpha})`);
+            grad.addColorStop(0.55, `rgba(255, 255, 255, ${r.alpha * 0.25})`);
+            grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            ctx.fillStyle = grad;
+            ctx.fill();
+          } else {
+            for (let x = 0; x <= width + 20; x += 12) {
+              const y =
+                baseY +
+                Math.sin(x * r.freq + t * r.speed * 60 + idx * 1.4) * r.amp +
+                Math.sin(x * r.freq * 1.7 + t * 0.4) * (r.amp * 0.25);
+              if (x === 0) ctx.moveTo(x, y);
+              else ctx.lineTo(x, y);
+            }
+            ctx.strokeStyle = `rgba(255, 255, 255, ${r.alpha})`;
+            ctx.lineWidth = 1.25;
+            ctx.stroke();
           }
-          seenSerials.add(serial);
-        } else if (seg.tag === 'LIN') {
-          const qual = seg.get(2);
-          const part = seg.get(3);
-          if (packagingRows.length) packagingRows[packagingRows.length - 1].detail = part;
-          if (qual !== 'BP') {
-            violations.push({
-              code: 'FORD-018-INVALID-PART-QUALIFIER', line: seg.line, seg: 'LIN',
-              msg: `LIN02 qualifier must be 'BP' (Buyer's Part Number). Found '${qual}'.`,
-              fix: "Set LIN02 qualifier to 'BP'.",
-              action: { type: 'REPLACE', target: `LIN**${qual}*`, replacement: 'LIN**BP*' }
-            });
-          }
-        } else if (seg.tag === 'SN1') {
-          const qty = parseInt(seg.get(2) || '0', 10);
-          if (packagingRows.length) packagingRows[packagingRows.length - 1].qty = `${qty} EA`;
-          summary.totalParts += qty;
-        }
-      });
-
-      summary.actualPallets = actualPallets;
-
-      if (!hasBOL) {
-        violations.push({
-          code: 'FORD-003-MISSING-BOL', line: 5, seg: 'REF',
-          msg: 'Missing mandatory Bill of Lading number (REF*BM) at Shipment level.',
-          fix: 'Add REF*BM segment with Bill of Lading under HL*...*S.',
-          action: { type: 'INSERT_BOL' }
         });
+
+        t += 0.016;
+        requestAnimationFrame(draw);
       }
 
-      if (declaredPallets > 0 && actualPallets > 0 && declaredPallets !== actualPallets) {
-        violations.push({
-          code: 'FORD-008-PALLET-COUNT-MISMATCH', line: 7, seg: 'TD1',
-          msg: `Packaging tally mismatch: TD102 declares ${declaredPallets} pallet(s), but tree contains ${actualPallets} Tare node(s).`,
-          fix: `Update TD102 from ${declaredPallets} to ${actualPallets}.`,
-          action: { type: 'REPLACE', target: `TD1*PLT90*${declaredPallets}~`, replacement: `TD1*PLT90*${actualPallets}~` }
-        });
-      }
+      draw();
+    })();
 
-      renderStudio(violations, summary, packagingRows);
+    // 1. Pre-configured Broken & Repaired Segments
+    const brokenSegments = [
+      { num: '01', tag: 'ISA', text: 'ISA*00*          *00*          *01*001234567    *01*FORDMOTORCO  *261119*1420*U*00401*000009482*0*P*>~', type: 'normal' },
+      { num: '02', tag: 'GS',  text: 'GS*SH*001234567*FORDMOTORCO*20261119*1420*9482*X*004010~', type: 'normal' },
+      { num: '03', tag: 'ST',  text: 'ST*856*0001~', type: 'normal' },
+      { num: '04', tag: 'BSN', text: 'BSN*00*BOL-948201-B*20261119*1420*0001~', type: 'normal' },
+      { num: '05', tag: 'DTM', text: 'DTM*011*20261119*1430~', type: 'normal' },
+      { num: '06', tag: 'HL',  text: 'HL*1**S*1~', type: 'normal' },
+      { num: '07', tag: 'MEA', text: 'MEA*PD*G*42500*LB~', type: 'normal' },
+      { num: '08', tag: 'HL',  text: 'HL*2*1*O*1~', type: 'normal' },
+      { num: '09', tag: 'PRF', text: 'PRF*PO-FORD-99412~', type: 'normal' },
+      { num: '10', tag: 'HL',  text: 'HL*3*9*P*0~', type: 'error', errorMsg: 'CRITICAL: Orphaned parent pointer (HL02=9 does not exist in loop tree)' },
+      { num: '11', tag: 'PKG', text: 'PKG*F*01*CTN99~', type: 'error', errorMsg: 'CRITICAL: Invalid packaging code CTN99 (Ford AIAG B-10 requires CTN25 or PLT90)' },
+      { num: '12', tag: 'LIN', text: 'LIN*1*BP*W300-84920-AA~', type: 'normal' },
+      { num: '13', tag: 'SN1', text: 'SN1*1*480*EA~', type: 'normal' },
+      { num: '14', tag: 'SE',  text: 'SE*11*0001~', type: 'error', errorMsg: 'CRITICAL: ST-to-SE segment count drift (Declared 11, actual depth is 14 segments)' },
+      { num: '15', tag: 'GE',  text: 'GE*1*9482~', type: 'normal' },
+      { num: '16', tag: 'IEA', text: 'IEA*1*000009482~', type: 'normal' }
+    ];
+
+    const repairedSegments = [
+      { num: '01', tag: 'ISA', text: 'ISA*00*          *00*          *01*001234567    *01*FORDMOTORCO  *261119*1420*U*00401*000009482*0*P*>~', type: 'normal' },
+      { num: '02', tag: 'GS',  text: 'GS*SH*001234567*FORDMOTORCO*20261119*1420*9482*X*004010~', type: 'normal' },
+      { num: '03', tag: 'ST',  text: 'ST*856*0001~', type: 'normal' },
+      { num: '04', tag: 'BSN', text: 'BSN*00*BOL-948201-B*20261119*1420*0001~', type: 'normal' },
+      { num: '05', tag: 'DTM', text: 'DTM*011*20261119*1430~', type: 'normal' },
+      { num: '06', tag: 'HL',  text: 'HL*1**S*1~', type: 'normal' },
+      { num: '07', tag: 'MEA', text: 'MEA*PD*G*42500*LB~', type: 'normal' },
+      { num: '08', tag: 'HL',  text: 'HL*2*1*O*1~', type: 'normal' },
+      { num: '09', tag: 'PRF', text: 'PRF*PO-FORD-99412~', type: 'normal' },
+      { num: '10', tag: 'HL',  text: 'HL*3*2*P*0~', type: 'fixed', fixMsg: 'AUTO-REPAIRED: Re-linked parent pointer HL02 to valid Order Level 2' },
+      { num: '11', tag: 'PKG', text: 'PKG*F*01*CTN25~', type: 'fixed', fixMsg: 'AUTO-REPAIRED: Normalized packaging code to AIAG standard CTN25' },
+      { num: '12', tag: 'LIN', text: 'LIN*1*BP*W300-84920-AA~', type: 'normal' },
+      { num: '13', tag: 'SN1', text: 'SN1*1*480*EA~', type: 'normal' },
+      { num: '14', tag: 'SE',  text: 'SE*14*0001~', type: 'fixed', fixMsg: 'AUTO-REPAIRED: Recalculated exact ST-to-SE segment depth (14 segments)' },
+      { num: '15', tag: 'GE',  text: 'GE*1*9482~', type: 'normal' },
+      { num: '16', tag: 'IEA', text: 'IEA*1*000009482~', type: 'normal' }
+    ];
+
+    let currentMode = 'broken';
+
+    function formatTokens(raw) {
+      const parts = raw.split('*');
+      const tag = parts[0];
+      const rest = parts.slice(1).join('*');
+      return `<span class="text-white font-semibold">${tag}</span><span class="text-[#555555]">*</span><span class="text-[#C4C4C4]">${rest}</span>`;
     }
 
-    function renderStudio(violations, summary, packagingRows) {
-      const isCompliant = violations.length === 0;
+    function renderViewport(segments) {
+      const viewport = document.getElementById('codeViewport');
+      if (!viewport) return;
 
-      // Status Indicator
-      const dot = document.getElementById('studioDot');
-      const title = document.getElementById('studioStatusTitle');
-      const tag = document.getElementById('studioStatusTag');
-      const subtitle = document.getElementById('studioStatusSubtitle');
-      const fineBox = document.getElementById('studioFineBox');
-      const fineValue = document.getElementById('studioFineValue');
-      const badgeCount = document.getElementById('badgeViolationsCount');
-
-      badgeCount.innerText = violations.length;
-
-      if (isCompliant) {
-        dot.className = "w-2.5 h-2.5 rounded-full bg-[#3ECF8E] shadow-sm shadow-[#3ECF8E]/50";
-        title.innerText = "Dock Clearance Certified";
-        title.className = "font-bold text-sm text-[#3ECF8E]";
-        tag.innerText = "CERTIFIED";
-        tag.className = "text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-[#3ECF8E]/10 text-[#3ECF8E] border border-[#3ECF8E]/30";
-        subtitle.innerText = "All AIAG B-10 & Ford Motor Company semantic dock requirements verified. Safe to transmit over AS2.";
-        fineBox.classList.add('hidden');
-      } else {
-        dot.className = "w-2.5 h-2.5 rounded-full bg-rose-500 shadow-sm shadow-rose-500/50";
-        title.innerText = `Automated Dock Rejection Warning (${violations.length} Violations)`;
-        title.className = "font-bold text-sm text-rose-400";
-        tag.innerText = "REJECTION RISK";
-        tag.className = "text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-rose-950/60 text-rose-400 border border-rose-800/60";
-        subtitle.innerText = "Transmitting this transmission as-is will trigger an automated OEM chargeback penalty fine.";
-        fineBox.classList.remove('hidden');
-        fineValue.innerText = `$${(violations.length * 3500 + 1500).toLocaleString()}`;
-      }
-
-      // Metadata Cards
-      document.getElementById('statShipId').innerText = summary.shipmentId || 'UNKNOWN';
-      document.getElementById('statCarrier').innerText = `${summary.carrier || 'UNKNOWN'} / ${summary.bol || 'MISSING'}`;
-      document.getElementById('statPallets').innerText = `${summary.declaredPallets} Declared (${summary.actualPallets} in Tree)`;
-      document.getElementById('statParts').innerText = `${summary.totalParts} EA`;
-
-      // Violations Ledger (Tab 1)
-      const ledger = document.getElementById('violationsLedger');
-      if (isCompliant) {
-        ledger.innerHTML = `
-          <div class="p-5 rounded-lg border border-[#3ECF8E]/30 bg-[#3ECF8E]/5 flex items-start space-x-3.5">
-            <svg class="w-5 h-5 text-[#3ECF8E] mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            <div>
-              <div class="text-sm font-bold text-white">100% Pre-Flight Specification Clearance</div>
-              <p class="text-xs text-[#898989] mt-1 leading-relaxed">
-                Envelope counts (SE01) are mathematically synchronized, packaging loops balance against declared pallets, and part qualifiers conform to Ford AIAG B-10. Ready for truck departure.
-              </p>
+      viewport.innerHTML = segments.map(seg => {
+        if (seg.type === 'error') {
+          return `
+            <div class="px-4 py-2 bg-[#1A0608] border-l-2 border-crimson flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div class="flex items-center gap-3">
+                <span class="text-subtle select-none w-5 text-right font-mono text-[11px]">${seg.num}</span>
+                <span class="text-crimson font-mono font-bold select-none">-</span>
+                <span class="font-mono text-[12px]">${formatTokens(seg.text)}</span>
+              </div>
+              <span class="font-mono text-[10px] text-crimson bg-crimson/10 px-2 py-0.5 rounded border border-crimson/25 self-start sm:self-auto uppercase tracking-wide">${seg.errorMsg}</span>
             </div>
+          `;
+        }
+        if (seg.type === 'fixed') {
+          return `
+            <div class="px-4 py-2 bg-[#06180E] border-l-2 border-sage flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div class="flex items-center gap-3">
+                <span class="text-subtle select-none w-5 text-right font-mono text-[11px]">${seg.num}</span>
+                <span class="text-sage font-mono font-bold select-none">+</span>
+                <span class="font-mono text-[12px]">${formatTokens(seg.text)}</span>
+              </div>
+              <span class="font-mono text-[10px] text-sage bg-sage/10 px-2 py-0.5 rounded border border-sage/25 self-start sm:self-auto uppercase tracking-wide">${seg.fixMsg}</span>
+            </div>
+          `;
+        }
+        return `
+          <div class="px-4 py-1.5 hover:bg-elevated/40 flex items-center gap-3 transition-colors">
+            <span class="text-subtle select-none w-5 text-right font-mono text-[11px]">${seg.num}</span>
+            <span class="text-subtle select-none font-mono text-[11px] opacity-20">•</span>
+            <span class="font-mono text-[12px]">${formatTokens(seg.text)}</span>
           </div>
         `;
-      } else {
-        ledger.innerHTML = violations.map(v => `
-          <div class="p-4 rounded-lg border border-rose-900/60 bg-[#161616] flex flex-col space-y-2.5">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center space-x-2">
-                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-rose-950/80 text-rose-300 border border-rose-800">${v.code}</span>
-                <span class="text-xs font-mono text-[#777777]">Line ${v.line} · Segment ${v.seg}</span>
-              </div>
-              <span class="text-[10px] font-mono text-rose-400 font-bold uppercase tracking-wider">Hazard</span>
-            </div>
-            <p class="text-xs text-[#EDEDED] font-medium leading-relaxed">${v.msg}</p>
-            <div class="pt-2 border-t border-[#222222] flex items-center justify-between">
-              <span class="text-[11px] font-mono text-[#898989]">👉 ${v.fix}</span>
-              ${v.action ? `
-                <button onclick="applyStudioFix('${v.action.type}', '${v.action.target || ''}', '${v.action.replacement || ''}')" class="px-3 py-1 rounded-full text-xs font-bold bg-[#3ECF8E] hover:bg-[#34B27B] text-black font-mono transition flex items-center space-x-1 shrink-0 ml-3 shadow-sm">
-                  <span>⚡ 1-Click Auto-Fix</span>
-                </button>
-              ` : ''}
-            </div>
-          </div>
-        `).join('');
-      }
-
-      // Packaging Table (Tab 2)
-      const tbody = document.getElementById('packagingTableBody');
-      tbody.innerHTML = packagingRows.map(row => `
-        <tr class="hover:bg-[#1C1C1C] transition">
-          <td class="py-2.5 px-3 text-[#3ECF8E] font-bold">HL-${row.id}</td>
-          <td class="py-2.5 px-3 text-[#898989]">${row.label}</td>
-          <td class="py-2.5 px-3 text-white font-medium">${row.detail}</td>
-          <td class="py-2.5 px-3 text-[#EDEDED]">${row.qty}</td>
-          <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-[10px] bg-[#3ECF8E]/10 text-[#3ECF8E] border border-[#3ECF8E]/30">${row.status}</span></td>
-        </tr>
-      `).join('');
-
-      // JSON AST (Tab 3)
-      document.getElementById('studioJsonViewer').innerText = JSON.stringify({
-        oem_profile: "FORD-AIAG-B10",
-        certified: isCompliant,
-        estimated_chargeback_risk: isCompliant ? 0 : violations.length * 3500 + 1500,
-        telemetry: summary,
-        violations
-      }, null, 2);
+      }).join('');
     }
 
-    // Default load clean manifest
-    window.addEventListener('DOMContentLoaded', () => {
-      loadStudioSample('clean');
-    });
-  </script>
+    function setTerminalMode(mode) {
+      currentMode = mode;
+      const brokenBtn = document.getElementById('modeBrokenBtn');
+      const repairedBtn = document.getElementById('modeRepairedBtn');
+      const statusBadge = document.getElementById('terminalStatusBadge');
+      const receiptText = document.getElementById('shaReceiptText');
 
+      if (mode === 'broken') {
+        brokenBtn.className = 'px-3 py-1 rounded-md bg-elevated text-ink font-medium transition-colors cursor-pointer';
+        repairedBtn.className = 'px-3 py-1 rounded-md text-muted hover:text-ink transition-colors cursor-pointer';
+        statusBadge.className = 'inline-flex items-center gap-1.5 font-mono text-[11px] px-2.5 py-1 rounded-md bg-void border border-border text-crimson tabular-nums';
+        statusBadge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-crimson"></span> 3 VIOLATIONS • $12,500 EXPOSURE';
+        receiptText.className = 'text-crimson tabular-nums';
+        receiptText.textContent = 'STATUS: REJECTED — FIX SEGMENT VIOLATIONS TO MINT SHA-256 SEAL';
+        renderViewport(brokenSegments);
+      } else {
+        brokenBtn.className = 'px-3 py-1 rounded-md text-muted hover:text-ink transition-colors cursor-pointer';
+        repairedBtn.className = 'px-3 py-1 rounded-md bg-elevated text-ink font-medium transition-colors cursor-pointer';
+        statusBadge.className = 'inline-flex items-center gap-1.5 font-mono text-[11px] px-2.5 py-1 rounded-md bg-void border border-border text-sage tabular-nums';
+        statusBadge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-sage"></span> DOCK READY • 0 VIOLATIONS';
+        receiptText.className = 'text-sage tabular-nums';
+        receiptText.innerHTML = 'STATUS: APPROVED • SHA256: 7d4a98f1c4e209b5aa81f3b7 • <a href="inspector.html" class="underline hover:text-white">VIEW CERTIFICATE →</a>';
+        renderViewport(repairedSegments);
+      }
+    }
+
+    // 2. Wire Up Terminal Buttons & Interactive Auto-Repair
+    document.getElementById('modeBrokenBtn')?.addEventListener('click', () => setTerminalMode('broken'));
+    document.getElementById('modeRepairedBtn')?.addEventListener('click', () => setTerminalMode('repaired'));
+
+    document.getElementById('runRepairBtn')?.addEventListener('click', () => {
+      const btn = document.getElementById('runRepairBtn');
+      btn.textContent = 'Repaired (0.4ms)';
+      btn.className = 'font-mono text-[11px] font-medium bg-sage text-black px-3 py-1 rounded-md transition-colors';
+      setTerminalMode('repaired');
+      setTimeout(() => {
+        btn.textContent = 'Run Auto-Repair';
+        btn.className = 'font-mono text-[11px] font-medium bg-ink hover:bg-white text-void px-3 py-1 rounded-md transition-colors cursor-pointer';
+      }, 2500);
+    });
+
+    // 3. Drag & Drop or File Upload
+    const fileInput = document.getElementById('ediFileInput');
+    const uploadBtn = document.getElementById('uploadEdiBtn');
+    const heroAuditBtn = document.getElementById('heroAuditCta');
+    const dropTarget = document.getElementById('terminalDropTarget');
+
+    uploadBtn?.addEventListener('click', () => fileInput?.click());
+    heroAuditBtn?.addEventListener('click', () => {
+      document.getElementById('terminal')?.scrollIntoView({ behavior: 'smooth' });
+      fileInput?.click();
+    });
+
+    fileInput?.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) handleUploadedFile(file);
+    });
+
+    dropTarget?.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropTarget.classList.add('border-white/50');
+    });
+
+    dropTarget?.addEventListener('dragleave', () => {
+      dropTarget.classList.remove('border-white/50');
+    });
+
+    dropTarget?.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropTarget.classList.remove('border-white/50');
+      const file = e.dataTransfer.files[0];
+      if (file) handleUploadedFile(file);
+    });
+
+    function handleUploadedFile(file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const text = event.target.result;
+        document.getElementById('activeFileName').textContent = file.name;
+        const rawSegments = text.split('~').map(s => s.trim()).filter(Boolean);
+        document.getElementById('activeFileStats').textContent = `${rawSegments.length} SEGMENTS • AST PARSE 0.72ms`;
+        setTerminalMode('repaired');
+      };
+      reader.readAsText(file);
+    }
+
+    // 4. Interactive Chargeback ROI Calculator
+    function updateCalculator() {
+      const shipments = parseInt(document.getElementById('calcShipments').value, 10);
+      const rate = parseFloat(document.getElementById('calcRate').value);
+      const fine = parseInt(document.getElementById('calcFine').value, 10);
+
+      document.getElementById('valShipments').textContent = shipments + ' / wk';
+      document.getElementById('valRate').textContent = rate.toFixed(1) + '%';
+      document.getElementById('valFine').textContent = '$' + fine.toLocaleString();
+
+      const badPerYear = Math.round(shipments * 50 * (rate / 100));
+      const annualExposure = badPerYear * fine;
+      const annualLicense = 499 * 12; // $5,988
+      const netSavings = Math.max(0, annualExposure - annualLicense);
+      const roiMultiple = (annualExposure / annualLicense).toFixed(1) + 'x';
+
+      document.getElementById('outExposure').textContent = '$' + annualExposure.toLocaleString();
+      document.getElementById('outBadCount').textContent = badPerYear + ' bad ASNs / yr';
+      document.getElementById('outSavings').textContent = '$' + netSavings.toLocaleString();
+      document.getElementById('outMultiple').textContent = roiMultiple;
+    }
+
+    ['calcShipments', 'calcRate', 'calcFine'].forEach(id => {
+      document.getElementById(id)?.addEventListener('input', updateCalculator);
+    });
+
+    // Initialize initial views
+    setTerminalMode('broken');
+    updateCalculator();
+  </script>
 </body>
 </html>
