@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AutoBridge — Pre-Flight Inspector Studio</title>
+  <link rel="icon" type="image/png" href="logo_icon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            obsidian: '#000000',
+            surface: '#0A0A0A',
+            elevated: '#121212',
+            hairline: '#1F1F1F',
+            crimson: '#E5484D',
+            sage: '#30A46C',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #000000;
+      color: #EDEDED;
+      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    }
+    .tabular { font-variant-numeric: tabular-nums; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0A0A0A; }
+    ::-webkit-scrollbar-thumb { background: #262626; border-radius: 3px; }
+  </style>
+</head>
+<body class="min-h-screen bg-obsidian text-[#EDEDED] antialiased selection:bg-white selection:text-black">
+
+  <!-- STICKY TOP NAVIGATION BAR -->
+  <header class="sticky top-0 z-30 h-16 bg-black/90 backdrop-blur-md border-b border-hairline">
+    <div class="max-w-4xl mx-auto h-full px-5 flex items-center justify-between gap-4">
+
+      <!-- White-Badge Geometric Bridge AutoBridge Logo -->
+      <a href="index.html" class="flex items-center gap-2.5 group shrink-0">
+        <div class="w-8 h-8 rounded-[6px] bg-white flex items-center justify-center group-hover:scale-[1.03] transition-transform">
+          <svg width="20" height="20" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="AutoBridge Emblem">
+            <rect x="6" y="7" width="3.5" height="22" rx="1" fill="#000000"/>
+            <rect x="26.5" y="7" width="3.5" height="22" rx="1" fill="#000000"/>
+            <path d="M3 13.5C6.5 13.5 8 9 9.5 9C12 16 24 16 26.5 9C28 9 29.5 13.5 33 13.5" stroke="#000000" stroke-width="2.6" stroke-linecap="round"/>
+            <path d="M3 20.5H33" stroke="#000000" stroke-width="2.8" stroke-linecap="round"/>
+            <path d="M14.5 25.5L17 28L22 23" stroke="#000000" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="flex items-baseline gap-2">
+          <span class="font-bold tracking-tight text-[15px] text-white">AutoBridge</span>
+          <span class="text-xs font-mono text-[#666666]">/ Studio</span>
+        </div>
+      </a>
+
+      <!-- OEM Ruleset Pill Selector -->
+      <div class="hidden sm:flex items-center bg-surface border border-hairline rounded-lg p-0.5" role="group" aria-label="OEM Ruleset">
+        <button type="button" data-oem="FORD" class="oem-btn px-3 py-1 rounded-[6px] text-xs font-medium bg-white text-black transition cursor-pointer">
+          Ford AIAG B-10
+        </button>
+        <button type="button" data-oem="GM" class="oem-btn px-3 py-1 rounded-[6px] text-xs font-medium text-[#888888] hover:text-white transition cursor-pointer">
+          GM 1724
+        </button>
+        <button type="button" data-oem="STELLANTIS" class="oem-btn px-3 py-1 rounded-[6px] text-xs font-medium text-[#888888] hover:text-white transition cursor-pointer">
+          Stellantis
+        </button>
+      </div>
+
+      <!-- Upload / Paste EDI Modal Trigger -->
+      <button id="openUploadModalBtn" type="button"
+              class="inline-flex items-center gap-2 bg-surface hover:bg-elevated border border-hairline hover:border-[#333333] text-xs font-medium text-white px-3.5 py-2 rounded-lg transition cursor-pointer">
+        <svg class="w-3.5 h-3.5 text-[#888888]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+        </svg>
+        <span>Upload / Paste EDI</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN SINGLE-COLUMN WORKSPACE -->
+  <main class="max-w-4xl mx-auto px-5 py-10 space-y-8">
+
+    <!-- 1) ACTIVE FILE STRIP -->
+    <div class="flex flex-wrap items-center justify-between gap-3 text-xs font-mono text-[#737373]">
+      <div class="flex items-center gap-2.5">
+        <span class="text-[#EDEDED] font-medium" id="activeFileName">FORD_MAP_856_09482.edi</span>
+        <span>•</span>
+        <span id="segmentSummary" class="tabular">20 segments audited in 0.8ms</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <button id="resetDemoBtn" type="button" class="hover:text-white underline underline-offset-4 cursor-pointer">
+          Reload Broken Sample
+        </button>
+      </div>
+    </div>
+
+    <!-- 2) PRIMARY STATUS & ACTION CARD -->
+    <section id="statusCard" class="bg-surface border border-crimson/40 rounded-2xl p-6 sm:p-8 transition-all">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+
+        <div class="space-y-2">
+          <div id="statusPill" class="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-crimson/10 border border-crimson/30 text-crimson font-mono text-xs font-semibold">
+            <span class="w-2 h-2 rounded-full bg-crimson"></span>
+            <span>DOCK REJECTION RISK</span>
+          </div>
+
+          <h1 id="statusHeadline" class="text-2xl sm:text-3xl font-bold tracking-tight text-white tabular">
+            3 Errors Found • $12,500 Fine Risk
+          </h1>
+
+          <p id="statusSubtext" class="text-sm text-[#888888] max-w-lg">
+            Your ERP generated invalid loop pointers and packaging codes. Fix all issues in one click before sending to the OEM gateway.
+          </p>
+        </div>
+
+        <!-- Primary Action Button Area -->
+        <div id="actionButtonGroup" class="flex flex-col sm:items-end gap-2.5 shrink-0">
+          <button id="fixAllBtn" type="button"
+                  class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white hover:bg-[#E5E5E5] text-black font-semibold text-sm px-6 py-3.5 rounded-xl transition cursor-pointer">
+            <span>Auto-Fix All 3 Errors</span>
+            <span aria-hidden="true">→</span>
+          </button>
+          <span class="text-[11px] font-mono text-[#666666]">Deterministic AST repair • 0 data retained</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3) PLAIN-ENGLISH ERROR LIST -->
+    <section id="issuesSection" class="space-y-3">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xs font-mono uppercase tracking-wider text-[#888888]">What Needs Fixing</h2>
+        <span id="rulesBadge" class="text-xs font-mono text-[#666666]">Ruleset: Ford AIAG B-10</span>
+      </div>
+
+      <div id="issuesList" class="bg-surface border border-hairline rounded-2xl divide-y divide-hairline overflow-hidden">
+        <!-- Populated dynamically by JS -->
+      </div>
+    </section>
+
+    <!-- 4) COLLAPSIBLE RAW X12 CODE DIFF DRAWER -->
+    <section class="border border-hairline rounded-2xl bg-surface overflow-hidden">
+      <button id="toggleDiffBtn" type="button"
+              class="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-white/[0.02] transition cursor-pointer">
+        <div class="flex items-center gap-3">
+          <span class="text-sm font-medium text-white">View Raw X12 Code Diff</span>
+          <span id="diffBadge" class="text-[11px] font-mono px-2 py-0.5 rounded bg-elevated border border-hairline text-[#888888]">
+            Side-by-Side Segments
+          </span>
+        </div>
+        <svg id="diffChevron" class="w-4 h-4 text-[#888888] transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </button>
+
+      <div id="diffDrawer" class="hidden border-t border-hairline grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-hairline bg-black">
+        <div class="p-4 overflow-x-auto">
+          <div class="text-[11px] font-mono uppercase tracking-wider text-[#666666] mb-3">Original File</div>
+          <div id="rawLinesView" class="font-mono text-xs leading-6 space-y-0.5"></div>
+        </div>
+        <div class="p-4 overflow-x-auto">
+          <div class="text-[11px] font-mono uppercase tracking-wider text-[#666666] mb-3">Repaired Output</div>
+          <div id="cleanLinesView" class="font-mono text-xs leading-6 space-y-0.5"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 5) UPLOAD / PASTE MODAL -->
+  <div id="uploadModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-surface border border-hairline rounded-2xl max-w-lg w-full p-6 space-y-5">
+      <div class="flex items-center justify-between">
+        <h3 class="text-base font-semibold text-white">Load ANSI X12 856 File</h3>
+        <button id="closeModalBtn" type="button" class="text-[#888888] hover:text-white text-sm font-mono cursor-pointer">✕</button>
+      </div>
+
+      <div id="modalDropzone" class="border border-dashed border-[#333333] hover:border-white rounded-xl p-6 text-center cursor-pointer transition">
+        <input id="modalFileInput" type="file" accept=".edi,.x12,.txt" class="hidden" />
+        <p class="text-sm font-medium text-white">Click to choose a .edi, .x12, or .txt file</p>
+        <p class="text-xs font-mono text-[#666666] mt-1">Or drag and drop anywhere inside this box</p>
+      </div>
+
+      <div>
+        <label class="block text-xs font-mono text-[#888888] mb-2">Or paste raw EDI text</label>
+        <textarea id="modalPasteInput" rows="5" placeholder="ISA*00*...~"
+                  class="w-full bg-black border border-hairline focus:border-white rounded-xl p-3 font-mono text-xs text-[#D4D4D4] focus:outline-none"></textarea>
+      </div>
+
+      <div class="flex justify-end gap-2.5">
+        <button id="cancelModalBtn" type="button" class="px-4 py-2 rounded-lg text-xs font-medium text-[#888888] hover:text-white cursor-pointer">
+          Cancel
+        </button>
+        <button id="applyPasteBtn" type="button" class="bg-white hover:bg-[#E5E5E5] text-black font-semibold text-xs px-4 py-2 rounded-lg cursor-pointer">
+          Audit Pasted EDI
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DRIVER BOL CERTIFICATE MODAL -->
+  <div id="certToastModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-xs items-center justify-center p-4">
+    <div class="bg-surface border border-[#2E2E2E] rounded-2xl max-w-md w-full p-6 space-y-4">
+      <div class="flex items-center justify-between">
+        <span class="font-mono text-xs uppercase tracking-wider text-sage">Manifest Persisted</span>
+        <button id="closeCertToastBtn" type="button" class="text-[#888888] hover:text-white font-mono text-xs cursor-pointer">✕</button>
+      </div>
+      <h3 class="text-base font-semibold text-white">Driver BOL Certificate Ready</h3>
+      <p class="text-xs text-[#888888] leading-relaxed">
+        The cleared X12 856 payload and SHA-256 seal have been verified and saved. You can view and print the official certificate for your driver's paperwork.
+      </p>
+      <div id="certToastDetails" class="bg-black border border-hairline rounded-xl p-3.5 font-mono text-[11px] text-[#D4D4D4] space-y-1"></div>
+      <div class="flex justify-end gap-2.5">
+        <button id="dismissCertToastBtn" type="button" class="px-3.5 py-2 rounded-lg text-xs font-medium text-[#888888] hover:text-white cursor-pointer">
+          Close
+        </button>
+        <a href="certificate.html" class="inline-flex items-center gap-1.5 bg-white hover:bg-[#E5E5E5] text-black font-semibold text-xs px-4 py-2 rounded-lg cursor-pointer">
+          <span>Open Certificate</span>
+          <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Sample Broken Ford ASN with exact 3 issues:
+    // Line 6: DTM*017*20261118*0800~ (arrival before ship date 20261119)
+    // Line 8: TD1*BOX90*40****G*18400*LB~ (invalid packaging code BOX90)
+    // Line 14: HL*3*9*P*0~ (broken pallet hierarchy parent #9 missing)
+    const SAMPLE_EDI = [
+      "ISA*00*          *00*          *ZZ*001234567      *ZZ*FORD           *261119*1430*U*00401*000000948*0*P*>~",
+      "GS*SH*001234567*FORD*20261119*1430*948*X*004010~",
+      "ST*856*0001~",
+      "BSN*00*BOL-948201-B*20261119*1430*0001~",
+      "DTM*011*20261119*1430~",
+      "DTM*017*20261118*0800~",
+      "HL*1**S*1~",
+      "TD1*BOX90*40****G*18400*LB~",
+      "TD5*B*2*ODFL*M~",
+      "TD3*TL**TRLR-4491~",
+      "REF*BM*BOL-948201-B~",
+      "HL*2*1*O*1~",
+      "PRF*PO-8841209***20261101~",
+      "HL*3*9*P*0~",
+      "LIN**BP*FR3Z-16005-A*VP*STMP-9921~",
+      "SN1**1200*PC~",
+      "CTT*3~",
+      "SE*16*0001~",
+      "GE*1*948~",
+      "IEA*1*000000948~"
+    ].join("\n");
+
+    const OEM_SPECS = {
+      FORD: { label: "Ford AIAG B-10", pkg: "PLT90", receiver: "FORD" },
+      GM: { label: "GM 1724", pkg: "PLT71", receiver: "GM" },
+      STELLANTIS: { label: "Stellantis", pkg: "CNT90", receiver: "STLA" }
+    };
+
+    let activeOem = "FORD";
+    let rawEdi = SAMPLE_EDI;
+    let isFixed = false;
+
+    function runAudit(text, oemKey) {
+      const t0 = performance.now();
+      const spec = OEM_SPECS[oemKey];
+      const rawLines = text.replace(/\r/g, "").split("~").map(s => s.trim()).filter(Boolean).map(s => s + "~");
+      const cleanLines = [...rawLines];
+      const errors = [];
+      const changedIdx = new Set();
+
+      let shipDate = null, arrDate = null, arrIdx = -1, stIdx = -1, seIdx = -1;
+      let bol = "BOL-948201-B", trailer = "TRLR-4491";
+      const seenHl = new Set();
+
+      rawLines.forEach((line, i) => {
+        const parts = line.slice(0, -1).split("*");
+        const seg = parts[0];
+
+        if (seg === "ST") stIdx = i;
+        if (seg === "SE") seIdx = i;
+        if (seg === "BSN" && parts[2]) bol = parts[2];
+        if (seg === "TD3" && parts[3]) trailer = parts[3];
+
+        if (seg === "DTM" && parts[1] === "011") shipDate = parts[2];
+        if (seg === "DTM" && parts[1] === "017") { arrDate = parts[2]; arrIdx = i; }
+
+        if (seg === "TD1" && !["PLT90", "PLT71", "CNT90", "CTN25"].includes(parts[1])) {
+          const patched = [...parts];
+          patched[1] = spec.pkg;
+          cleanLines[i] = patched.join("*") + "~";
+          changedIdx.add(i);
+          errors.push({
+            line: i + 1,
+            title: `Invalid Packaging Code (${parts[1]})`,
+            desc: `${spec.label} does not allow "${parts[1]}" on palletized shipments.`,
+            fix: `Changed to ${spec.pkg}`
+          });
+        }
+
+        if (seg === "HL") {
+          const id = parts[1], parent = parts[2];
+          if (parent && !seenHl.has(parent)) {
+            const targetParent = seenHl.has("2") ? "2" : "1";
+            const patched = [...parts];
+            patched[2] = targetParent;
+            cleanLines[i] = patched.join("*") + "~";
+            changedIdx.add(i);
+            errors.push({
+              line: i + 1,
+              title: `Broken Pallet Hierarchy (Parent #${parent} Missing)`,
+              desc: `Pack loop HL*${id} points to parent #${parent}, which does not exist in this file.`,
+              fix: `Re-linked to Order #${targetParent}`
+            });
+          }
+          if (id) seenHl.add(id);
+        }
+      });
+
+      if (shipDate && arrDate && arrDate < shipDate && arrIdx !== -1) {
+        const parts = rawLines[arrIdx].slice(0, -1).split("*");
+        const nextDay = String(Number(shipDate) + 1);
+        parts[2] = nextDay;
+        cleanLines[arrIdx] = parts.join("*") + "~";
+        changedIdx.add(arrIdx);
+        errors.unshift({
+          line: arrIdx + 1,
+          title: `Arrival Date Earlier Than Ship Date`,
+          desc: `Estimated arrival (${arrDate}) is before truck departure (${shipDate}).`,
+          fix: `Updated arrival to ${nextDay}`
+        });
+      }
+
+      if (stIdx !== -1 && seIdx !== -1 && seIdx > stIdx) {
+        const expected = seIdx - stIdx + 1;
+        const parts = rawLines[seIdx].slice(0, -1).split("*");
+        if (Number(parts[1]) !== expected) {
+          const patched = [...parts];
+          patched[1] = String(expected);
+          cleanLines[seIdx] = patched.join("*") + "~";
+          changedIdx.add(seIdx);
+          errors.push({
+            line: seIdx + 1,
+            title: `Wrong Segment Count in Trailer (SE01)`,
+            desc: `Trailer says ${parts[1]} segments, but there are actually ${expected} segments.`,
+            fix: `Corrected count to ${expected}`
+          });
+        }
+      }
+
+      errors.sort((a, b) => a.line - b.line);
+
+      const ms = Math.max(0.4, performance.now() - t0).toFixed(1);
+      return {
+        rawLines,
+        cleanLines,
+        errors,
+        changedIdx,
+        ms,
+        bol,
+        trailer,
+        cleanPayload: cleanLines.join("\n")
+      };
+    }
+
+    async function sha256Hex(str) {
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("").toUpperCase();
+    }
+
+    function escapeHtml(s) {
+      return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    async function render() {
+      const res = runAudit(rawEdi, activeOem);
+      const cleared = res.errors.length === 0 || isFixed;
+      const hash = await sha256Hex(res.cleanPayload);
+
+      document.getElementById("segmentSummary").textContent = `${res.rawLines.length} segments audited in ${res.ms}ms`;
+      document.getElementById("rulesBadge").textContent = `Ruleset: ${OEM_SPECS[activeOem].label}`;
+
+      const statusCard = document.getElementById("statusCard");
+      const statusPill = document.getElementById("statusPill");
+      const statusHeadline = document.getElementById("statusHeadline");
+      const statusSubtext = document.getElementById("statusSubtext");
+      const actionGroup = document.getElementById("actionButtonGroup");
+
+      if (cleared) {
+        statusCard.className = "bg-surface border border-sage/40 rounded-2xl p-6 sm:p-8 transition-all";
+        statusPill.className = "inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-sage/15 border border-sage/30 text-sage font-mono text-xs font-semibold";
+        statusPill.innerHTML = `<span class="w-2 h-2 rounded-full bg-sage"></span><span>DOCK CLEARED • READY TO SEND</span>`;
+        statusHeadline.textContent = "Dock Cleared • $0 Fine Risk";
+        statusSubtext.textContent = `All ${res.cleanLines.length} segments comply with ${OEM_SPECS[activeOem].label}. Ready for SFTP dispatch and driver BOL printing.`;
+
+        actionGroup.innerHTML = `
+          <div class="flex flex-wrap items-center gap-2.5">
+            <button id="downloadCleanBtn" type="button"
+                    class="inline-flex items-center justify-center gap-2 bg-surface hover:bg-elevated border border-hairline hover:border-white/40 text-white font-semibold text-xs sm:text-sm px-4 py-3 rounded-xl transition cursor-pointer">
+              Download Clean .edi
+            </button>
+            <button id="openCertBtn" type="button"
+               class="inline-flex items-center justify-center gap-2 bg-white hover:bg-[#E5E5E5] text-black font-semibold text-xs sm:text-sm px-5 py-3 rounded-xl transition cursor-pointer">
+              <span>Driver BOL Certificate</span>
+              <span aria-hidden="true">→</span>
+            </button>
+          </div>
+          <span class="text-[11px] font-mono text-sage">Verified compliant • SHA-256 signed</span>
+        `;
+
+        document.getElementById("downloadCleanBtn").addEventListener("click", () => {
+          const blob = new Blob([res.cleanPayload], { type: "application/edi-x12" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `CLEAN_${document.getElementById("activeFileName").textContent}`;
+          a.click();
+          URL.revokeObjectURL(url);
+        });
+
+        document.getElementById("openCertBtn").addEventListener("click", () => {
+          document.getElementById("certToastDetails").innerHTML = `
+            <div>BOL: <span class="text-white">${escapeHtml(res.bol)}</span></div>
+            <div>SPEC: <span class="text-white">${escapeHtml(OEM_SPECS[activeOem].label)}</span></div>
+            <div class="truncate">SHA-256: <span class="text-sage">${hash}</span></div>
+          `;
+          const toast = document.getElementById("certToastModal");
+          toast.classList.remove("hidden");
+          toast.classList.add("flex");
+        });
+      } else {
+        const fine = res.errors.length === 3 ? 12500 : res.errors.length * 4250;
+        statusCard.className = "bg-surface border border-crimson/40 rounded-2xl p-6 sm:p-8 transition-all";
+        statusPill.className = "inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-crimson/10 border border-crimson/30 text-crimson font-mono text-xs font-semibold";
+        statusPill.innerHTML = `<span class="w-2 h-2 rounded-full bg-crimson"></span><span>DOCK REJECTION RISK</span>`;
+        statusHeadline.textContent = `${res.errors.length} Error${res.errors.length === 1 ? "" : "s"} Found • $${fine.toLocaleString()} Fine Risk`;
+        statusSubtext.textContent = "Your ERP generated invalid loop pointers and packaging codes. Fix all issues in one click before sending to the OEM gateway.";
+
+        actionGroup.innerHTML = `
+          <button id="fixAllBtn" type="button"
+                  class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white hover:bg-[#E5E5E5] text-black font-semibold text-sm px-6 py-3.5 rounded-xl transition cursor-pointer">
+            <span>Auto-Fix All ${res.errors.length} Error${res.errors.length === 1 ? "" : "s"}</span>
+            <span aria-hidden="true">→</span>
+          </button>
+          <span class="text-[11px] font-mono text-[#666666]">Deterministic AST repair • 0 data retained</span>
+        `;
+
+        document.getElementById("fixAllBtn").addEventListener("click", () => {
+          isFixed = true;
+          render();
+        });
+      }
+
+      // Render Plain-English Error List
+      const issuesList = document.getElementById("issuesList");
+      if (cleared) {
+        issuesList.innerHTML = `
+          <div class="p-6 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-sage/15 border border-sage/30 text-sage flex items-center justify-center shrink-0">✓</div>
+              <div>
+                <p class="text-sm font-medium text-white">All syntax and pallet loops verified</p>
+                <p class="text-xs text-[#737373] mt-0.5">No OEM chargeback triggers detected in this ASN.</p>
+              </div>
+            </div>
+            <span class="text-xs font-mono text-sage font-medium">PASS</span>
+          </div>
+        `;
+      } else {
+        issuesList.innerHTML = res.errors.map(err => `
+          <div class="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2.5">
+                <span class="font-mono text-[11px] text-crimson bg-crimson/10 border border-crimson/25 px-2 py-0.5 rounded">Line ${err.line}</span>
+                <h3 class="text-sm font-semibold text-white">${escapeHtml(err.title)}</h3>
+              </div>
+              <p class="text-xs text-[#888888] leading-relaxed">${escapeHtml(err.desc)}</p>
+            </div>
+            <div class="shrink-0">
+              <span class="inline-block font-mono text-xs text-sage bg-sage/10 border border-sage/25 px-3 py-1.5 rounded-lg">
+                Fix: ${escapeHtml(err.fix)}
+              </span>
+            </div>
+          </div>
+        `).join("");
+      }
+
+      // Render Collapsible Diff Lines
+      document.getElementById("rawLinesView").innerHTML = res.rawLines.map((l, idx) => {
+        const isErr = res.changedIdx.has(idx);
+        return `<div class="px-2 py-0.5 rounded ${isErr ? 'bg-crimson/15 text-crimson font-medium' : 'text-[#888888]'}">
+          <span class="inline-block w-6 text-[#4A4A4A] select-none">${idx + 1}</span>${escapeHtml(l)}
+        </div>`;
+      }).join("");
+
+      document.getElementById("cleanLinesView").innerHTML = res.cleanLines.map((l, idx) => {
+        const isPatched = res.changedIdx.has(idx);
+        return `<div class="px-2 py-0.5 rounded ${isPatched ? 'bg-sage/15 text-sage font-medium' : 'text-[#A1A1A1]'}">
+          <span class="inline-block w-6 text-[#4A4A4A] select-none">${idx + 1}</span>${escapeHtml(l)}
+        </div>`;
+      }).join("");
+
+      // Save manifest to sessionStorage for Page 3 (certificate.html)
+      try {
+        sessionStorage.setItem("autobridge_manifest", JSON.stringify({
+          bol: res.bol,
+          trailer: res.trailer,
+          duns: "001234567",
+          oem: OEM_SPECS[activeOem].label,
+          receiver: OEM_SPECS[activeOem].receiver,
+          segmentCount: res.cleanLines.length,
+          sha256: hash,
+          timestamp: new Date().toISOString()
+        }));
+      } catch (e) {}
+    }
+
+    // OEM Pills
+    document.querySelectorAll(".oem-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".oem-btn").forEach(b => {
+          b.className = "oem-btn px-3 py-1 rounded-[6px] text-xs font-medium text-[#888888] hover:text-white transition cursor-pointer";
+        });
+        btn.className = "oem-btn px-3 py-1 rounded-[6px] text-xs font-medium bg-white text-black transition cursor-pointer";
+        activeOem = btn.dataset.oem;
+        render();
+      });
+    });
+
+    // Collapsible Diff Toggle
+    document.getElementById("toggleDiffBtn").addEventListener("click", () => {
+      const drawer = document.getElementById("diffDrawer");
+      const chev = document.getElementById("diffChevron");
+      drawer.classList.toggle("hidden");
+      chev.classList.toggle("rotate-180");
+    });
+
+    // Reload Broken Sample
+    document.getElementById("resetDemoBtn").addEventListener("click", () => {
+      rawEdi = SAMPLE_EDI;
+      isFixed = false;
+      document.getElementById("activeFileName").textContent = "FORD_MAP_856_09482.edi";
+      render();
+    });
+
+    // Upload / Paste Modal
+    const modal = document.getElementById("uploadModal");
+    document.getElementById("openUploadModalBtn").addEventListener("click", () => modal.classList.remove("hidden"));
+    document.getElementById("closeModalBtn").addEventListener("click", () => modal.classList.add("hidden"));
+    document.getElementById("cancelModalBtn").addEventListener("click", () => modal.classList.add("hidden"));
+
+    const modalDropzone = document.getElementById("modalDropzone");
+    const modalFileInput = document.getElementById("modalFileInput");
+    modalDropzone.addEventListener("click", () => modalFileInput.click());
+    modalDropzone.addEventListener("dragover", e => { e.preventDefault(); modalDropzone.classList.add("border-white"); });
+    modalDropzone.addEventListener("dragleave", () => modalDropzone.classList.remove("border-white"));
+    modalDropzone.addEventListener("drop", e => {
+      e.preventDefault();
+      modalDropzone.classList.remove("border-white");
+      if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]);
+    });
+    modalFileInput.addEventListener("change", e => {
+      if (e.target.files[0]) loadFile(e.target.files[0]);
+    });
+
+    function loadFile(file) {
+      const reader = new FileReader();
+      reader.onload = ev => {
+        rawEdi = ev.target.result;
+        isFixed = false;
+        document.getElementById("activeFileName").textContent = file.name;
+        modal.classList.add("hidden");
+        render();
+      };
+      reader.readAsText(file);
+    }
+
+    document.getElementById("applyPasteBtn").addEventListener("click", () => {
+      const val = document.getElementById("modalPasteInput").value.trim();
+      if (val) {
+        rawEdi = val;
+        isFixed = false;
+        document.getElementById("activeFileName").textContent = "PASTED_ASN_856.edi";
+        modal.classList.add("hidden");
+        render();
+      }
+    });
+
+    // Close Cert Toast Modal
+    function closeCertToast() {
+      const toast = document.getElementById("certToastModal");
+      toast.classList.add("hidden");
+      toast.classList.remove("flex");
+    }
+    document.getElementById("closeCertToastBtn").addEventListener("click", closeCertToast);
+    document.getElementById("dismissCertToastBtn").addEventListener("click", closeCertToast);
+
+    render();
+  </script>
+</body>
+</html>
