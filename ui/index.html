@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AutoBridge — Automotive EDI 856 Pre-Flight Inspector</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #090d16; color: #e2e8f0; }
+    code, pre, .mono { font-family: 'JetBrains Mono', monospace; }
+    .dock-grid { background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 24px 24px; }
+  </style>
+</head>
+<body class="min-h-screen dock-grid flex flex-col">
+
+  <!-- Header -->
+  <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+      <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center font-bold text-white shadow-lg shadow-cyan-500/20">
+        AB
+      </div>
+      <div>
+        <div class="flex items-center space-x-2">
+          <span class="font-extrabold text-lg tracking-tight text-white">AutoBridge</span>
+          <span class="text-xs px-2 py-0.5 rounded bg-cyan-950 text-cyan-400 border border-cyan-800 font-mono">v1.0-core</span>
+        </div>
+        <p class="text-xs text-slate-400">Zero-Chargeback Pre-Flight Inspector for Ford AIAG & GM 1724</p>
+      </div>
+    </div>
+    <div class="flex items-center space-x-3">
+      <button onclick="loadSample('clean')" class="px-3 py-1.5 text-xs font-medium rounded-md bg-emerald-950 text-emerald-400 border border-emerald-800 hover:bg-emerald-900 transition flex items-center space-x-1.5">
+        <span>✓ Load Clean Manifest</span>
+      </button>
+      <button onclick="loadSample('trap')" class="px-3 py-1.5 text-xs font-medium rounded-md bg-rose-950 text-rose-400 border border-rose-800 hover:bg-rose-900 transition flex items-center space-x-1.5">
+        <span>⚠ Load Rejection Trap</span>
+      </button>
+      <a href="https://github.com/gana04982-ship-it/autobridge" target="_blank" class="px-3 py-1.5 text-xs font-medium rounded-md bg-slate-800 text-slate-300 hover:bg-slate-700 transition">
+        GitHub
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+    
+    <!-- Left Column: Input Stream & Drag Drop (5 cols) -->
+    <div class="lg:col-span-5 flex flex-col space-y-4">
+      <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 shadow-xl flex-1 flex flex-col">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400 flex items-center space-x-2">
+            <span>EDI 856 Transmission Stream</span>
+          </h2>
+          <span id="fileInfo" class="text-xs font-mono text-slate-500">Manual Input</span>
+        </div>
+
+        <!-- Drag & Drop Zone -->
+        <div id="dropZone" class="border-2 border-dashed border-slate-700 rounded-lg p-6 text-center hover:border-cyan-500 transition cursor-pointer mb-3 bg-slate-950/40">
+          <input type="file" id="fileInput" class="hidden" accept=".edi,.x12,.txt">
+          <div class="text-3xl mb-2">🚛</div>
+          <p class="text-xs font-medium text-slate-300">Drag & drop your <span class="text-cyan-400 font-mono">.edi</span> / <span class="text-cyan-400 font-mono">.x12</span> file here</p>
+          <p class="text-[11px] text-slate-500 mt-1">or click to browse from local warehouse ERP</p>
+        </div>
+
+        <!-- Raw Stream Textarea -->
+        <textarea id="ediText" placeholder="Paste raw ANSI X12 856 payload (ISA*00*...)..." class="w-full flex-1 min-h-[340px] bg-slate-950 border border-slate-800 rounded-lg p-3 font-mono text-xs text-slate-300 focus:outline-none focus:border-cyan-500 transition resize-none leading-relaxed"></textarea>
+
+        <button onclick="runAudit()" class="w-full mt-4 py-3 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-sm shadow-lg shadow-cyan-500/20 transition flex items-center justify-center space-x-2">
+          <span>Run Pre-Flight Audit</span>
+          <span class="mono text-xs opacity-75">⚡</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Right Column: Audit Results & Dock Telemetry (7 cols) -->
+    <div class="lg:col-span-7 flex flex-col space-y-6">
+      
+      <!-- Compliance Status Banner -->
+      <div id="statusBanner" class="p-6 rounded-xl border transition-all duration-300 bg-slate-900/90 border-slate-800">
+        <div class="flex items-start justify-between">
+          <div>
+            <div id="statusBadge" class="inline-flex items-center px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wider bg-slate-800 text-slate-400 mb-2 font-mono">
+              Ready for Pre-Flight Scan
+            </div>
+            <h1 id="statusHeading" class="text-2xl font-bold text-white tracking-tight">Awaiting EDI 856 Payload</h1>
+            <p id="statusDescription" class="text-xs text-slate-400 mt-1">Drop a shipment notice on the left to verify OEM dock compliance.</p>
+          </div>
+          <div id="fineMetric" class="text-right hidden">
+            <span class="text-[10px] uppercase font-bold text-rose-400 tracking-wider">Estimated Fine Risk</span>
+            <div class="text-2xl font-black text-rose-500 font-mono">$10,000+</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Telemetry Cards -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="bg-slate-900/80 border border-slate-800 rounded-lg p-3">
+          <span class="text-[11px] text-slate-400 uppercase font-semibold">Shipment ID</span>
+          <div id="statShipmentId" class="text-sm font-bold font-mono text-white mt-1 truncate">—</div>
+        </div>
+        <div class="bg-slate-900/80 border border-slate-800 rounded-lg p-3">
+          <span class="text-[11px] text-slate-400 uppercase font-semibold">Bill of Lading</span>
+          <div id="statBol" class="text-sm font-bold font-mono text-white mt-1 truncate">—</div>
+        </div>
+        <div class="bg-slate-900/80 border border-slate-800 rounded-lg p-3">
+          <span class="text-[11px] text-slate-400 uppercase font-semibold">Pallet Tally</span>
+          <div id="statPallets" class="text-sm font-bold font-mono text-white mt-1">—</div>
+        </div>
+        <div class="bg-slate-900/80 border border-slate-800 rounded-lg p-3">
+          <span class="text-[11px] text-slate-400 uppercase font-semibold">Total Parts</span>
+          <div id="statParts" class="text-sm font-bold font-mono text-white mt-1">—</div>
+        </div>
+      </div>
+
+      <!-- Violations List -->
+      <div id="violationsContainer" class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 shadow-xl">
+        <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
+          <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-400 flex items-center space-x-2">
+            <span>Dock Compliance Findings</span>
+            <span id="violationCount" class="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 font-mono">0</span>
+          </h3>
+          <span class="text-xs font-mono text-cyan-400">Ford AIAG B-10 Spec</span>
+        </div>
+
+        <div id="violationsList" class="space-y-3">
+          <div class="text-center py-10 text-slate-500 text-xs font-mono">
+            No active audit findings. Drop or load a manifest to inspect.
+          </div>
+        </div>
+      </div>
+
+      <!-- Hierarchical Tree Visualizer -->
+      <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 shadow-xl">
+        <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
+          <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-400 flex items-center space-x-2">
+            <span>Physical Packaging Hierarchy (HL Tree)</span>
+          </h3>
+          <span class="text-xs font-mono text-slate-500">Shipment ➔ Order ➔ Tare ➔ Pack ➔ Item</span>
+        </div>
+        <div id="treeContainer" class="space-y-2 font-mono text-xs text-slate-300">
+          <div class="text-center py-6 text-slate-500">Tree view will render upon pre-flight audit.</div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Embedded Client-Side Engine -->
+  <script>
+    const SAMPLES = {
+      clean: `ISA*00*          *00*          *ZZ*SUPPLIER       *01*FORDMOTOR      *261119*1400*U*00401*000000001*0*P*>~
+GS*SH*SUPPLIER*FORDMOTOR*20261119*1400*1*X*004010~
+ST*856*0001~
+BSN*00*SHIP12345*20261119*1400~
+DTM*011*20261119*1400~
+HL*1**S~
+MEA*PD*G*1500*LB~
+TD1*PLT90*1~
+TD5*B*02*FXFW*M~
+REF*BM*BOL-987654~
+N1*ST*FORD DEARBORN TRUCK*92*00123~
+N1*SF*SUPPLIER DETROIT PLANT*92*99887~
+HL*2*1*O~
+PRF*PO-554433~
+HL*3*2*T~
+MAN*GM*1J000123456789012345~
+HL*4*3*P~
+MAN*GM*3S000123456789012345~
+HL*5*4*I~
+LIN**BP*W300-84920-AA~
+SN1**100*EA~
+SE*20*0001~
+GE*1*1~
+IEA*1*000000001~`,
+
+      trap: `ISA*00*          *00*          *ZZ*SUPPLIER       *01*FORDMOTOR      *261119*1400*U*00401*000000001*0*P*>~
+GS*SH*SUPPLIER*FORDMOTOR*20261119*1400*1*X*004010~
+ST*856*0001~
+BSN*00*SHIP99999*20261119*1400~
+DTM*011*20261119*1400~
+HL*1**S~
+MEA*PD*G*1500*LB~
+TD1*PLT90*2~
+TD5*B*02*FXFW*M~
+N1*ST*FORD DEARBORN TRUCK*92*00123~
+N1*SF*SUPPLIER DETROIT PLANT*92*99887~
+HL*2*1*O~
+PRF*PO-887766~
+HL*3*2*T~
+MAN*GM*1J000123456789012345~
+HL*4*3*P~
+MAN*GM*3S000123456789012345~
+HL*5*4*I~
+LIN**ZZ*W300-84920-AA~
+SN1**100*EA~
+SE*19*0001~
+GE*1*1~
+IEA*1*000000001~`
+    };
+
+    function loadSample(key) {
+      document.getElementById('ediText').value = SAMPLES[key];
+      document.getElementById('fileInfo').innerText = key === 'clean' ? 'Sample: ford_clean_shipment.edi' : 'Sample: ford_dock_rejection_trap.edi';
+      runAudit();
+    }
+
+    // Drag and Drop
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+
+    dropZone.onclick = () => fileInput.click();
+    fileInput.onchange = (e) => {
+      const file = e.target.files[0];
+      if (file) handleFile(file);
+    };
+
+    dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('border-cyan-500', 'bg-cyan-950/20'); };
+    dropZone.ondragleave = () => { dropZone.classList.remove('border-cyan-500', 'bg-cyan-950/20'); };
+    dropZone.ondrop = (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('border-cyan-500', 'bg-cyan-950/20');
+      if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+    };
+
+    function handleFile(file) {
+      document.getElementById('fileInfo').innerText = file.name;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        document.getElementById('ediText').value = e.target.result;
+        runAudit();
+      };
+      reader.readAsText(file);
+    }
+
+    // Client-Side AutoBridge Engine
+    function runAudit() {
+      const raw = document.getElementById('ediText').value.trim();
+      if (!raw) return;
+
+      try {
+        const audit = auditX12(raw);
+        renderAudit(audit);
+      } catch (err) {
+        alert("Syntax parsing error: " + err.message);
+      }
+    }
+
+    function auditX12(text) {
+      // 1. Delimiters
+      const elemSep = text[3] || '*';
+      const term = text[105] === '\r' ? '\r\n' : (text[105] || '~');
+      
+      const lines = text.split(term).map(l => l.trim()).filter(Boolean);
+      const segments = lines.map((l, idx) => {
+        const parts = l.split(elemSep);
+        return {
+          tag: parts[0],
+          elements: parts,
+          raw: l,
+          line: idx + 1,
+          get: (i) => parts[i] || ''
+        };
+      });
+
+      const violations = [];
+      const summary = {
+        shipmentId: '',
+        bol: '',
+        carrier: '',
+        shipTo: '',
+        declaredPallets: 0,
+        actualPallets: 0,
+        totalParts: 0,
+        partNumbers: []
+      };
+
+      let declaredPallets = 0;
+      let actualPallets = 0;
+      let hasBOL = false;
+      let hasShipTo = false;
+      const seenSerials = new Set();
+      const hlTree = [];
+
+      segments.forEach(seg => {
+        if (seg.tag === 'BSN') {
+          summary.shipmentId = seg.get(2);
+        } else if (seg.tag === 'TD1') {
+          declaredPallets = parseInt(seg.get(2) || '0', 10);
+          summary.declaredPallets = declaredPallets;
+        } else if (seg.tag === 'TD5') {
+          summary.carrier = seg.get(3);
+        } else if (seg.tag === 'REF' && seg.get(1) === 'BM') {
+          hasBOL = true;
+          summary.bol = seg.get(2);
+        } else if (seg.tag === 'N1' && seg.get(1) === 'ST') {
+          hasShipTo = true;
+          summary.shipTo = seg.get(2) + ' (' + seg.get(4) + ')';
+        } else if (seg.tag === 'HL') {
+          const level = seg.get(3);
+          if (level === 'T') actualPallets++;
+          hlTree.push({ id: seg.get(1), parent: seg.get(2), level, line: seg.line });
+        } else if (seg.tag === 'MAN' && seg.get(1) === 'GM') {
+          const serial = seg.get(2);
+          if (seenSerials.has(serial)) {
+            violations.push({
+              id: 'FORD-015-DUPLICATE-PALLET-SERIAL',
+              sev: 'CRITICAL',
+              line: seg.line,
+              seg: 'MAN',
+              msg: `Duplicate pallet serial number '${serial}' detected.`,
+              fix: 'Generate unique sequential serial numbers for each pallet.'
+            });
+          }
+          seenSerials.add(serial);
+        } else if (seg.tag === 'LIN') {
+          const qual = seg.get(2);
+          const part = seg.get(3);
+          if (qual !== 'BP') {
+            violations.push({
+              id: 'FORD-018-INVALID-PART-QUALIFIER',
+              sev: 'CRITICAL',
+              line: seg.line,
+              seg: 'LIN',
+              msg: `LIN02 qualifier must be 'BP' (Buyer Part Number). Found '${qual}'.`,
+              fix: "Set LIN02 qualifier to 'BP'."
+            });
+          }
+          if (part) summary.partNumbers.push(part);
+        } else if (seg.tag === 'SN1') {
+          const qty = parseInt(seg.get(2) || '0', 10);
+          if (qty <= 0) {
+            violations.push({
+              id: 'FORD-021-ZERO-QUANTITY',
+              sev: 'CRITICAL',
+              line: seg.line,
+              seg: 'SN1',
+              msg: 'Shipped item quantity in SN102 must be greater than zero.',
+              fix: 'Ensure shipped quantity is a positive integer.'
+            });
+          } else {
+            summary.totalParts += qty;
+          }
+        }
+      });
+
+      summary.actualPallets = actualPallets;
+
+      // Cross checks
+      if (!hasBOL) {
+        violations.push({
+          id: 'FORD-003-MISSING-BOL',
+          sev: 'CRITICAL',
+          line: 5,
+          seg: 'REF',
+          msg: 'Missing mandatory Bill of Lading number (REF*BM) at Shipment level.',
+          fix: 'Add REF*BM segment with Bill of Lading number under HL*...*S.'
+        });
+      }
+
+      if (declaredPallets > 0 && actualPallets > 0 && declaredPallets !== actualPallets) {
+        violations.push({
+          id: 'FORD-008-PALLET-COUNT-MISMATCH',
+          sev: 'CRITICAL',
+          line: 7,
+          seg: 'TD1',
+          msg: `Packaging tally mismatch: TD102 declares ${declaredPallets} pallet(s), but HL tree contains ${actualPallets} Tare node(s).`,
+          fix: `Update TD102 from ${declaredPallets} to ${actualPallets}.`
+        });
+      }
+
+      return {
+        isCompliant: violations.length === 0,
+        violations,
+        summary,
+        hlTree
+      };
+    }
+
+    function renderAudit(audit) {
+      const banner = document.getElementById('statusBanner');
+      const badge = document.getElementById('statusBadge');
+      const heading = document.getElementById('statusHeading');
+      const desc = document.getElementById('statusDescription');
+      const fineMetric = document.getElementById('fineMetric');
+
+      // Summary Stats
+      document.getElementById('statShipmentId').innerText = audit.summary.shipmentId || 'UNKNOWN';
+      document.getElementById('statBol').innerText = audit.summary.bol || 'MISSING';
+      document.getElementById('statPallets').innerText = `${audit.summary.declaredPallets} declared / ${audit.summary.actualPallets} in tree`;
+      document.getElementById('statParts').innerText = `${audit.summary.totalParts} units`;
+
+      if (audit.isCompliant) {
+        banner.className = "p-6 rounded-xl border transition-all duration-300 bg-emerald-950/40 border-emerald-800 shadow-lg shadow-emerald-950/40";
+        badge.className = "inline-flex items-center px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wider bg-emerald-900 text-emerald-300 mb-2 font-mono";
+        badge.innerText = "✓ 100% Compliant — Certified Safe to Ship";
+        heading.innerText = "Dock Intake Certified";
+        desc.innerText = "Zero OEM chargeback violations detected. Ready for immediate dock receiving.";
+        fineMetric.classList.add('hidden');
+      } else {
+        banner.className = "p-6 rounded-xl border transition-all duration-300 bg-rose-950/40 border-rose-800 shadow-lg shadow-rose-950/40";
+        badge.className = "inline-flex items-center px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wider bg-rose-900 text-rose-300 mb-2 font-mono";
+        badge.innerText = `🛑 Rejection Risk — ${audit.violations.length} Critical Violation(s)`;
+        heading.innerText = "Automated Dock Rejection Warning";
+        desc.innerText = "Transmitting this transmission as-is will trigger an automated OEM chargeback fine.";
+        fineMetric.classList.remove('hidden');
+      }
+
+      // Render Violations
+      const vList = document.getElementById('violationsList');
+      document.getElementById('violationCount').innerText = audit.violations.length;
+
+      if (audit.violations.length === 0) {
+        vList.innerHTML = `
+          <div class="p-4 rounded-lg bg-emerald-950/30 border border-emerald-900 text-emerald-300 text-xs flex items-center space-x-3">
+            <span class="text-xl">✅</span>
+            <div>
+              <div class="font-bold">All AIAG B-10 & Ford Rules Verified</div>
+              <div class="text-emerald-400/80 text-[11px] mt-0.5">Envelope counts, weight balance, pallet tallies, and part qualifiers passed with zero defects.</div>
+            </div>
+          </div>
+        `;
+      } else {
+        vList.innerHTML = audit.violations.map((v, i) => `
+          <div class="p-4 rounded-lg bg-slate-950 border border-rose-900/60 flex flex-col space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-rose-950 text-rose-400 border border-rose-800">${v.id}</span>
+              <span class="text-[11px] text-slate-500 font-mono">Line ${v.line} [Segment: ${v.seg}]</span>
+            </div>
+            <div class="text-xs font-semibold text-rose-200">${v.msg}</div>
+            <div class="text-[11px] text-cyan-400/90 font-mono flex items-center space-x-1.5 pt-1 border-t border-slate-900">
+              <span>👉 Fix:</span>
+              <span>${v.fix}</span>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // Render Tree
+      const treeContainer = document.getElementById('treeContainer');
+      const levelIcons = { 'S': '🚛 Shipment', 'O': '📋 Order', 'T': '📦 Tare (Pallet)', 'P': '📦 Pack (Box)', 'I': '⚙️ Item (Part)' };
+      treeContainer.innerHTML = audit.hlTree.map(node => {
+        const indent = (node.parent ? 24 : 0);
+        return `
+          <div class="p-2 rounded bg-slate-950/60 border border-slate-800/80 flex items-center justify-between" style="margin-left: ${indent}px">
+            <div class="flex items-center space-x-2">
+              <span class="text-cyan-400 font-bold">[HL-${node.id}]</span>
+              <span>${levelIcons[node.level] || node.level}</span>
+            </div>
+            <span class="text-[10px] text-slate-500 font-mono">Line ${node.line}</span>
+          </div>
+        `;
+      }).join('');
+    }
+  </script>
+
+</body>
+</html>
