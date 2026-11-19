@@ -434,10 +434,48 @@
       render();
     }
 
-    function runAudit(text, oemKey) {
+    async function runAudit(text, oemKey) {
       const t0 = performance.now();
       const spec = OEM_SPECS[oemKey];
       const rawLines = text.replace(/\r/g, "").split("~").map(s => s.trim()).filter(Boolean).map(s => s + "~");
+
+      // Attempt Python Core Brain execution via /api/audit
+      try {
+        const apiResp = await fetch("/api/audit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ edi: text, oem: oemKey })
+        });
+        if (apiResp.ok) {
+          const data = await apiResp.json();
+          const cleanLines = data.repaired_segments || rawLines;
+          const changedIdx = new Set((data.changed_lines || []).map(l => l - 1));
+          const errors = (data.violations || []).map(v => ({
+            line: v.line_number,
+            title: v.message,
+            desc: `${v.rule} (${v.severity})`,
+            fix: v.fix
+          }));
+
+          return {
+            rawLines,
+            cleanLines,
+            errors,
+            changedIdx,
+            changes: data.changes || [],
+            ms: data.parse_time_ms || 0.4,
+            fineRisk: data.fine_risk || 12500,
+            bol: data.shipment_summary?.bill_of_lading || "BOL-948201-B",
+            trailer: "TRLR-4491",
+            cleanPayload: data.repaired_edi || cleanLines.join("\n"),
+            hash: data.sha256
+          };
+        }
+      } catch (err) {
+        console.warn("Backend API offline; running client-side AST engine:", err);
+      }
+
+      // Resilient client-side fallback engine
       const cleanLines = [...rawLines];
       const errors = [];
       const changedIdx = new Set();
@@ -522,14 +560,15 @@
       }
 
       errors.sort((a, b) => a.line - b.line);
-
       const ms = Math.max(0.4, performance.now() - t0).toFixed(1);
+
       return {
         rawLines,
         cleanLines,
         errors,
         changedIdx,
         ms,
+        fineRisk: errors.length === 3 ? 12500 : errors.length * 4250,
         bol,
         trailer,
         cleanPayload: cleanLines.join("\n")
@@ -548,9 +587,9 @@
     async function render() {
       if (!rawEdi) return;
 
-      const res = runAudit(rawEdi, activeOem);
+      const res = await runAudit(rawEdi, activeOem);
       const cleared = res.errors.length === 0 || isFixed;
-      const hash = await sha256Hex(res.cleanPayload);
+      const hash = res.hash || await sha256Hex(res.cleanPayload);
 
       document.getElementById("segmentSummary").textContent = `${res.rawLines.length} segments audited in ${res.ms}ms`;
       document.getElementById("rulesBadge").textContent = `Ruleset: ${OEM_SPECS[activeOem].label}`;
@@ -609,7 +648,7 @@
           window.location.href = "certificate.html";
         });
       } else {
-        const fine = res.errors.length === 3 ? 12500 : res.errors.length * 4250;
+        const fine = res.fineRisk || (res.errors.length === 3 ? 12500 : res.errors.length * 4250);
         statusCard.className = "bg-surface border border-crimson/40 rounded-2xl p-6 sm:p-8 transition-all";
         statusPill.className = "inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-crimson/10 border border-crimson/30 text-crimson font-mono text-xs font-semibold";
         statusPill.innerHTML = `<span class="w-2 h-2 rounded-full bg-crimson"></span><span>DOCK REJECTION RISK</span>`;
@@ -634,18 +673,56 @@
       // Render Plain-English Error List
       const issuesList = document.getElementById("issuesList");
       if (cleared) {
-        issuesList.innerHTML = `
-          <div class="p-6 flex items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-full bg-sage/15 border border-sage/30 text-sage flex items-center justify-center shrink-0">✓</div>
-              <div>
-                <p class="text-sm font-medium text-white">All syntax and pallet loops verified</p>
-                <p class="text-xs text-[#737373] mt-0.5">No OEM chargeback triggers detected in this ASN.</p>
+        if (isFixed && ((res.changes && res.changes.length > 0) || (res.errors && res.errors.length > 0))) {
+          const appliedFixes = (res.changes && res.changes.length > 0)
+            ? res.changes.map(c => ({
+                line: c.line,
+                title: c.action,
+                desc: c.rule,
+                tag: c.tag
+              }))
+            : res.errors.map(e => ({
+                line: e.line,
+                title: e.fix,
+                desc: e.desc,
+                tag: "AST"
+              }));
+
+          issuesList.innerHTML = `
+            <div class="px-6 py-4 bg-sage/10 border-b border-sage/20 flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <span class="w-2 h-2 rounded-full bg-sage"></span>
+                <span class="font-mono text-xs font-semibold text-sage">${appliedFixes.length} REPAIR${appliedFixes.length === 1 ? '' : 'S'} APPLIED • 100% RECONCILED</span>
               </div>
+              <span class="font-mono text-[11px] text-[#888888]">$0 Dock Chargeback Risk</span>
             </div>
-            <span class="text-xs font-mono text-sage font-medium">PASS</span>
-          </div>
-        `;
+            ${appliedFixes.map(f => `
+              <div class="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-hairline last:border-0">
+                <div class="space-y-1">
+                  <div class="flex items-center gap-2.5">
+                    <span class="font-mono text-[11px] text-sage bg-sage/15 border border-sage/30 px-2 py-0.5 rounded">Line ${f.line} [${escapeHtml(f.tag || 'AST')}]</span>
+                    <h3 class="text-sm font-semibold text-white">${escapeHtml(f.title)}</h3>
+                  </div>
+                  <p class="text-xs text-[#888888] leading-relaxed">${escapeHtml(f.desc)}</p>
+                </div>
+                <span class="shrink-0 font-mono text-xs text-sage bg-sage/15 border border-sage/30 px-3 py-1.5 rounded-lg font-medium">RESOLVED</span>
+              </div>
+            `).join('')}
+          `;
+        } else {
+          issuesList.innerHTML = `
+            <div class="p-6 flex items-center justify-between gap-4">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-sage/15 border border-sage/30 text-sage flex items-center justify-center shrink-0">✓</div>
+                <div>
+                  <p class="text-sm font-medium text-white">All syntax and pallet loops verified</p>
+                  <p class="text-xs text-[#737373] mt-0.5">No OEM chargeback triggers detected in this ASN.</p>
+                </div>
+              </div>
+              <span class="text-xs font-mono text-sage font-medium">PASS</span>
+            </div>
+          `;
+        }
       } else {
         issuesList.innerHTML = res.errors.map(err => `
           <div class="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">

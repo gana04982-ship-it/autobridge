@@ -742,11 +742,32 @@
       if (file) handleUploadedFile(file);
     });
 
-    function handleUploadedFile(file) {
+    async function handleUploadedFile(file) {
       const reader = new FileReader();
-      reader.onload = (event) => {
+      reader.onload = async (event) => {
         const text = event.target.result;
         document.getElementById('activeFileName').textContent = file.name;
+        
+        try {
+          const apiResp = await fetch('/api/audit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ edi: text, oem: 'FORD' })
+          });
+          if (apiResp.ok) {
+            const data = await apiResp.json();
+            document.getElementById('activeFileStats').textContent = `${(data.repaired_segments || []).length} SEGMENTS • AST PARSE ${data.parse_time_ms}ms`;
+            
+            if (data.total_violations > 0) {
+              const statusBadge = document.getElementById('terminalStatusBadge');
+              statusBadge.className = 'inline-flex items-center gap-1.5 font-mono text-[11px] px-2.5 py-1 rounded-md bg-void border border-border text-crimson tabular-nums';
+              statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-crimson"></span> ${data.total_violations} VIOLATIONS • $${data.fine_risk.toLocaleString()} EXPOSURE`;
+            }
+            setTerminalMode('repaired');
+            return;
+          }
+        } catch (_) {}
+
         const rawSegments = text.split('~').map(s => s.trim()).filter(Boolean);
         document.getElementById('activeFileStats').textContent = `${rawSegments.length} SEGMENTS • AST PARSE 0.72ms`;
         setTerminalMode('repaired');
