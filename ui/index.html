@@ -113,12 +113,11 @@
         </div>
       </a>
 
-      <!-- 4 Subtle Navigation Links -->
+      <!-- 3 Subtle Navigation Links -->
       <nav class="hidden md:flex items-center gap-8 text-[13px] text-muted">
         <a href="#terminal" class="hover:text-white transition-colors">Specs</a>
         <a href="#architecture" class="hover:text-white transition-colors">Architecture</a>
         <a href="#calculator" class="hover:text-white transition-colors">Calculator</a>
-        <a href="#pricing" class="hover:text-white transition-colors">Pricing</a>
       </nav>
 
       <!-- Crisp White Pill Button -->
@@ -340,128 +339,70 @@
     </div>
   </section>
 
-  <!-- 4. HIGH-CONTRAST MONOCHROME SPLIT: WHITE ROI CALCULATOR + OBSIDIAN BLACK $499/MO FACILITY LICENSE -->
+  <!-- 4. CHARGEBACK EXPOSURE CALCULATOR -->
   <section id="calculator" class="bg-[#FAFAFA] text-black py-24 px-4 sm:px-6">
-    <div class="max-w-6xl mx-auto">
-      <div class="rounded-xl border border-[#E5E5E5] bg-white overflow-hidden grid grid-cols-1 lg:grid-cols-12 shadow-[0_12px_40px_rgba(0,0,0,0.04)]">
-
-        <!-- Left (7 Cols - Crisp White): Chargeback ROI Calculator -->
-        <div class="lg:col-span-7 p-7 sm:p-10 border-b lg:border-b-0 lg:border-r border-[#E5E5E5] flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between font-mono text-[11px] text-[#666666]">
-              <span>CHARGEBACK EXPOSURE CALCULATOR</span>
-              <span>50 SHIPPING WEEKS / YR</span>
-            </div>
-            <h2 class="text-2xl sm:text-3xl font-semibold tracking-[-0.03em] text-black mt-2">
-              Quantify your plant’s annual fine exposure.
-            </h2>
-            <p class="text-sm text-[#525252] mt-2">
-              A single prevented OEM dock disruption chargeback covers more than a full year of AutoBridge.
-            </p>
-
-            <!-- Sliders -->
-            <div class="mt-8 space-y-7">
-              <div>
-                <div class="flex justify-between text-xs font-mono mb-2.5">
-                  <label for="calcShipments" class="text-[#525252] uppercase">Weekly Truckload Shipments</label>
-                  <span id="valShipments" class="text-black font-semibold tabular-nums">25 / wk</span>
-                </div>
-                <input id="calcShipments" class="light-slider" type="range" min="5" max="200" step="5" value="25" />
-              </div>
-
-              <div>
-                <div class="flex justify-between text-xs font-mono mb-2.5">
-                  <label for="calcRate" class="text-[#525252] uppercase">ASN Error / Rejection Rate</label>
-                  <span id="valRate" class="text-black font-semibold tabular-nums">3.0%</span>
-                </div>
-                <input id="calcRate" class="light-slider" type="range" min="0.5" max="10" step="0.5" value="3.0" />
-              </div>
-
-              <div>
-                <div class="flex justify-between text-xs font-mono mb-2.5">
-                  <label for="calcFine" class="text-[#525252] uppercase">Average OEM Chargeback Fine</label>
-                  <span id="valFine" class="text-black font-semibold tabular-nums">$7,500</span>
-                </div>
-                <input id="calcFine" class="light-slider" type="range" min="2500" max="15000" step="500" value="7500" />
-              </div>
-            </div>
+    <div class="max-w-4xl mx-auto">
+      <div class="rounded-xl border border-[#E5E5E5] bg-white overflow-hidden p-7 sm:p-10 shadow-[0_12px_40px_rgba(0,0,0,0.04)]">
+        <div>
+          <div class="flex items-center justify-between font-mono text-[11px] text-[#666666]">
+            <span>CHARGEBACK EXPOSURE CALCULATOR</span>
+            <span>50 SHIPPING WEEKS / YR</span>
           </div>
+          <h2 class="text-2xl sm:text-3xl font-semibold tracking-[-0.03em] text-black mt-2">
+            Quantify your plant’s annual fine exposure.
+          </h2>
+          <p class="text-sm text-[#525252] mt-2">
+            Automotive OEMs fine Tier-1 and Tier-2 suppliers $5,000–$15,000 per rejected ASN. Calculate what dock disruption risks cost your facility annually.
+          </p>
 
-          <!-- Output Metrics Grid -->
-          <div class="mt-10 pt-7 border-t border-[#EAEAEA] grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <!-- Sliders -->
+          <div class="mt-8 space-y-7">
             <div>
-              <div class="font-mono text-[11px] text-[#666666] uppercase">Annual Fine Risk</div>
-              <div id="outExposure" class="font-mono text-2xl sm:text-[26px] font-semibold text-black tabular-nums mt-1">$285,000</div>
-              <div id="outBadCount" class="font-mono text-[11px] text-[#737373] mt-1 tabular-nums">38 bad ASNs / yr</div>
+              <div class="flex justify-between text-xs font-mono mb-2.5">
+                <label for="calcShipments" class="text-[#525252] uppercase">Weekly Truckload Shipments</label>
+                <span id="valShipments" class="text-black font-semibold tabular-nums">25 / wk</span>
+              </div>
+              <input id="calcShipments" class="light-slider" type="range" min="5" max="200" step="5" value="25" />
             </div>
 
             <div>
-              <div class="font-mono text-[11px] text-[#666666] uppercase">Net Annual Savings</div>
-              <div id="outSavings" class="font-mono text-2xl sm:text-[26px] font-semibold text-[#16A34A] tabular-nums mt-1">$279,012</div>
-              <div class="font-mono text-[11px] text-[#737373] mt-1">Net of $5,988 license</div>
+              <div class="flex justify-between text-xs font-mono mb-2.5">
+                <label for="calcRate" class="text-[#525252] uppercase">ASN Error / Rejection Rate</label>
+                <span id="valRate" class="text-black font-semibold tabular-nums">3.0%</span>
+              </div>
+              <input id="calcRate" class="light-slider" type="range" min="0.5" max="10" step="0.5" value="3.0" />
             </div>
 
             <div>
-              <div class="font-mono text-[11px] text-[#666666] uppercase">ROI Multiple</div>
-              <div id="outMultiple" class="font-mono text-2xl sm:text-[26px] font-semibold text-black tabular-nums mt-1">46.6x</div>
-              <div class="font-mono text-[11px] text-[#737373] mt-1">First-year return</div>
+              <div class="flex justify-between text-xs font-mono mb-2.5">
+                <label for="calcFine" class="text-[#525252] uppercase">Average OEM Chargeback Fine</label>
+                <span id="valFine" class="text-black font-semibold tabular-nums">$7,500</span>
+              </div>
+              <input id="calcFine" class="light-slider" type="range" min="2500" max="15000" step="500" value="7500" />
             </div>
           </div>
         </div>
 
-        <!-- Right (5 Cols - Pure Matte Black Card): Flat $499/mo Facility License -->
-        <div id="pricing" class="lg:col-span-5 p-7 sm:p-10 bg-black text-white flex flex-col justify-between">
+        <!-- Output Metrics Grid -->
+        <div class="mt-10 pt-7 border-t border-[#EAEAEA] grid grid-cols-1 sm:grid-cols-3 gap-6">
           <div>
-            <div class="font-mono text-[11px] text-muted uppercase">
-              PRODUCTION FACILITY LICENSE
-            </div>
-
-            <div class="mt-4 flex items-baseline gap-2">
-              <span class="font-mono text-4xl sm:text-5xl font-semibold tracking-[-0.04em] text-white tabular-nums">$499</span>
-              <span class="text-sm text-muted">/ month per plant</span>
-            </div>
-
-            <p class="mt-3 text-sm text-[#A3A3A3] leading-relaxed">
-              Unlimited ANSI X12 856 validations, unlimited shipping dock seats, and zero per-kilobyte VAN tolls.
-            </p>
-
-            <ul class="mt-7 pt-6 border-t border-border space-y-3.5 text-sm text-ink">
-              <li class="flex items-start gap-3">
-                <span class="font-mono text-xs text-white mt-0.5">✓</span>
-                <span>Ford AIAG B-10, GM 1724 &amp; Stellantis rulesets</span>
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="font-mono text-xs text-white mt-0.5">✓</span>
-                <span>1-click deterministic AST auto-repair &amp; diff</span>
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="font-mono text-xs text-white mt-0.5">✓</span>
-                <span>SHA-256 signed Driver BOL Clearance Certificates</span>
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="font-mono text-xs text-white mt-0.5">✓</span>
-                <span>Local client-side execution (zero payload storage)</span>
-              </li>
-            </ul>
-
-            <div class="mt-7 p-4 rounded-lg border border-border bg-surface">
-              <div class="font-mono text-[11px] text-white uppercase tracking-wider">
-                Zero-Chargeback Guarantee
-              </div>
-              <p class="mt-1.5 text-xs text-muted leading-relaxed">
-                Any ASN cleared by AutoBridge that incurs an OEM syntax or loop fine triggers a 100% subscription refund plus full forensic dispute documentation.
-              </p>
-            </div>
+            <div class="font-mono text-[11px] text-[#666666] uppercase">Annual Fine Exposure</div>
+            <div id="outExposure" class="font-mono text-2xl sm:text-[28px] font-semibold text-black tabular-nums mt-1">$285,000</div>
+            <div id="outBadCount" class="font-mono text-[11px] text-[#737373] mt-1 tabular-nums">38 bad ASNs / yr</div>
           </div>
 
-          <div class="mt-8">
-            <a href="inspector.html"
-               class="block w-full text-center bg-white hover:bg-[#E5E5E5] text-black font-semibold text-sm py-3 rounded-lg transition-colors">
-              Deploy to Facility
-            </a>
+          <div>
+            <div class="font-mono text-[11px] text-[#666666] uppercase">Preventable Dock Fines</div>
+            <div id="outSavings" class="font-mono text-2xl sm:text-[28px] font-semibold text-[#16A34A] tabular-nums mt-1">$285,000</div>
+            <div class="font-mono text-[11px] text-[#737373] mt-1">100% prevented with pre-flight</div>
+          </div>
+
+          <div>
+            <div class="font-mono text-[11px] text-[#666666] uppercase">Avg Fine Per Disruption</div>
+            <div id="outAvgFine" class="font-mono text-2xl sm:text-[28px] font-semibold text-black tabular-nums mt-1">$7,500</div>
+            <div class="font-mono text-[11px] text-[#737373] mt-1">AIAG B-10 dock penalty</div>
           </div>
         </div>
-
       </div>
     </div>
   </section>
@@ -495,7 +436,7 @@
       <div class="flex flex-wrap items-center gap-6 text-xs text-muted">
         <a href="#terminal" class="hover:text-white transition-colors">X12 856 Spec</a>
         <a href="#architecture" class="hover:text-white transition-colors">AIAG B-10 Guide</a>
-        <a href="#pricing" class="hover:text-white transition-colors">Zero-Storage Security</a>
+        <a href="#architecture" class="hover:text-white transition-colors">Zero-Storage Security</a>
         <a href="https://github.com/gana04982-ship-it/autobridge" target="_blank" class="hover:text-white transition-colors">GitHub Source</a>
       </div>
     </div>
@@ -764,14 +705,12 @@
 
       const badPerYear = Math.round(shipments * 50 * (rate / 100));
       const annualExposure = badPerYear * fine;
-      const annualLicense = 499 * 12; // $5,988
-      const netSavings = Math.max(0, annualExposure - annualLicense);
-      const roiMultiple = (annualExposure / annualLicense).toFixed(1) + 'x';
 
       document.getElementById('outExposure').textContent = '$' + annualExposure.toLocaleString();
       document.getElementById('outBadCount').textContent = badPerYear + ' bad ASNs / yr';
-      document.getElementById('outSavings').textContent = '$' + netSavings.toLocaleString();
-      document.getElementById('outMultiple').textContent = roiMultiple;
+      document.getElementById('outSavings').textContent = '$' + annualExposure.toLocaleString();
+      const avgFineEl = document.getElementById('outAvgFine');
+      if (avgFineEl) avgFineEl.textContent = '$' + fine.toLocaleString();
     }
 
     ['calcShipments', 'calcRate', 'calcFine'].forEach(id => {
