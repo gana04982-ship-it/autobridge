@@ -42,10 +42,13 @@
     ::-webkit-scrollbar-thumb { background: #262626; border-radius: 3px; }
   </style>
 </head>
-<body class="min-h-screen bg-obsidian text-[#EDEDED] antialiased selection:bg-white selection:text-black">
+<body class="min-h-screen bg-obsidian text-[#EDEDED] antialiased selection:bg-white selection:text-black relative overflow-x-hidden">
+
+  <!-- Animated Floating & Falling White Drops Background Canvas -->
+  <canvas id="bgDropsCanvas" class="fixed inset-0 w-full h-full pointer-events-none z-0" aria-hidden="true"></canvas>
 
   <!-- STICKY TOP NAVIGATION BAR -->
-  <header class="sticky top-0 z-30 h-16 bg-black/90 backdrop-blur-md border-b border-hairline">
+  <header class="sticky top-0 z-30 h-16 bg-black/85 backdrop-blur-md border-b border-hairline">
     <div class="max-w-4xl mx-auto h-full px-5 flex items-center justify-between gap-4">
 
       <!-- White-Badge Geometric Bridge AutoBridge Logo -->
@@ -90,7 +93,7 @@
   </header>
 
   <!-- MAIN WORKSPACE -->
-  <main class="max-w-4xl mx-auto px-5 py-10 space-y-8">
+  <main class="relative z-10 max-w-4xl mx-auto px-5 py-10 space-y-8">
 
     <!-- ========================================== -->
     <!-- STATE 1: INITIAL UPLOAD / INGESTION STATE   -->
@@ -292,6 +295,91 @@
   </div>
 
   <script>
+    // 0. Animated Floating & Falling White Drops Canvas Background
+    (function initFallingDrops() {
+      const canvas = document.getElementById('bgDropsCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let width = 0;
+      let height = 0;
+
+      function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      window.addEventListener('resize', resize);
+      resize();
+
+      const dropCount = Math.min(Math.floor(window.innerWidth / 16), 80);
+      const drops = [];
+
+      for (let i = 0; i < dropCount; i++) {
+        drops.push({
+          x: Math.random() * (width || window.innerWidth),
+          y: Math.random() * (height || window.innerHeight),
+          len: Math.random() * 20 + 8,
+          speed: Math.random() * 1.5 + 0.8,
+          opacity: Math.random() * 0.35 + 0.1,
+          thickness: Math.random() * 0.9 + 0.6,
+          drift: (Math.random() - 0.5) * 0.25,
+          isDot: Math.random() > 0.62
+        });
+      }
+
+      let t = 0;
+      function draw() {
+        ctx.clearRect(0, 0, width, height);
+
+        for (let i = 0; i < drops.length; i++) {
+          const d = drops[i];
+          d.y += d.speed;
+          d.x += Math.sin(t * 0.02 + i) * 0.28 + d.drift;
+
+          if (d.y > height + 25) {
+            d.y = -d.len - 15;
+            d.x = Math.random() * width;
+          }
+          if (d.x < -20) d.x = width + 20;
+          if (d.x > width + 20) d.x = -20;
+
+          if (d.isDot) {
+            ctx.beginPath();
+            ctx.arc(d.x, d.y, d.thickness * 1.25, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255, 255, 255, ${d.opacity * 0.85})`;
+            ctx.fill();
+          } else {
+            const grad = ctx.createLinearGradient(d.x, d.y - d.len, d.x, d.y);
+            grad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+            grad.addColorStop(0.7, `rgba(255, 255, 255, ${d.opacity * 0.5})`);
+            grad.addColorStop(1, `rgba(255, 255, 255, ${d.opacity})`);
+
+            ctx.beginPath();
+            ctx.moveTo(d.x, d.y - d.len);
+            ctx.lineTo(d.x, d.y);
+            ctx.strokeStyle = grad;
+            ctx.lineWidth = d.thickness;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(d.x, d.y, d.thickness * 0.75, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255, 255, 255, ${d.opacity * 1.25})`;
+            ctx.fill();
+          }
+        }
+
+        t += 0.016;
+        requestAnimationFrame(draw);
+      }
+
+      draw();
+    })();
+
     // Sample Broken Ford ASN for demonstration
     const SAMPLE_EDI = [
       "ISA*00*          *00*          *ZZ*001234567      *ZZ*FORD           *261119*1430*U*00401*000000948*0*P*>~",

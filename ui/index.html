@@ -158,19 +158,20 @@
         Pre-flight AST firewall for ANSI X12 856 shipments. Built for Tier-1 and Tier-2 suppliers shipping to Ford, General Motors, and Stellantis.
       </p>
 
-      <!-- Two Clean CTAs -->
+      <!-- Two Clean CTAs for First-time Users -->
       <div class="mt-9 flex flex-col sm:flex-row items-center justify-center gap-3">
-        <button id="heroAuditCta" type="button"
-                class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white hover:bg-[#E5E5E5] text-black font-semibold text-sm px-6 py-3 rounded-lg transition-colors cursor-pointer">
+        <a href="inspector.html"
+           class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white hover:bg-[#E5E5E5] text-black font-semibold text-sm px-6 py-3 rounded-lg transition-colors cursor-pointer">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
           </svg>
-          <span>Audit ASN File</span>
-        </button>
+          <span>Inspect an ASN File</span>
+          <span class="text-xs">→</span>
+        </a>
 
-        <a href="#calculator"
+        <a href="#terminal"
            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-black/80 hover:bg-elevated text-white border border-white/20 hover:border-white/40 font-medium text-sm px-6 py-3 rounded-lg backdrop-blur-md transition-colors">
-          <span>Calculate Risk</span>
+          <span>Try Interactive Sandbox ↓</span>
         </a>
       </div>
 
@@ -193,7 +194,7 @@
               <div class="inline-flex items-center p-0.5 rounded-lg bg-void border border-border font-mono text-[11px]">
                 <button id="modeBrokenBtn" type="button"
                         class="px-3 py-1 rounded-md bg-elevated text-ink font-medium transition-colors cursor-pointer">
-                  Broken Ford 856
+                  Broken Ford 856 (Demo)
                 </button>
                 <button id="modeRepairedBtn" type="button"
                         class="px-3 py-1 rounded-md text-muted hover:text-ink transition-colors cursor-pointer">
@@ -212,7 +213,7 @@
 
               <button id="uploadEdiBtn" type="button"
                       class="font-mono text-[11px] text-muted hover:text-ink bg-void hover:bg-elevated border border-border hover:border-borderHover px-2.5 py-1 rounded-md transition-colors cursor-pointer">
-                Drop .edi
+                Drop Your .edi
               </button>
 
               <button id="runRepairBtn" type="button"
@@ -225,11 +226,12 @@
           <!-- Sub-header Metadata Strip -->
           <div class="px-4 py-2 bg-void/60 border-b border-border flex flex-wrap items-center justify-between gap-2 font-mono text-[11px] text-muted">
             <div class="flex items-center gap-2">
+              <span class="text-[10px] uppercase tracking-wider bg-white/10 text-white px-1.5 py-0.5 rounded">Sample</span>
               <span id="activeFileName" class="text-ink">FORD_MAP_856_09482.edi</span>
               <span class="text-subtle">•</span>
               <span id="activeFileStats" class="tabular-nums">16 SEGMENTS • AST PARSE 0.88ms</span>
             </div>
-            <span class="text-subtle">DRAG &amp; DROP ANY .EDI / .X12 FILE TO INSPECT</span>
+            <span class="text-subtle">DRAG &amp; DROP ANY .EDI / .X12 FILE OR TEST AUTO-REPAIR</span>
           </div>
 
           <!-- Code / Diff Viewport -->
@@ -444,8 +446,8 @@
 
   <!-- INTERACTIVE TERMINAL & CALCULATOR SCRIPT -->
   <script>
-    // 0. Monochrome Black & White Flowing Silk-Wave Canvas Animation
-    (function initMonochromeWaves() {
+    // 0. Floating and Falling White Drops + Monochrome Wave Canvas Animation
+    (function initBackgroundCanvas() {
       const canvas = document.getElementById('waveCanvas');
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
@@ -465,6 +467,22 @@
       window.addEventListener('resize', resize);
       resize();
 
+      // Floating & Falling White Drops System
+      const dropCount = Math.min(Math.floor(window.innerWidth / 15), 85);
+      const drops = [];
+      for (let i = 0; i < dropCount; i++) {
+        drops.push({
+          x: Math.random() * (width || window.innerWidth),
+          y: Math.random() * (height || 800),
+          len: Math.random() * 22 + 8,
+          speed: Math.random() * 1.6 + 0.9,
+          opacity: Math.random() * 0.32 + 0.1,
+          thickness: Math.random() * 0.9 + 0.6,
+          drift: (Math.random() - 0.5) * 0.25,
+          isDot: Math.random() > 0.62
+        });
+      }
+
       const ribbons = [
         { amp: 68, freq: 0.0022, speed: 0.008, yRatio: 0.28, alpha: 0.14, fill: true },
         { amp: 52, freq: 0.0031, speed: -0.006, yRatio: 0.36, alpha: 0.10, fill: true },
@@ -476,6 +494,49 @@
       function draw() {
         ctx.clearRect(0, 0, width, height);
 
+        // 1. Draw Floating and Falling White Drops
+        for (let i = 0; i < drops.length; i++) {
+          const d = drops[i];
+          d.y += d.speed;
+          d.x += Math.sin(t * 0.02 + i) * 0.28 + d.drift;
+
+          if (d.y > height + 25) {
+            d.y = -d.len - 15;
+            d.x = Math.random() * width;
+          }
+          if (d.x < -20) d.x = width + 20;
+          if (d.x > width + 20) d.x = -20;
+
+          if (d.isDot) {
+            // Soft floating glowing dot
+            ctx.beginPath();
+            ctx.arc(d.x, d.y, d.thickness * 1.25, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255, 255, 255, ${d.opacity * 0.9})`;
+            ctx.fill();
+          } else {
+            // Tapered vertical falling white raindrop
+            const grad = ctx.createLinearGradient(d.x, d.y - d.len, d.x, d.y);
+            grad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+            grad.addColorStop(0.7, `rgba(255, 255, 255, ${d.opacity * 0.5})`);
+            grad.addColorStop(1, `rgba(255, 255, 255, ${d.opacity})`);
+
+            ctx.beginPath();
+            ctx.moveTo(d.x, d.y - d.len);
+            ctx.lineTo(d.x, d.y);
+            ctx.strokeStyle = grad;
+            ctx.lineWidth = d.thickness;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+
+            // Bright droplet tip
+            ctx.beginPath();
+            ctx.arc(d.x, d.y, d.thickness * 0.75, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255, 255, 255, ${d.opacity * 1.25})`;
+            ctx.fill();
+          }
+        }
+
+        // 2. Draw Silk Waves
         ribbons.forEach((r, idx) => {
           ctx.beginPath();
           const baseY = height * r.yRatio;
