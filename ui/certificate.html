@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AutoBridge — AIAG B-10 Dock Clearance Certificate</title>
+  <link rel="icon" type="image/png" href="logo_icon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            obsidian: '#000000',
+            surface: '#0A0A0A',
+            elevated: '#111111',
+            hairline: '#1F1F1F',
+            sage: '#30A46C',
+            crimson: '#E5484D',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #000000;
+      color: #EDEDED;
+      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    }
+    .tabular { font-variant-numeric: tabular-nums; }
+
+    /* Print-Ready 8.5" x 11" Black Ink on White Paper */
+    @media print {
+      @page {
+        size: letter portrait;
+        margin: 0.45in;
+      }
+      html, body {
+        background: #FFFFFF !important;
+        color: #000000 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .no-print, #bgDropsCanvas {
+        display: none !important;
+      }
+      main {
+        padding: 0 !important;
+        max-width: 100% !important;
+      }
+      #certificateSheet {
+        background: #FFFFFF !important;
+        color: #000000 !important;
+        border: 1.5px solid #000000 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+      }
+      .print-border {
+        border-color: #D4D4D4 !important;
+      }
+      .print-border-dark {
+        border-color: #000000 !important;
+      }
+      .print-bg-subtle {
+        background: #F7F7F7 !important;
+      }
+      .print-text-main {
+        color: #000000 !important;
+      }
+      .print-text-muted {
+        color: #444444 !important;
+      }
+      .print-badge-pass {
+        background: #FFFFFF !important;
+        color: #000000 !important;
+        border: 1.5px solid #000000 !important;
+      }
+      .print-logo-box {
+        background: #000000 !important;
+      }
+      .print-logo-stroke {
+        stroke: #FFFFFF !important;
+      }
+      .qr-fg {
+        fill: #000000 !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-obsidian text-[#EDEDED] antialiased selection:bg-white selection:text-black relative overflow-x-hidden">
+
+  <!-- SUBTLE FLOATING & FALLING WHITE DROPS CANVAS (Hidden in Print) -->
+  <canvas id="bgDropsCanvas" class="fixed inset-0 w-full h-full pointer-events-none z-0 opacity-55"></canvas>
+
+  <!-- 1. TOP CONTROL BAR (WEB VIEW ONLY) -->
+  <header class="no-print sticky top-0 z-30 h-16 bg-black/90 backdrop-blur-md border-b border-hairline">
+    <div class="max-w-5xl mx-auto h-full px-5 flex items-center justify-between gap-4">
+      
+      <!-- Breadcrumb -->
+      <div class="flex items-center gap-2.5 min-w-0 text-xs sm:text-[13px]">
+        <a href="index.html" class="flex items-center gap-2 shrink-0 group">
+          <div class="w-6 h-6 rounded-[5px] bg-white flex items-center justify-center group-hover:scale-[1.03] transition-transform">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+              <path d="M5 4V20M19 4V20" stroke="#000000" stroke-width="2.6" stroke-linecap="round"/>
+              <path d="M2 8.5C4 8.5 4.6 6 5 6C7 11.5 17 11.5 19 6C19.4 6 20 8.5 22 8.5" stroke="#000000" stroke-width="2.2" stroke-linecap="round"/>
+              <path d="M2 14.5H22" stroke="#000000" stroke-width="2.6" stroke-linecap="round"/>
+              <path d="M9.5 18L11.2 19.7L14.8 16.3" stroke="#000000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span class="font-bold text-white tracking-tight">AutoBridge</span>
+        </a>
+        <span class="text-[#333333] font-mono">/</span>
+        <a href="inspector.html" class="text-[#888888] hover:text-white transition truncate">Inspector Studio</a>
+        <span class="text-[#333333] font-mono">/</span>
+        <span class="text-[#EDEDED] font-medium truncate">Clearance Certificate</span>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-2.5 shrink-0">
+        <a href="inspector.html"
+           class="hidden sm:inline-flex items-center gap-1.5 text-xs font-medium text-[#A1A1A1] hover:text-white px-3 py-2 rounded-lg border border-transparent hover:border-hairline transition">
+          <span>← Back to Inspector</span>
+        </a>
+
+        <button id="downloadManifestBtn" type="button"
+                class="inline-flex items-center gap-1.5 bg-surface hover:bg-elevated border border-hairline hover:border-[#333333] text-xs font-medium text-[#EDEDED] px-3.5 py-2 rounded-full transition cursor-pointer">
+          <svg class="w-3.5 h-3.5 text-[#888888]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+          </svg>
+          <span class="hidden sm:inline">Download Manifest</span>
+          <span class="sm:hidden">JSON</span>
+        </button>
+
+        <button onclick="window.print()" type="button"
+                class="inline-flex items-center gap-2 bg-white hover:bg-[#E5E5E5] text-black font-semibold text-xs px-4 py-2 rounded-full transition shadow-xs cursor-pointer">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+          </svg>
+          <span>Print for Driver BOL (Ctrl+P)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="relative z-10 max-w-[820px] mx-auto px-4 sm:px-6 py-8 sm:py-12">
+
+    <!-- ============================================================== -->
+    <!-- STATE 1: EMPTY / AWAITING AUDIT STATE                         -->
+    <!-- (Shown when user directly opens certificate without audit)     -->
+    <!-- ============================================================== -->
+    <div id="noManifestState" class="hidden text-center py-16 space-y-6">
+      <div class="w-14 h-14 rounded-2xl bg-surface border border-hairline text-white flex items-center justify-center mx-auto">
+        <svg class="w-7 h-7 text-[#888888]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+      </div>
+
+      <div class="max-w-md mx-auto space-y-2">
+        <h2 class="text-2xl font-bold tracking-tight text-white">
+          No Cleared Shipment Manifest Found
+        </h2>
+        <p class="text-sm text-[#888888] leading-relaxed">
+          A Dock Clearance Certificate is minted cryptographically only after an ANSI X12 856 ASN has been inspected and cleared of chargeback risks in the Inspector Studio.
+        </p>
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+        <a href="inspector.html"
+           class="inline-flex items-center gap-2 bg-white hover:bg-[#E5E5E5] text-black font-semibold text-xs px-5 py-3 rounded-xl transition cursor-pointer">
+          <span>Open Pre-Flight Inspector</span>
+          <span aria-hidden="true">→</span>
+        </a>
+
+        <button id="viewDemoCertBtn" type="button"
+                class="inline-flex items-center gap-2 bg-surface hover:bg-elevated border border-hairline hover:border-[#333333] text-xs font-medium text-[#EDEDED] px-4 py-3 rounded-xl transition cursor-pointer">
+          <span>Preview Sample Cleared Certificate</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- STATE 2: THE OFFICIAL DOCK CLEARANCE CERTIFICATE SHEET        -->
+    <!-- (Rendered only for verified/cleared shipments)                -->
+    <!-- ============================================================== -->
+    <article id="certificateSheet" class="hidden bg-surface border border-hairline rounded-2xl overflow-hidden shadow-2xl">
+      
+      <!-- A. DOCUMENT HEADER & OFFICIAL STAMP -->
+      <div class="p-6 sm:p-8 border-b border-hairline print-border-dark">
+        <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-5">
+          
+          <!-- Left: Emblem + Official Document Title -->
+          <div class="flex items-start gap-3.5">
+            <div class="print-logo-box w-10 h-10 rounded-lg bg-white flex items-center justify-center shrink-0 mt-0.5">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path class="print-logo-stroke" d="M5 4V20M19 4V20" stroke="#000000" stroke-width="2.6" stroke-linecap="round"/>
+                <path class="print-logo-stroke" d="M2 8.5C4 8.5 4.6 6 5 6C7 11.5 17 11.5 19 6C19.4 6 20 8.5 22 8.5" stroke="#000000" stroke-width="2.2" stroke-linecap="round"/>
+                <path class="print-logo-stroke" d="M2 14.5H22" stroke="#000000" stroke-width="2.6" stroke-linecap="round"/>
+                <path class="print-logo-stroke" d="M9.5 18L11.2 19.7L14.8 16.3" stroke="#000000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div>
+              <span class="font-mono text-[11px] uppercase tracking-[0.16em] text-[#737373] print-text-muted block">
+                AutoBridge Compliance Authority
+              </span>
+              <h1 id="certDocTitle" class="text-xl sm:text-2xl font-bold tracking-tight text-white print-text-main mt-0.5">
+                AIAG B-10 DOCK CLEARANCE CERTIFICATE
+              </h1>
+            </div>
+          </div>
+
+          <!-- Right: Prominent Clearance Badge -->
+          <div class="print-badge-pass inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-sage/15 border border-sage/35 text-sage font-mono text-[11px] font-semibold tracking-wide shrink-0">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+            </svg>
+            <span>PRE-FLIGHT VERIFIED — APPROVED FOR RECEIVING</span>
+          </div>
+        </div>
+
+        <!-- Metadata Strip -->
+        <div class="mt-6 pt-4 border-t border-hairline print-border flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
+          <div class="flex items-center gap-2">
+            <span class="text-[#666666] print-text-muted">CERTIFICATE ID:</span>
+            <span id="certRefId" class="text-white print-text-main font-semibold tabular">CERT-AB-2026-09482</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-[#666666] print-text-muted">ISSUED:</span>
+            <span id="certTimestamp" class="text-[#EDEDED] print-text-main tabular">Nov 19, 2026 • 14:32:08 UTC</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- B. SHIPMENT IDENTIFICATION GRID (3x2 KEY-VALUE MATRIX) -->
+      <div class="border-b border-hairline print-border-dark">
+        <div class="px-6 sm:px-8 py-2.5 bg-[#060606] print-bg-subtle border-b border-hairline print-border">
+          <h2 class="font-mono text-[11px] font-semibold uppercase tracking-widest text-[#888888] print-text-muted">
+            01 // Shipment Identification Matrix
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-hairline print-border">
+          <!-- Cell 1 -->
+          <div class="p-4 sm:px-6 sm:py-4 border-b border-hairline print-border">
+            <span class="block font-mono text-[10px] uppercase tracking-wider text-[#666666] print-text-muted">Bill of Lading (BOL)</span>
+            <span id="valBol" class="mt-1 block font-mono text-sm font-bold text-white print-text-main tabular">BOL-948201-B</span>
+          </div>
+          <!-- Cell 2 -->
+          <div class="p-4 sm:px-6 sm:py-4 border-b border-hairline print-border">
+            <span class="block font-mono text-[10px] uppercase tracking-wider text-[#666666] print-text-muted">Trailer / Container #</span>
+            <span id="valTrailer" class="mt-1 block font-mono text-sm font-bold text-white print-text-main tabular">TRLR-4491</span>
+          </div>
+          <!-- Cell 3 -->
+          <div class="p-4 sm:px-6 sm:py-4 border-b border-hairline print-border">
+            <span class="block font-mono text-[10px] uppercase tracking-wider text-[#666666] print-text-muted">Purchase Order (PO)</span>
+            <span id="valPo" class="mt-1 block font-mono text-sm font-bold text-white print-text-main tabular">PO-8841209</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-hairline print-border">
+          <!-- Cell 4 -->
+          <div class="p-4 sm:px-6 sm:py-4">
+            <span class="block font-mono text-[10px] uppercase tracking-wider text-[#666666] print-text-muted">Destination OEM Plant</span>
+            <span id="valDestination" class="mt-1 block text-xs font-semibold text-[#EDEDED] print-text-main leading-snug">
+              Ford Motor Co. — Michigan Assembly Plant (MAP)
+            </span>
+          </div>
+          <!-- Cell 5 -->
+          <div class="p-4 sm:px-6 sm:py-4">
+            <span class="block font-mono text-[10px] uppercase tracking-wider text-[#666666] print-text-muted">Supplier DUNS / Code</span>
+            <span id="valDuns" class="mt-1 block font-mono text-xs font-semibold text-[#EDEDED] print-text-main tabular">
+              001234567 (Livonia Stamping Facility)
+            </span>
+          </div>
+          <!-- Cell 6 -->
+          <div class="p-4 sm:px-6 sm:py-4">
+            <span class="block font-mono text-[10px] uppercase tracking-wider text-[#666666] print-text-muted">Carrier SCAC</span>
+            <span id="valCarrier" class="mt-1 block font-mono text-xs font-semibold text-[#EDEDED] print-text-main">
+              ODFL (Old Dominion Freight Line)
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- C. PRE-FLIGHT INTEGRITY VERIFICATION MATRIX -->
+      <div class="border-b border-hairline print-border-dark">
+        <div class="px-6 sm:px-8 py-2.5 bg-[#060606] print-bg-subtle border-b border-hairline print-border flex items-center justify-between">
+          <h2 class="font-mono text-[11px] font-semibold uppercase tracking-widest text-[#888888] print-text-muted">
+            02 // Pre-Flight AST Integrity Audit
+          </h2>
+          <span class="font-mono text-[11px] text-[#666666] print-text-muted">ANSI X12 856 (004010)</span>
+        </div>
+
+        <div class="divide-y divide-hairline print-border">
+          <!-- Check 1 -->
+          <div class="px-6 sm:px-8 py-3.5 flex items-center justify-between gap-4">
+            <div>
+              <p class="text-xs sm:text-sm font-semibold text-white print-text-main">1. Envelope Control Check</p>
+              <p class="text-xs text-[#888888] print-text-muted mt-0.5">
+                <code class="font-mono text-[11px]">ISA</code> / <code class="font-mono text-[11px]">GS</code> / <code class="font-mono text-[11px]">GE</code> / <code class="font-mono text-[11px]">IEA</code> control interchange numbers verified matching.
+              </p>
+            </div>
+            <span class="print-badge-pass font-mono text-[11px] font-semibold px-2.5 py-1 rounded bg-sage/10 border border-sage/30 text-sage shrink-0">
+              PASS
+            </span>
+          </div>
+
+          <!-- Check 2 -->
+          <div class="px-6 sm:px-8 py-3.5 flex items-center justify-between gap-4">
+            <div>
+              <p class="text-xs sm:text-sm font-semibold text-white print-text-main">2. Segment Count Reconciliation</p>
+              <p class="text-xs text-[#888888] print-text-muted mt-0.5">
+                <code class="font-mono text-[11px]">SE01</code> trailer count verified matching exact <code class="font-mono text-[11px]">ST</code>-to-<code class="font-mono text-[11px]">SE</code> payload depth.
+              </p>
+            </div>
+            <span id="valSegBadge" class="print-badge-pass font-mono text-[11px] font-semibold px-2.5 py-1 rounded bg-sage/10 border border-sage/30 text-sage shrink-0 tabular">
+              20 SEGMENTS RECONCILED
+            </span>
+          </div>
+
+          <!-- Check 3 -->
+          <div class="px-6 sm:px-8 py-3.5 flex items-center justify-between gap-4">
+            <div>
+              <p class="text-xs sm:text-sm font-semibold text-white print-text-main">3. Hierarchical Loop Depth (<code class="font-mono text-xs">HL</code>)</p>
+              <p class="text-xs text-[#888888] print-text-muted mt-0.5">
+                Shipment → Order → Pack → Item parent-child pointer graph verified 100% intact.
+              </p>
+            </div>
+            <span class="print-badge-pass font-mono text-[11px] font-semibold px-2.5 py-1 rounded bg-sage/10 border border-sage/30 text-sage shrink-0">
+              PASS
+            </span>
+          </div>
+
+          <!-- Check 4 -->
+          <div class="px-6 sm:px-8 py-3.5 flex items-center justify-between gap-4">
+            <div>
+              <p class="text-xs sm:text-sm font-semibold text-white print-text-main">4. Packaging &amp; Piece Count</p>
+              <p class="text-xs text-[#888888] print-text-muted mt-0.5">
+                AIAG packaging code <code class="font-mono text-[11px]">PLT90</code> certified; total piece count matches <code class="font-mono text-[11px]">SN1</code> sum.
+              </p>
+            </div>
+            <span class="print-badge-pass font-mono text-[11px] font-semibold px-2.5 py-1 rounded bg-sage/10 border border-sage/30 text-sage shrink-0 tabular">
+              1,200 PC VERIFIED
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- D. CRYPTOGRAPHIC PROOF BLOCK & QR VERIFICATION -->
+      <div class="p-6 sm:p-8 border-b border-hairline print-border-dark bg-[#070707] print-bg-subtle">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          
+          <div class="space-y-3 flex-1 min-w-0">
+            <span class="font-mono text-[11px] font-semibold uppercase tracking-widest text-[#888888] print-text-muted block">
+              03 // Cryptographic Payload Seal (SHA-256)
+            </span>
+
+            <div class="bg-black print-bg-subtle border border-hairline print-border-dark rounded-lg p-3 font-mono text-[11px] text-[#EDEDED] print-text-main break-all leading-relaxed select-all">
+              <span class="text-[#666666] print-text-muted select-none">sha256: </span><span id="valShaHash">7D4A98F1C4E209B5AA81F3B798246D88B0A19E4C32F1087D4B6A21E905C8F312</span>
+            </div>
+
+            <p class="text-xs text-[#888888] print-text-muted leading-relaxed">
+              <strong class="text-white print-text-main">Warranty Guarantee Clause:</strong> AutoBridge certifies this shipment payload complies with Ford AIAG B-10 and GM 1724 dock receiving rules. Guaranteed against syntax and hierarchical loop chargebacks.
+            </p>
+          </div>
+
+          <!-- Scannable Vector QR Code -->
+          <div class="shrink-0 flex flex-col items-center gap-1.5 bg-white p-2.5 rounded-lg border border-hairline print-border-dark">
+            <svg width="88" height="88" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Verification QR Code">
+              <rect width="29" height="29" fill="#FFFFFF"/>
+              <!-- Finder Pattern Top-Left -->
+              <path class="qr-fg" fill="#000000" d="M2 2h7v7H2V2zm1 1v5h5V3H3zm1 1h3v3H4V4z"/>
+              <!-- Finder Pattern Top-Right -->
+              <path class="qr-fg" fill="#000000" d="M20 2h7v7h-7V2zm1 1v5h5V3h-5zm1 1h3v3h-3V4z"/>
+              <!-- Finder Pattern Bottom-Left -->
+              <path class="qr-fg" fill="#000000" d="M2 20h7v7H2v-7zm1 1v5h5v-5H3zm1 1h3v3H4v-3z"/>
+              <!-- Deterministic Data Modules -->
+              <path class="qr-fg" fill="#000000" d="M11 2h2v2h-2V2zm4 0h3v1h-3V2zm-4 4h1v3h-1V6zm3 0h2v2h-2V6zm3 1h1v2h-1V7zM2 11h2v1H2v-1zm4 0h2v2H6v-2zm4 0h1v2h-1v-2zm3 0h3v1h-3v-1zm5 0h2v2h-2v-2zm4 0h3v1h-3v-1zm-18 3h1v3H4v-3zm4 1h2v1H8v-1zm4-1h2v3h-2v-3zm4 1h2v2h-2v-2zm5-1h2v3h-2v-3zm3 2h2v1h-2v-1zM11 19h2v2h-2v-2zm4 0h1v3h-1v-3zm3 1h3v1h-3v-1zm5-1h2v2h-2v-2zM11 23h3v2h-3v-2zm5 1h2v3h-2v-3zm4-1h2v2h-2v-2zm3 2h3v2h-3v-2z"/>
+            </svg>
+            <span class="font-mono text-[9px] font-bold tracking-wider text-black uppercase">Scan Audit Trail</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- E. PHYSICAL DOCK SIGN-OFF BLOCK -->
+      <div class="p-6 sm:p-8">
+        <span class="font-mono text-[11px] font-semibold uppercase tracking-widest text-[#888888] print-text-muted block mb-6">
+          04 // Physical Bill of Lading (BOL) Gate Sign-Off
+        </span>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 pt-4">
+          <div>
+            <div class="border-b border-[#333333] print-border-dark h-8"></div>
+            <div class="flex justify-between text-[11px] font-mono text-[#888888] print-text-muted mt-1.5">
+              <span>Shipping Supervisor Signature</span>
+              <span>Date / Time</span>
+            </div>
+          </div>
+
+          <div>
+            <div class="border-b border-[#333333] print-border-dark h-8"></div>
+            <div class="flex justify-between text-[11px] font-mono text-[#888888] print-text-muted mt-1.5">
+              <span>Carrier Driver Signature</span>
+              <span>Date / Time</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </article>
+
+    <!-- Bottom Helper Caption (Hidden in Print) -->
+    <p id="printTip" class="hidden no-print text-center font-mono text-xs text-[#666666] mt-6">
+      Staple printed copy to physical Bill of Lading prior to gate release • Press <kbd class="px-1.5 py-0.5 bg-surface border border-hairline rounded text-[#A1A1A1]">Ctrl+P</kbd> for clean 8.5" × 11" paper output.
+    </p>
+  </main>
+
+  <script>
+    const SAMPLE_CLEARED_MANIFEST = {
+      bol: "BOL-948201-B",
+      trailer: "TRLR-4491",
+      duns: "001234567",
+      oem: "Ford AIAG B-10",
+      receiver: "FORD",
+      segmentCount: 20,
+      sha256: "7D4A98F1C4E209B5AA81F3B798246D88B0A19E4C32F1087D4B6A21E905C8F312",
+      timestamp: new Date().toISOString()
+    };
+
+    const DESTINATION_MAP = {
+      FORD: "Ford Motor Co. — Michigan Assembly Plant (MAP)",
+      GM: "General Motors — Orion Assembly Plant",
+      STLA: "Stellantis — Sterling Heights Assembly Plant (SHAP)"
+    };
+
+    function renderCertificate(manifest) {
+      document.getElementById("noManifestState").classList.add("hidden");
+      document.getElementById("certificateSheet").classList.remove("hidden");
+      document.getElementById("printTip").classList.remove("hidden");
+
+      document.getElementById("certDocTitle").textContent = `${manifest.oem.toUpperCase()} DOCK CLEARANCE CERTIFICATE`;
+      document.getElementById("valBol").textContent = manifest.bol || "BOL-948201-B";
+      document.getElementById("valTrailer").textContent = manifest.trailer || "TRLR-4491";
+      document.getElementById("valDuns").textContent = `${manifest.duns || "001234567"} (Livonia Stamping Facility)`;
+      document.getElementById("valDestination").textContent = DESTINATION_MAP[manifest.receiver] || DESTINATION_MAP.FORD;
+      document.getElementById("valSegBadge").textContent = `${manifest.segmentCount || 20} SEGMENTS RECONCILED`;
+      document.getElementById("valShaHash").textContent = manifest.sha256 || "7D4A98F1C4E209B5AA81F3B798246D88B0A19E4C32F1087D4B6A21E905C8F312";
+
+      const dt = new Date(manifest.timestamp || Date.now());
+      if (!isNaN(dt.getTime())) {
+        const formatted = dt.toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric", timeZone: "UTC" }) +
+          " • " + dt.toISOString().slice(11, 19) + " UTC";
+        document.getElementById("certTimestamp").textContent = formatted;
+      }
+    }
+
+    // Check if user came from a real cleared audit in inspector.html
+    let activeManifest = null;
+    try {
+      const saved = sessionStorage.getItem("autobridge_manifest");
+      if (saved) {
+        activeManifest = JSON.parse(saved);
+      }
+    } catch (_) {}
+
+    if (activeManifest && activeManifest.sha256) {
+      // Manifest exists from a real audit!
+      renderCertificate(activeManifest);
+    } else {
+      // First-time or direct visitor without an audit
+      document.getElementById("noManifestState").classList.remove("hidden");
+      document.getElementById("certificateSheet").classList.add("hidden");
+      document.getElementById("printTip").classList.add("hidden");
+    }
+
+    // Demo Preview button handler
+    document.getElementById("viewDemoCertBtn")?.addEventListener("click", () => {
+      renderCertificate(SAMPLE_CLEARED_MANIFEST);
+    });
+
+    // Download JSON Audit Manifest
+    document.getElementById("downloadManifestBtn").addEventListener("click", () => {
+      const m = activeManifest || SAMPLE_CLEARED_MANIFEST;
+      const payload = {
+        certificate_id: document.getElementById("certRefId").textContent,
+        status: "PRE-FLIGHT VERIFIED — APPROVED FOR RECEIVING",
+        issued_utc: document.getElementById("certTimestamp").textContent,
+        shipment: {
+          bol: m.bol,
+          trailer: m.trailer,
+          purchase_order: "PO-8841209",
+          supplier_duns: m.duns,
+          oem_ruleset: m.oem,
+          carrier_scac: "ODFL"
+        },
+        cryptographic_proof: {
+          algorithm: "SHA-256",
+          digest: m.sha256
+        }
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${document.getElementById("certRefId").textContent}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // Floating and Falling White Drops Background Animation
+    (function initFallingDrops() {
+      const canvas = document.getElementById('bgDropsCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let width = 0;
+      let height = 0;
+
+      function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      window.addEventListener('resize', resize);
+      resize();
+
+      const dropCount = Math.min(Math.floor(window.innerWidth / 16), 75);
+      const drops = [];
+
+      for (let i = 0; i < dropCount; i++) {
+        drops.push({
+          x: Math.random() * (width || window.innerWidth),
+          y: Math.random() * (height || window.innerHeight),
+          len: Math.random() * 20 + 8,
+          speed: Math.random() * 1.5 + 0.8,
+          opacity: Math.random() * 0.35 + 0.1,
+          thickness: Math.random() * 0.9 + 0.6,
+          drift: (Math.random() - 0.5) * 0.25,
+          isDot: Math.random() > 0.62
+        });
+      }
+
+      let t = 0;
+      function draw() {
+        ctx.clearRect(0, 0, width, height);
+
+        for (let i = 0; i < drops.length; i++) {
+          const d = drops[i];
+          d.y += d.speed;
+          d.x += Math.sin(t * 0.02 + i) * 0.28 + d.drift;
+
+          if (d.y > height + 25) {
+            d.y = -d.len - 15;
+            d.x = Math.random() * width;
+          }
+          if (d.x < -20) d.x = width + 20;
+          if (d.x > width + 20) d.x = -20;
+
+          if (d.isDot) {
+            ctx.beginPath();
+            ctx.arc(d.x, d.y, d.thickness * 1.25, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255, 255, 255, ${d.opacity * 0.85})`;
+            ctx.fill();
+          } else {
+            const grad = ctx.createLinearGradient(d.x, d.y - d.len, d.x, d.y);
+            grad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+            grad.addColorStop(0.7, `rgba(255, 255, 255, ${d.opacity * 0.5})`);
+            grad.addColorStop(1, `rgba(255, 255, 255, ${d.opacity})`);
+
+            ctx.beginPath();
+            ctx.moveTo(d.x, d.y - d.len);
+            ctx.lineTo(d.x, d.y);
+            ctx.strokeStyle = grad;
+            ctx.lineWidth = d.thickness;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(d.x, d.y, d.thickness * 0.75, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255, 255, 255, ${d.opacity * 1.25})`;
+            ctx.fill();
+          }
+        }
+
+        t += 0.016;
+        requestAnimationFrame(draw);
+      }
+
+      draw();
+    })();
+  </script>
+</body>
+</html>

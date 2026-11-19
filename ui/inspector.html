@@ -594,14 +594,19 @@
         });
 
         document.getElementById("openCertBtn").addEventListener("click", () => {
-          document.getElementById("certToastDetails").innerHTML = `
-            <div>BOL: <span class="text-white">${escapeHtml(res.bol)}</span></div>
-            <div>SPEC: <span class="text-white">${escapeHtml(OEM_SPECS[activeOem].label)}</span></div>
-            <div class="truncate">SHA-256: <span class="text-sage">${hash}</span></div>
-          `;
-          const toast = document.getElementById("certToastModal");
-          toast.classList.remove("hidden");
-          toast.classList.add("flex");
+          try {
+            sessionStorage.setItem("autobridge_manifest", JSON.stringify({
+              bol: res.bol,
+              trailer: res.trailer,
+              duns: "001234567",
+              oem: OEM_SPECS[activeOem].label,
+              receiver: OEM_SPECS[activeOem].receiver,
+              segmentCount: res.cleanLines.length,
+              sha256: hash,
+              timestamp: new Date().toISOString()
+            }));
+          } catch (_) {}
+          window.location.href = "certificate.html";
         });
       } else {
         const fine = res.errors.length === 3 ? 12500 : res.errors.length * 4250;
