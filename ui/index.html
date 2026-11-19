@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AutoBridge — The Open Source Alternative to SPS Commerce</title>
+  <link rel="icon" type="image/png" href="logo_icon.png">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -56,9 +57,7 @@
     <div class="flex items-center space-x-8">
       <!-- Supabase-Style Brand Logo -->
       <a href="#" class="flex items-center space-x-3 group">
-        <svg class="w-7 h-7 text-[#3ECF8E] transition group-hover:scale-105" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M11.5 2.5L2.5 14.5H11.5L10.5 21.5L21.5 9.5H12.5L13.5 2.5H11.5Z" />
-        </svg>
+        <img src="logo_icon.png" alt="AutoBridge Logo" class="w-8 h-8 rounded-lg object-cover border border-[#2E2E2E] shadow-md shadow-[#3ECF8E]/20 transition group-hover:scale-105" />
         <span class="font-extrabold text-lg tracking-tight text-white">AutoBridge</span>
       </a>
 
@@ -86,7 +85,13 @@
   </nav>
 
   <!-- Hero Section (Exact Supabase Landing Page Vibe) -->
-  <section class="supabase-gradient pt-16 pb-12 px-6 max-w-6xl mx-auto text-center flex flex-col items-center">
+  <section class="supabase-gradient pt-14 pb-12 px-6 max-w-6xl mx-auto text-center flex flex-col items-center">
+    <!-- Brand Logo Emblem -->
+    <div class="mb-5 relative inline-block">
+      <div class="absolute -inset-1 rounded-2xl bg-[#3ECF8E]/20 blur-md"></div>
+      <img src="logo_icon.png" alt="AutoBridge Logo" class="relative w-16 h-16 rounded-2xl border border-[#2E2E2E] shadow-2xl hover:scale-105 transition duration-300 object-cover" />
+    </div>
+
     <!-- Announcement Pill -->
     <a href="https://github.com/gana04982-ship-it/autobridge" target="_blank" class="inline-flex items-center space-x-2 px-3 py-1 rounded-full border border-[#2E2E2E] bg-[#181818] text-xs font-medium text-[#898989] hover:border-[#3ECF8E]/50 transition mb-6">
       <span class="w-2 h-2 rounded-full bg-[#3ECF8E]"></span>
@@ -356,9 +361,7 @@
   <footer class="border-t border-[#242424] bg-[#0A0A0A] py-12 px-6 text-xs text-[#666666]">
     <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
       <div class="flex items-center space-x-3">
-        <svg class="w-5 h-5 text-[#3ECF8E]" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M11.5 2.5L2.5 14.5H11.5L10.5 21.5L21.5 9.5H12.5L13.5 2.5H11.5Z" />
-        </svg>
+        <img src="logo_icon.png" alt="AutoBridge Logo" class="w-6 h-6 rounded object-cover border border-[#2E2E2E]" />
         <span class="font-bold text-white">AutoBridge</span>
         <span>— The Mathematical Guarantee of Automotive Supply Chain Delivery.</span>
       </div>

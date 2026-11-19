@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="ui/logo_icon.png" width="120" alt="AutoBridge Logo" style="border-radius: 20px;" />
+</p>
+
 # AutoBridge Core (`autobridge`)
 
 > **The Mathematical Guarantee of Automotive Supply Chain Delivery.**  
