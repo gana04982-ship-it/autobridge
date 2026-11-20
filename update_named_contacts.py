@@ -29,7 +29,8 @@ Would you be open to dropping a sample ASN into our pre-flight inspector to see 
 
 Best,
 Ganesh
-AutoBridge Systems | github.com/gana04982-ship-it/autobridge""",
+AutoBridge Systems | ganesh@sarkaargroups.com
+github.com/gana04982-ship-it/autobridge""",
         "status": "STAGED_REVIEW"
     },
     {
@@ -55,7 +56,8 @@ Open to seeing a 2-minute walkthrough or testing one of your live 856 files thro
 
 Best,
 Ganesh
-AutoBridge Systems | github.com/gana04982-ship-it/autobridge""",
+AutoBridge Systems | ganesh@sarkaargroups.com
+github.com/gana04982-ship-it/autobridge""",
         "status": "STAGED_REVIEW"
     },
     {
@@ -81,7 +83,8 @@ Zero cloud dependencies, zero data retention. Open to a brief 5-minute look at h
 
 Best,
 Ganesh
-AutoBridge Systems | github.com/gana04982-ship-it/autobridge""",
+AutoBridge Systems | ganesh@sarkaargroups.com
+github.com/gana04982-ship-it/autobridge""",
         "status": "STAGED_REVIEW"
     },
     {
@@ -107,7 +110,8 @@ Would you be open to running a test file through our zero-setup inspector this w
 
 Best,
 Ganesh
-AutoBridge Systems | github.com/gana04982-ship-it/autobridge""",
+AutoBridge Systems | ganesh@sarkaargroups.com
+github.com/gana04982-ship-it/autobridge""",
         "status": "STAGED_REVIEW"
     },
     {
@@ -133,7 +137,8 @@ Would you be open to testing a past flagged ASN file in our sandbox to see the e
 
 Best,
 Ganesh
-AutoBridge Systems | github.com/gana04982-ship-it/autobridge""",
+AutoBridge Systems | ganesh@sarkaargroups.com
+github.com/gana04982-ship-it/autobridge""",
         "status": "STAGED_REVIEW"
     },
     {
@@ -159,7 +164,8 @@ Open to seeing a 2-minute demo with one of your test ASNs?
 
 Best,
 Ganesh
-AutoBridge Systems | github.com/gana04982-ship-it/autobridge""",
+AutoBridge Systems | ganesh@sarkaargroups.com
+github.com/gana04982-ship-it/autobridge""",
         "status": "STAGED_REVIEW"
     },
     {
@@ -185,7 +191,8 @@ Would you be open to testing a flagged shipment file on our inspector this week?
 
 Best,
 Ganesh
-AutoBridge Systems | github.com/gana04982-ship-it/autobridge""",
+AutoBridge Systems | ganesh@sarkaargroups.com
+github.com/gana04982-ship-it/autobridge""",
         "status": "STAGED_REVIEW"
     },
     {
@@ -211,7 +218,8 @@ Open to a brief 5-minute intro call or testing an ASN through the inspector?
 
 Best,
 Ganesh
-AutoBridge Systems | github.com/gana04982-ship-it/autobridge""",
+AutoBridge Systems | ganesh@sarkaargroups.com
+github.com/gana04982-ship-it/autobridge""",
         "status": "STAGED_REVIEW"
     },
     {
@@ -237,7 +245,8 @@ Open to seeing how it works with one of your test files?
 
 Best,
 Ganesh
-AutoBridge Systems | github.com/gana04982-ship-it/autobridge""",
+AutoBridge Systems | ganesh@sarkaargroups.com
+github.com/gana04982-ship-it/autobridge""",
         "status": "STAGED_REVIEW"
     },
     {
@@ -263,7 +272,8 @@ Would you be open to running a test ASN file through our pre-flight studio?
 
 Best,
 Ganesh
-AutoBridge Systems | github.com/gana04982-ship-it/autobridge""",
+AutoBridge Systems | ganesh@sarkaargroups.com
+github.com/gana04982-ship-it/autobridge""",
         "status": "STAGED_REVIEW"
     },
     {
@@ -289,7 +299,8 @@ Zero software installation required. Open to a 5-minute preview?
 
 Best,
 Ganesh
-AutoBridge Systems | github.com/gana04982-ship-it/autobridge""",
+AutoBridge Systems | ganesh@sarkaargroups.com
+github.com/gana04982-ship-it/autobridge""",
         "status": "STAGED_REVIEW"
     },
     {
@@ -315,7 +326,8 @@ Would you be open to dropping an ASN into our pre-flight studio to test it out?
 
 Best,
 Ganesh
-AutoBridge Systems | github.com/gana04982-ship-it/autobridge""",
+AutoBridge Systems | ganesh@sarkaargroups.com
+github.com/gana04982-ship-it/autobridge""",
         "status": "STAGED_REVIEW"
     },
     {
@@ -341,7 +353,8 @@ Open to seeing a 2-minute walkthrough or trying a test file?
 
 Best,
 Ganesh
-AutoBridge Systems | github.com/gana04982-ship-it/autobridge""",
+AutoBridge Systems | ganesh@sarkaargroups.com
+github.com/gana04982-ship-it/autobridge""",
         "status": "STAGED_REVIEW"
     },
     {
@@ -367,7 +380,8 @@ Open to testing a past rejected file on our inspector studio?
 
 Best,
 Ganesh
-AutoBridge Systems | github.com/gana04982-ship-it/autobridge""",
+AutoBridge Systems | ganesh@sarkaargroups.com
+github.com/gana04982-ship-it/autobridge""",
         "status": "STAGED_REVIEW"
     },
     {
@@ -393,7 +407,8 @@ Would you be open to running a test ASN file through our pre-flight inspector to
 
 Best,
 Ganesh
-AutoBridge Systems | github.com/gana04982-ship-it/autobridge""",
+AutoBridge Systems | ganesh@sarkaargroups.com
+github.com/gana04982-ship-it/autobridge""",
         "status": "STAGED_REVIEW"
     }
 ]

@@ -11,7 +11,8 @@ Would you be open to dropping a sample ASN into our pre-flight inspector to see 
 
 Best,
 Ganesh
-AutoBridge Systems | github.com/gana04982-ship-it/autobridge",sent,2026-11-20T06:32:11.782Z
+AutoBridge Systems | ganesh@sarkaargroups.com
+github.com/gana04982-ship-it/autobridge",sent,2026-11-20T16:03:49.320Z
 Martinrea International,"Auburn Hills, MI / Vaughan, ON","Ford, GM & Stellantis","Megan Hunter (Executive VP, Procurement & Supply Chain Operations)",megan.hunter@martinrea.com,Supplying lightweight aluminum subframes & fluid management assemblies to Ford Michigan Assembly (Bronco/Ranger),Ford AIAG B-10 / Stellantis Global DESADV,Packaging unit mismatch: TD102 declares container counts that diverge from physical Tare (T) nodes during high-mix stamping runs.,"$5,000 per EDI rejection + Ford tier-downgrade points",eliminating 856 ASN dock turn-aways at Ford MAP,"Hi Megan,
 
 Shipping high-mix stamped subframes and fluid lines to Ford Michigan Assembly Plant leaves zero room for ASN syntax traps—a single container code mismatch (e.g. non-PLT90 packaging tags) or HL loop Tare drift triggers an automatic $5,000 dock receiving chargeback.
@@ -24,7 +25,8 @@ Open to seeing a 2-minute walkthrough or testing one of your live 856 files thro
 
 Best,
 Ganesh
-AutoBridge Systems | github.com/gana04982-ship-it/autobridge",sent,2026-11-20T06:32:47.485Z
+AutoBridge Systems | ganesh@sarkaargroups.com
+github.com/gana04982-ship-it/autobridge",sent,2026-11-20T16:04:35.126Z
 Flex-N-Gate,"Detroit, MI / Urbana, IL",Ford Motor Company,Shelley Bessel (Director of Logistics & Customs),shelley.bessel@flex-n-gate.com,Just-In-Time bumper assemblies & exterior body stamping for Ford Michigan Assembly Plant,Ford AIAG B-10 In-Line Vehicle Sequencing (ILVS),"Inverted DTM departure and arrival timestamps during compressed JIT plant delivery schedules, causing automated Ford EDI gateway rejection.","$12,500/hr assembly line stoppage risk + dock rejection fee",JIT delivery: zero dock-delay ASN firewall for Flex-N-Gate,"Hi Shelley,
 
 For Flex-N-Gate Detroit's sequential deliveries to Ford MAP, an ASN transmission failure or inverted DTM timestamp isn't just a chargeback fine—it puts the assembly sequence at risk.
@@ -37,7 +39,8 @@ Zero cloud dependencies, zero data retention. Open to a brief 5-minute look at h
 
 Best,
 Ganesh
-AutoBridge Systems | github.com/gana04982-ship-it/autobridge",sent,2026-11-20T06:33:22.644Z
+AutoBridge Systems | ganesh@sarkaargroups.com
+github.com/gana04982-ship-it/autobridge",sent,2026-11-20T16:05:16.199Z
 Shiloh Industries,"Valley City, OH / Southfield, MI",General Motors & Ford,"Cheryl Johnson (VP, Purchasing & Supply Chain Management)",cheryl.johnson@shiloh.com,Structural die-casting & laser-welded blanks for GM Fort Wayne & Arlington truck plants,GM 1724 Global EDI Shipping Notice,Tare weight synchronization failure where physical gross pallet weight diverges from EDI MEA segment tolerance bounds.,"$6,000 GM dock chargeback fee + manual inspection fee",GM 1724 pallet tare sync & dock clearance for Shiloh,"Hi Cheryl,
 
 When shipping laser-welded blanks and structural die-castings to GM Fort Wayne and Arlington, does your logistics team ever face receiving delays or chargebacks from GM 1724 tare weight and pallet count discrepancies?
@@ -50,7 +53,8 @@ Would you be open to running a test file through our zero-setup inspector this w
 
 Best,
 Ganesh
-AutoBridge Systems | github.com/gana04982-ship-it/autobridge",sent,2026-11-20T06:33:58.786Z
+AutoBridge Systems | ganesh@sarkaargroups.com
+github.com/gana04982-ship-it/autobridge",sent,2026-11-20T16:05:51.873Z
 Shape Corp.,"Grand Haven, MI",Ford & General Motors,Randy Pappal (VP of Global Purchasing-Supply Chain & Business Development),pappalr@shapecorp.com,Roll-formed ultra-high-strength steel bumper beams & roof rails for Ford Kentucky Truck Plant,Ford AIAG B-10 §3.4 Hierarchical Graph Standard,Orphaned parent pointers in nested packaging loops (S->O->T->I) when multiple beam bundles are strapped to single pallets.,"$5,000 chargeback per bad ASN + 3-hour dock holding fee",AIAG B-10 packaging loop validation for Shape Corp,"Hi Randy,
 
 Shipping bundled high-strength steel bumper beams to Ford Kentucky Truck often creates complex nested HL loops (Shipment -> Order -> Tare -> Item) where ERP exports occasionally generate orphaned parent pointers.
@@ -63,7 +67,8 @@ Would you be open to testing a past flagged ASN file in our sandbox to see the e
 
 Best,
 Ganesh
-AutoBridge Systems | github.com/gana04982-ship-it/autobridge",sent,2026-11-20T06:34:41.603Z
+AutoBridge Systems | ganesh@sarkaargroups.com
+github.com/gana04982-ship-it/autobridge",sent,2026-11-20T16:06:28.998Z
 American Axle & Manufacturing (AAM),"Detroit, MI",General Motors,Faith Wandrie (VP of Global Supply Chain Management),faith.wandrie@aam.com,"Heavy truck driveline systems, axles, and prop shafts for GM Silverado & Sierra (Fort Wayne, Flint)",GM 1724 Global Shipping Notification,Carrier SCAC code syntax errors (TD503) and missing REF*BM Bill of Lading numbers under heavy expedited freight runs.,"$6,000 GM delivery violation penalty + expediting hold fees",eliminating GM 1724 ASN dock hold-ups on AAM driveline freight,"Hi Faith,
 
 Curious if AAM's plant logistics teams ever experience dock receiving stalls or GM 1724 delivery penalties when expedited axle freight arrives with minor SCAC carrier mismatches or missing REF*BM Bill of Lading links in the EDI 856.
@@ -76,7 +81,8 @@ Open to seeing a 2-minute demo with one of your test ASNs?
 
 Best,
 Ganesh
-AutoBridge Systems | github.com/gana04982-ship-it/autobridge",sent,2026-11-20T06:35:09.492Z
+AutoBridge Systems | ganesh@sarkaargroups.com
+github.com/gana04982-ship-it/autobridge",sent,2026-11-20T16:07:07.285Z
 Dana Incorporated,"Maumee, OH",Ford & General Motors,Kevin Williams (Senior VP & Chief Purchasing Officer),kevin.williams@dana.com,"Spicer driveline, e-axles, and sealing components for Ford Super Duty & F-150 Lightning",Ford AIAG B-10 Delivery Standard,"SE01 trailer segment count drift during high-throughput ERP batching, causing Ford receiving servers to reject the entire transmission.","$10,000 transmission rejection + supplier quality demerits",pre-flight SE01 segment count verification for Dana freight,"Hi Kevin,
 
 Quick question: when batch-transmitting 856 ASNs from your ERP to Ford Kentucky Truck, do your teams ever experience rejected transmissions due to SE01 segment depth count drift or dropped trailing delimiters?
@@ -89,7 +95,8 @@ Would you be open to testing a flagged shipment file on our inspector this week?
 
 Best,
 Ganesh
-AutoBridge Systems | github.com/gana04982-ship-it/autobridge",sent,2026-11-20T06:35:29.705Z
+AutoBridge Systems | ganesh@sarkaargroups.com
+github.com/gana04982-ship-it/autobridge",sent,2026-11-20T16:07:41.266Z
 Cooper Standard,"Northville, MI","Ford, GM & Stellantis",Jay M. Stearns (VP & Chief Procurement Officer),jay.stearns@cooperstandard.com,Automotive sealing systems & fluid transfer tubing for Ford Dearborn and GM Lansing,Ford AIAG B-10 & GM 1724,Invalid Buyer Part Number qualifier in LIN02 (e.g. ERP exporting internal vendor qualifiers 'ZZ' or 'IN' instead of mandatory 'BP').,"$2,500 fine per incorrect part line item on the ASN",LIN02 qualifier validation & dock chargebacks at Ford/GM,"Hi Jay,
 
 Shipping high-volume fluid and sealing assemblies across multiple Ford and GM programs often creates part catalog headaches—specifically when ERP line-item mappings output internal part qualifiers ('ZZ' or 'IN') instead of mandatory 'BP' (Buyer's Part Number).
@@ -102,7 +109,8 @@ Open to a brief 5-minute intro call or testing an ASN through the inspector?
 
 Best,
 Ganesh
-AutoBridge Systems | github.com/gana04982-ship-it/autobridge",sent,2026-11-20T06:35:59.280Z
+AutoBridge Systems | ganesh@sarkaargroups.com
+github.com/gana04982-ship-it/autobridge",sent,2026-11-20T16:08:15.347Z
 Gestamp North America,"Troy, MI",Ford & General Motors,Steven Wagner (VP of Supply Chain Management),swagner@us.gestamp.com,Hot-stamped structural components & chassis crossmembers for Ford Dearborn Truck and GM Orion,Ford AIAG B-10 §3.2 Temporal Order,Inverted DTM departure (011) and estimated arrival (017) timestamps generated during cross-timezone plant dispatches.,"$5,000 dock turn-away chargeback + emergency 3PL re-routing fee",DTM timestamp order & dock clearance for Gestamp freight,"Hi Steven,
 
 When shipping heavy structural stampings across state lines, dispatching trucks during off-shift hours can accidentally invert EDI DTM timestamps (estimated arrival logged prior to departure timestamp), leading to instant dock rejection at Ford gates.
@@ -115,7 +123,8 @@ Open to seeing how it works with one of your test files?
 
 Best,
 Ganesh
-AutoBridge Systems | github.com/gana04982-ship-it/autobridge",sent,2026-11-20T06:36:30.031Z
+AutoBridge Systems | ganesh@sarkaargroups.com
+github.com/gana04982-ship-it/autobridge",sent,2026-11-20T16:08:51.856Z
 Linamar Corporation,"Guelph, ON / Southfield, MI",Ford & General Motors,"Charles Curtis (VP, Corporate Information Technology)",charles.curtis@linamar.com,"Precision metallic powertrain assemblies, cylinder blocks & transmission gears for Ford Kentucky & GM Flint",Ford AIAG B-10 & GM 1724,Discrepancy between declared pallet packaging codes (PLT71 vs PLT90) and actual dunnage loaded onto cross-border trailers.,"$7,500 customs/dock receiving penalty per shipment",cross-border ASN compliance & dock clearance for Linamar,"Hi Charles,
 
 For cross-border powertrain shipments moving from Ontario to Ford and GM Midwest plants, a container code discrepancy (e.g., non-AIAG compliant pallet codes in TD1) triggers receiving delays and $7,500 in dock receiving fines.
@@ -128,7 +137,8 @@ Would you be open to running a test ASN file through our pre-flight studio?
 
 Best,
 Ganesh
-AutoBridge Systems | github.com/gana04982-ship-it/autobridge",sent,2026-11-20T06:36:54.213Z
+AutoBridge Systems | ganesh@sarkaargroups.com
+github.com/gana04982-ship-it/autobridge",sent,2026-11-20T16:09:31.889Z
 Brose North America,"Auburn Hills, MI",Ford & General Motors,"Sven Erber (Executive VP, Procurement, IT & Digitalization)",sven.erber@brose.com,Mechatronic door modules & seat adjuster structures for Ford Michigan Assembly and GM Arlington,Ford AIAG B-10 Pack-Level Verification,Pack-level MAN serial barcode mismatches between physical carton labels and EDI HL*...*P level nodes.,"$5,000 chargeback + manual plant barcode relabeling penalty",pack-level barcode & ASN synchronization for Brose,"Hi Sven,
 
 Shipping mechatronic door systems to Ford MAP requires pack-level barcode synchronization—if an EDI 856 pack node (HL*...*P) doesn't perfectly match the 2D barcode on the tote, Ford's automated receiving scanner triggers an immediate chargeback.
@@ -141,7 +151,8 @@ Zero software installation required. Open to a 5-minute preview?
 
 Best,
 Ganesh
-AutoBridge Systems | github.com/gana04982-ship-it/autobridge",sent,2026-11-20T06:37:19.752Z
+AutoBridge Systems | ganesh@sarkaargroups.com
+github.com/gana04982-ship-it/autobridge",sent,2026-11-20T16:10:15.121Z
 Superior Industries International,"Southfield, MI",General Motors & Ford,Michael Dorah (Chief Executive Officer),mdorah@supind.com,"Cast aluminum road wheels for GM Arlington, Fort Wayne & Ford Dearborn",GM 1724 & Ford AIAG B-10,Pallet tally mismatches in TD102 when mixed wheel sizes or partial pallet loads are consolidated onto single flatbeds.,"$6,000 GM dock receiving fine + unloading delay",pallet count reconciliation & dock clearance for Superior,"Hi Michael,
 
 When consolidating mixed wheel pallets for GM assembly plants, do your shipping clerks ever run into GM 1724 receiving chargebacks when the declared TD102 count diverges from the actual Tare loops in the EDI file?
@@ -154,7 +165,8 @@ Would you be open to dropping an ASN into our pre-flight studio to test it out?
 
 Best,
 Ganesh
-AutoBridge Systems | github.com/gana04982-ship-it/autobridge",sent,2026-11-20T06:37:43.119Z
+AutoBridge Systems | ganesh@sarkaargroups.com
+github.com/gana04982-ship-it/autobridge",sent,2026-11-20T16:10:55.905Z
 Nemak North America,"Southfield, MI / Monterrey",Ford & General Motors,Francisco del Carmen (Head of Purchasing & SCM North America),francisco.delcarmen@nemak.com,"Aluminum cylinder heads, engine blocks & EV battery housings for Ford Cleveland Engine & GM Flint",Ford AIAG B-10 Mandatory Bill of Lading,Missing mandatory Bill of Lading (REF*BM) segment at the shipment level when 3PL freight brokers reassign pickup BOL numbers.,"$7,500 dock receiving penalty + manual manifest verification delay",missing BOL chargeback protection for Nemak freight,"Hi Francisco,
 
 When shipping heavy powertrain castings to Ford Cleveland Engine Plant, last-minute 3PL carrier reassignments can occasionally lead to omitted or empty REF*BM Bill of Lading numbers in the EDI 856—resulting in an instant $7,500 chargeback.
@@ -167,7 +179,8 @@ Open to seeing a 2-minute walkthrough or trying a test file?
 
 Best,
 Ganesh
-AutoBridge Systems | github.com/gana04982-ship-it/autobridge",sent,2026-11-20T06:38:04.275Z
+AutoBridge Systems | ganesh@sarkaargroups.com
+github.com/gana04982-ship-it/autobridge",sent,2026-11-20T16:11:29.266Z
 Tupy / MWM North America,"Waukesha, WI / Southfield, MI",Ford & General Motors,Toni Marcelo Zampieri Bueno (VP of Procurement and Logistics),toni.bueno@tupy.com.br,Cast iron heavy engine blocks & structural truck castings for Ford Super Duty & GM commercial trucks,Ford AIAG B-10 & GM 1724,Out-of-sequence GS/GE control numbers and missing packaging qualifiers during nightly ERP batch transmissions.,"$5,000 per rejected EDI functional group",eliminating EDI 856 functional group rejections for Tupy,"Hi Toni,
 
 Shipping heavy commercial truck engine blocks to Ford and GM assembly plants requires zero-defect EDI transmissions—a single control number mismatch or dropped segment delimiter can cause Ford receiving systems to discard the entire ASN transmission.
@@ -180,7 +193,8 @@ Open to testing a past rejected file on our inspector studio?
 
 Best,
 Ganesh
-AutoBridge Systems | github.com/gana04982-ship-it/autobridge",sent,2026-11-20T06:38:32.048Z
+AutoBridge Systems | ganesh@sarkaargroups.com
+github.com/gana04982-ship-it/autobridge",sent,2026-11-20T16:11:59.535Z
 Mayville Engineering Company (MEC),"Defiance, OH / Mayville, WI",Ford & Commercial Vehicle OEM Plants,"Craig D. Nichols (Senior VP, Operations & Supply Chain)",cnichols@mecinc.com,Complex tubular fabrications & heavy structural stampings for Ford Kentucky Truck,Ford AIAG B-10 Specification,Segment terminator and delimiter collisions when ERP mapping modules export nested tubular fabrication part catalogs.,"$5,000 - $10,000 chargeback fine per turned-away flatbed",pre-flight EDI 856 firewall for MEC truck freight,"Hi Craig,
 
 When shipping complex structural fabrications and stampings to Ford Kentucky Truck, minor ERP mapping glitches or trailing delimiter collisions can trigger immediate dock receiving chargebacks and gate turn-aways.
@@ -193,4 +207,5 @@ Would you be open to running a test ASN file through our pre-flight inspector to
 
 Best,
 Ganesh
-AutoBridge Systems | github.com/gana04982-ship-it/autobridge",sent,2026-11-20T06:38:55.984Z
+AutoBridge Systems | ganesh@sarkaargroups.com
+github.com/gana04982-ship-it/autobridge",sent,2026-11-20T16:12:32.971Z
