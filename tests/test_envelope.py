@@ -4,6 +4,10 @@ Validates ANSI X12 structural envelopes (ISA/IEA, GS/GE, ST/SE).
 """
 
 import unittest
+import sys
+import os
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from autobridge.core.lexer import tokenize_x12
 from autobridge.core.envelope import validate_envelopes
 

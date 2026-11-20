@@ -1,13 +1,22 @@
 """
 AutoBridge - Command-Line Interface (CLI)
-Instant terminal pre-flight scanner for automotive EDI 856 Advance Ship Notices.
+Instant terminal pre-flight scanner & deterministic auto-repair engine
+for automotive EDI 856 Advance Ship Notices (AIAG B-10 & GM 1724).
 """
 
 import sys
 import os
 import json
 import argparse
+import hashlib
+
+# Ensure parent directory is in sys.path
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
+
 from autobridge.engine import AutoBridgeEngine
+from autobridge.repair import AutoRepairEngine
 from autobridge.models.report import AuditReport
 
 
@@ -57,36 +66,107 @@ def render_terminal_report(report: AuditReport, filename: str):
     print("=" * 78 + "\n")
 
 
-def main():
-    parser = argparse.ArgumentParser(
-        description="AutoBridge: Precision pre-flight validator for automotive EDI 856 Advance Ship Notices."
-    )
-    parser.add_argument("file", help="Path to raw EDI file (.edi, .x12, .txt)")
-    parser.add_argument("--oem", default="FORD-AIAG-B10", help="OEM profile ruleset (default: FORD-AIAG-B10)")
-    parser.add_argument("--json", action="store_true", help="Output audit report as JSON")
-
-    args = parser.parse_args()
-
-    if not os.path.exists(args.file):
-        print(f"{RED}Error: File not found at '{args.file}'{RESET}", file=sys.stderr)
+def run_audit(file_path: str, oem: str, json_output: bool):
+    if not os.path.exists(file_path):
+        print(f"{RED}Error: File not found at '{file_path}'{RESET}", file=sys.stderr)
         sys.exit(1)
 
-    with open(args.file, "r", encoding="utf-8", errors="replace") as f:
+    with open(file_path, "r", encoding="utf-8", errors="replace") as f:
         content = f.read()
 
-    engine = AutoBridgeEngine(oem_profile=args.oem)
+    engine = AutoBridgeEngine(oem_profile=oem)
     try:
         report = engine.audit(content)
-        if args.json:
+        if json_output:
             print(json.dumps(report.to_dict(), indent=2))
         else:
-            render_terminal_report(report, os.path.basename(args.file))
-        
-        sys.exit(0 if report.is_compliant else 2)
-
+            render_terminal_report(report, os.path.basename(file_path))
+        return 0 if report.is_compliant else 2
     except Exception as e:
         print(f"{RED}AutoBridge Syntax Error: {e}{RESET}", file=sys.stderr)
+        return 1
+
+
+def run_repair(file_path: str, oem: str, output_path: str = None):
+    if not os.path.exists(file_path):
+        print(f"{RED}Error: File not found at '{file_path}'{RESET}", file=sys.stderr)
         sys.exit(1)
+
+    with open(file_path, "r", encoding="utf-8", errors="replace") as f:
+        content = f.read()
+
+    repairer = AutoRepairEngine(oem_profile=oem)
+    res = repairer.repair(content)
+
+    print("\n" + "=" * 78)
+    print(f"{BOLD}{CYAN}    🛠️ AUTOBRIDGE DETERMINISTIC AUTO-REPAIR ENGINE{RESET}")
+    print("=" * 78)
+    print(f"  {BOLD}Source File:{RESET}      {file_path}")
+    print(f"  {BOLD}OEM Profile:{RESET}      {oem}")
+    print(f"  {BOLD}Output Target:{RESET}    {output_path or 'STDOUT'}")
+    print(f"  {BOLD}Total Repairs:{RESET}    {res['total_fixes']} applied")
+    print("-" * 78)
+
+    for idx, c in enumerate(res["changes"], 1):
+        print(f"  {idx}. [{c['tag']}] {c['action']}")
+
+    print("-" * 78)
+    sha_hash = hashlib.sha256(res["repaired_edi"].encode("utf-8")).hexdigest().upper()
+    print(f"  {BOLD}{GREEN}✅ SHA-256 Digest:{RESET} {sha_hash}")
+
+    if output_path:
+        with open(output_path, "w", encoding="utf-8") as out:
+            out.write(res["repaired_edi"])
+        print(f"  {BOLD}{GREEN}✅ Clean EDI saved to:{RESET} {output_path}")
+
+    print("=" * 78 + "\n")
+    return 0
+
+
+def main():
+    args = sys.argv[1:]
+    if not args or args[0] in ["-h", "--help"]:
+        print(f"""{BOLD}AutoBridge CLI{RESET} — Precision Pre-Flight EDI 856 Firewall
+
+{BOLD}USAGE:{RESET}
+  python -m autobridge.cli audit <file> [--oem PROFILE] [--json]
+  python -m autobridge.cli repair <file> [--out OUTFILE] [--oem PROFILE]
+  python -m autobridge.cli <file> [--oem PROFILE] [--json]
+
+{BOLD}SUPPORTED OEM RULESETS:{RESET}
+  FORD-AIAG-B10 (Default)
+  GM-1724
+  STELLANTIS-DESADV
+""")
+        sys.exit(0)
+
+    # Subcommand routing
+    if args[0] == "audit":
+        parser = argparse.ArgumentParser()
+        parser.add_argument("command", choices=["audit"])
+        parser.add_argument("file")
+        parser.add_argument("--oem", default="FORD-AIAG-B10")
+        parser.add_argument("--json", action="store_true")
+        parsed = parser.parse_args(args)
+        sys.exit(run_audit(parsed.file, parsed.oem, parsed.json))
+
+    elif args[0] == "repair":
+        parser = argparse.ArgumentParser()
+        parser.add_argument("command", choices=["repair"])
+        parser.add_argument("file")
+        parser.add_argument("--out", default=None)
+        parser.add_argument("--oem", default="FORD-AIAG-B10")
+        parsed = parser.parse_args(args)
+        sys.exit(run_repair(parsed.file, parsed.oem, parsed.out))
+
+    else:
+        # Default fallback: treat as audit
+        parser = argparse.ArgumentParser()
+        parser.add_argument("file")
+        parser.add_argument("--oem", default="FORD-AIAG-B10")
+        parser.add_argument("--json", action="store_true")
+        parsed = parser.parse_args(args)
+        sys.exit(run_audit(parsed.file, parsed.oem, parsed.json))
 
 
 if __name__ == "__main__":

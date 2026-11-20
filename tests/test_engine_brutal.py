@@ -4,6 +4,10 @@ Simulates real factory EDI failures that trigger $5,000 to $15,000 OEM fines.
 """
 
 import unittest
+import sys
+import os
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from autobridge.engine import AutoBridgeEngine
 
 

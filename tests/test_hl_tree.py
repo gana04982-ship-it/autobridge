@@ -4,6 +4,10 @@ Validates hierarchical tree construction and relationship integrity in X12 856.
 """
 
 import unittest
+import sys
+import os
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from autobridge.core.lexer import tokenize_x12
 from autobridge.core.envelope import validate_envelopes
 from autobridge.core.hl_tree import build_hl_tree

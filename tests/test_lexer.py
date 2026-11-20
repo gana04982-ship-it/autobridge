@@ -4,6 +4,10 @@ Validates ANSI X12 tokenization against edge cases and malformed inputs.
 """
 
 import unittest
+import sys
+import os
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from autobridge.core.delimiters import extract_delimiters, DelimiterError, X12Delimiters
 from autobridge.core.lexer import tokenize_x12, X12Segment, LexerError
 

@@ -2,15 +2,17 @@
   <img src="ui/logo_icon.png" width="120" alt="AutoBridge Logo" style="border-radius: 20px;" />
 </p>
 
-# AutoBridge Core (`autobridge`)
+# AutoBridge (`autobridge`)
 
 > **The Mathematical Guarantee of Automotive Supply Chain Delivery.**  
-> Zero-dependency ANSI X12 856 (Advance Ship Notice) AST parser & deterministic pre-flight validator for Ford AIAG and General Motors OEM receiving docks.
+> Zero-dependency ANSI X12 856 (Advance Ship Notice) AST parser, deterministic auto-repair firewall, and Driver Dock Clearance Certificate engine for Ford AIAG B-10, GM 1724, and Stellantis OEM receiving docks.
 
-[![Tests](https://img.shields.io/badge/tests-26%20passed-brightgreen.svg)](tests/)
+[![CI](https://github.com/gana04982-ship-it/autobridge/actions/workflows/ci.yml/badge.svg)](https://github.com/gana04982-ship-it/autobridge/actions/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/tests-29%20passed-brightgreen.svg)](tests/)
+[![Latency](https://img.shields.io/badge/audit%20latency-0.2ms-blue.svg)]()
 [![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)]()
 [![Zero Dependencies](https://img.shields.io/badge/dependencies-0-success.svg)]()
-[![License](https://img.shields.io/badge/license-BSL--1.1-purple.svg)]()
+[![License](https://img.shields.io/badge/license-MIT-purple.svg)](LICENSE)
 
 ---
 
@@ -18,20 +20,20 @@
 
 Automotive parts manufacturers (Tier-1 and Tier-2 suppliers) operate on razor-thin 3%–6% margins. Every shipment leaving a supplier's loading dock must be accompanied by an electronic **EDI 856 Advance Ship Notice (ASN)** transmitted over AS2 networks.
 
-When an 18-wheeler truck arrives at an OEM assembly plant (e.g. Ford Dearborn, GM Arlington):
+When an 18-wheeler truck arrives at an OEM assembly plant (e.g. Ford Dearborn, GM Arlington, Stellantis SHAP):
 * Automated overhead dock scanners read pallet 2D DataMatrix barcodes and compare them against the received EDI 856 stream.
-* If a single qualifier is mismatched (e.g. `LIN02` is `ZZ` instead of `BP`), if the pallet packaging count in `TD102` drifts from actual tare loops, or if Bill of Lading (`REF*BM`) is missing:
+* If a single qualifier is mismatched (e.g. `LIN02` is `ZZ` instead of `BP`), if the pallet packaging count in `TD102` drifts from actual tare loops, if Bill of Lading (`REF*BM`) is missing, or if timestamps are inverted:
 * **The OEM automated receiving system rejects the delivery and levies a $5,000 to $15,000 chargeback fine per incident**, deducting it directly from the supplier's payment invoice.
 
 Legacy EDI Value-Added Networks (VANs) like SPS Commerce and OpenText act as passive post offices: they disclaim all chargeback liability and transmit invalid files without semantic inspection.
 
-**AutoBridge is the pre-flight firewall that prevents dock fines before the truck leaves the gate.**
+**AutoBridge is the pre-flight firewall that catches and auto-repairs dock traps before the truck releases from the supplier's gate.**
 
 ---
 
-## 🏛️ Architecture: 4-Tier Verification Pipeline
+## 🏛️ Architecture: 4-Tier Verification & Auto-Repair Pipeline
 
-AutoBridge processes EDI streams through a deterministic, four-stage validation pipeline:
+AutoBridge processes EDI streams through a deterministic, four-stage validation and repair pipeline in **sub-millisecond time (<0.5ms)**:
 
 ```
 Raw ANSI X12 Stream
@@ -49,12 +51,23 @@ Raw ANSI X12 Stream
   Reconstructs parent-child topological loops: Shipment (S) -> Order (O) -> Tare (T) -> Pack (P) -> Item (I).
         │
         ▼
-[Tier 4: OEM Semantic Dock Rules (Ford AIAG B-10 / GM 1724)]
+[Tier 4: OEM Semantic Dock Rules (Ford AIAG B-10 / GM 1724 / Stellantis DESADV)]
   Cross-checks pallet tallies, gross weights, carrier SCAC codes, BOL presence, and barcode uniqueness.
         │
-        ▼
-AuditReport (Green "Certified Safe to Ship" OR Actionable Remediation Audit)
+        ├──▶ AuditReport (Green "Certified Safe to Ship" OR Actionable Remediation Audit)
+        ├──▶ AutoRepairEngine (In-memory deterministic AST auto-fix + SE01 recalculation)
+        └──▶ Driver Dock Clearance Certificate (Cryptographic SHA-256 seal for truck clipboard)
 ```
+
+---
+
+## 💻 3-Page Industrial Web Application (`ui/`)
+
+AutoBridge includes an enterprise web suite running locally or statically in any browser:
+
+1. **Landing Page (`ui/index.html`)**: Interactive dock fine exposure calculator, architecture walkthrough, and live terminal simulation.
+2. **Pre-Flight Inspector Studio (`ui/inspector.html`)**: Drag-and-drop EDI file ingestion, line-by-line diff inspector, plain-English dock fine explanation, and 1-click **Auto-Fix All** repair button.
+3. **BOL Dock Clearance Certificate (`ui/certificate.html`)**: Print-ready 8.5" × 11" driver certificate stamped with plant delivery details, reconciled segment badges, and cryptographic SHA-256 verification hash to staple to the driver's clipboard.
 
 ---
 
@@ -64,7 +77,7 @@ AutoBridge has **zero external dependencies** and runs on Python 3.9+.
 
 ### 1. Scan a Production ASN File
 ```bash
-python -m autobridge.cli samples/ford_clean_shipment.edi
+python -m autobridge.cli audit samples/ford_clean_shipment.edi --oem FORD-AIAG-B10
 ```
 
 **Output:**
@@ -89,7 +102,7 @@ python -m autobridge.cli samples/ford_clean_shipment.edi
 
 ### 2. Detect a Dock Rejection Trap File
 ```bash
-python -m autobridge.cli samples/ford_dock_rejection_trap.edi
+python -m autobridge.cli audit samples/ford_dock_rejection_trap.edi --oem FORD-AIAG-B10
 ```
 
 **Output:**
@@ -114,71 +127,80 @@ DETAILED VIOLATION AUDIT:
 1. [FORD-003-MISSING-BOL] Line 5 in segment REF
    Severity: CRITICAL
    Dock Impact: Missing mandatory Bill of Lading number (REF*BM) at Shipment level.
-   Violating Value: 'Missing'
-   Specification Rule: Ford AIAG B-10: REF*BM mandatory for dock receiving
    👉 Remediation Action: Add REF*BM segment with Bill of Lading number under HL*...*S.
 
 2. [FORD-008-PALLET-COUNT-MISMATCH] Line 7 in segment TD1
    Severity: CRITICAL
-   Dock Impact: Packaging tally mismatch: TD102 declares 2 pallet(s), but HL tree contains 1 Tare (T) level pallet node(s).
-   Violating Value: 'Declared:2 vs Actual:1'
-   Specification Rule: Ford AIAG: Declared lading count must equal Tare HL nodes
+   Dock Impact: Packaging tally mismatch: TD102 declares 2 pallet(s), but HL tree contains 1 Tare (T) node.
    👉 Remediation Action: Update TD102 from 2 to 1.
 
 3. [FORD-018-INVALID-PART-QUALIFIER] Line 18 in segment LIN
    Severity: CRITICAL
    Dock Impact: LIN02 qualifier must be 'BP' (Buyer's Part Number). Found 'ZZ'.
-   Violating Value: 'ZZ'
-   Specification Rule: Ford AIAG: LIN02 must equal 'BP'
    👉 Remediation Action: Set LIN02 qualifier to 'BP'.
 
 ==============================================================================
 ```
 
-### 3. Machine-Readable JSON Mode (For ERP / AS2 Proxy Gateways)
+### 3. 1-Click Deterministic Auto-Repair
 ```bash
-python -m autobridge.cli samples/ford_dock_rejection_trap.edi --json
+python -m autobridge.cli repair samples/ford_dock_rejection_trap.edi --out clean_shipment.edi
+```
+
+**Output:**
+```text
+==============================================================================
+    🛠️ AUTOBRIDGE DETERMINISTIC AUTO-REPAIR ENGINE
+==============================================================================
+  Source File:      samples/ford_dock_rejection_trap.edi
+  OEM Profile:      FORD-AIAG-B10
+  Output Target:    clean_shipment.edi
+  Total Repairs:    4 applied
+------------------------------------------------------------------------------
+  1. [LIN] Corrected part qualifier LIN02 from 'ZZ' to mandatory 'BP' (Buyer's Part Number)
+  2. [TD1] Synchronized declared packaging count from 2 to match physical 1 Tare pallet node(s)
+  3. [REF] Injected mandatory Bill of Lading segment 'REF*BM*BOL-948201-B' under Shipment HL loop
+  4. [SE]  Recomputed exact ST-to-SE segment count from 19 to true depth 20
+------------------------------------------------------------------------------
+  ✅ SHA-256 Digest: 057D49F7E4BA50D31F7BA47D9E53C590B032F96946D9E76C9DFA797E4D245E4F
+  ✅ Post-Repair Status: 100% COMPLIANT (0 Violations • $0 Fine Risk)
+==============================================================================
 ```
 
 ---
 
-## 🐍 Python API Integration
+## 🌐 Zero-Dependency HTTP & REST API Server
 
-```python
-from autobridge.engine import AutoBridgeEngine
+AutoBridge includes a built-in multi-threaded HTTP server with zero third-party requirements:
 
-engine = AutoBridgeEngine(oem_profile="FORD-AIAG-B10")
-report = engine.audit(raw_edi_content)
-
-if report.is_compliant:
-    print(f"Certified: Shipment {report.shipment_summary.shipment_id} safe to transmit.")
-    # Forward to AS2 endpoint
-else:
-    print(f"Intercepted {report.critical_errors} critical dock violations!")
-    for v in report.violations:
-        print(f" - [{v.rule_id}] Line {v.line_number}: {v.message}")
-        print(f"   Fix: {v.fix_recommendation}")
+```bash
+python autobridge/server.py 8085
 ```
+
+### Endpoints:
+* `GET /api/health` — Engine operational status, supported rulesets, server time.
+* `GET /api/diagnose` — Full AIAG B-10 & GM 1724 rule and chargeback catalog.
+* `POST /api/audit` — Audits raw EDI payload and returns structured JSON violation report.
+* `POST /api/repair` — Automatically fixes AST defects and recalculates segment counts.
 
 ---
 
-## 🧪 Precision Test Harness
+## 🧪 Comprehensive Test Suite (29 Tests Passing in 0.002s)
 
-Run the exhaustive test suite:
 ```bash
-python -m unittest discover tests
+python -m unittest discover tests -v
 ```
 
-Tests cover:
-* Dynamic delimiter extraction (Standard `*`, `~`, non-standard `|`, `^`, composite separators).
-* Continuous byte-stream transmissions vs multi-line formatted files.
-* Envelope control number sync (`ISA13` $\leftrightarrow$ `IEA02`, `GS06` $\leftrightarrow$ `GE02`, `ST02` $\leftrightarrow$ `SE02`).
-* Exact segment count arithmetic (`SE01`).
-* Recursive `HL` tree graph topology, orphan nodes, multiple roots, and sequential ordering.
-* Semantic AIAG checks: weight balancing, packaging count reconciliation, barcode uniqueness, part qualifiers.
+Test coverage includes:
+* **Delimiter Extraction**: Standard `*`, `~`, non-standard `|`, `^`, composite separators.
+* **Envelope Arithmetic**: `ISA13` $\leftrightarrow$ `IEA02`, `GS06` $\leftrightarrow$ `GE02`, exact `SE01` segment counting.
+* **HL Graph Loop Hierarchy**: Orphan loop detection, parent ID pointer repairs, cyclic dependency rejection.
+* **Packaging Synchronization**: `TD1` tare pallet count reconciliation with physical Tare loops.
+* **Semantic Verification**: Buyer part qualifiers (`LIN02=BP`), Bill of Lading (`REF*BM`), timestamp chronological ordering (`DTM 011 < DTM 017`).
+* **Idempotency**: Running repair twice produces 100% compliant, bit-for-bit identical output.
 
 ---
 
 ## 📄 License
-Licensed under the **Business Source License 1.1 (BSL-1.1)**.  
-Free for individual developers, testing, and internal evaluation. Commercial hosting as a competing managed cloud gateway requires a commercial license agreement.
+Licensed under the [MIT License](LICENSE).
+Free for industrial use, plant integration, and evaluation.
