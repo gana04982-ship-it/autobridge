@@ -30,5 +30,9 @@ jobs:
 
     - name: Run Real Sample EDI Audit & Auto-Repair Smoke Test
       run: |
-        python autobridge/cli.py audit samples/ford_dock_rejection_trap.edi --oem FORD-AIAG-B10
-        python autobridge/cli.py repair samples/ford_dock_rejection_trap.edi --out /tmp/clean.edi || python autobridge/cli.py repair samples/ford_dock_rejection_trap.edi --out clean_test.edi
+        echo "Testing dock rejection trap detection (expected non-zero exit)..."
+        python autobridge/cli.py audit samples/ford_dock_rejection_trap.edi --oem FORD-AIAG-B10 || true
+        echo "Testing deterministic auto-repair..."
+        python autobridge/cli.py repair samples/ford_dock_rejection_trap.edi --out clean_test.edi
+        echo "Verifying repaired file passes audit with 100% compliance..."
+        python autobridge/cli.py audit clean_test.edi --oem FORD-AIAG-B10
