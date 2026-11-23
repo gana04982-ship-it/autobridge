@@ -1,3 +1,6 @@
 __pycache__/
 *.pyc
 .pytest_cache/
+.autobridge_state/
+*.edi
+

@@ -8,7 +8,7 @@
 > Zero-dependency ANSI X12 856 (Advance Ship Notice) AST parser, deterministic auto-repair firewall, and Driver Dock Clearance Certificate engine for Ford AIAG B-10, GM 1724, and Stellantis OEM receiving docks.
 
 [![CI](https://github.com/gana04982-ship-it/autobridge/actions/workflows/ci.yml/badge.svg)](https://github.com/gana04982-ship-it/autobridge/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-29%20passed-brightgreen.svg)](tests/)
+[![Tests](https://img.shields.io/badge/tests-40%20passed-brightgreen.svg)](tests/)
 [![Latency](https://img.shields.io/badge/audit%20latency-0.2ms-blue.svg)]()
 [![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)]()
 [![Zero Dependencies](https://img.shields.io/badge/dependencies-0-success.svg)]()
