@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="ui/logo_icon.png" width="120" alt="AutoBridge Logo" style="border-radius: 20px;" />
+  <img src="ui/logo_brand_transparent.png" width="340" alt="AutoBridge Labs Logo" />
 </p>
 
 # AutoBridge (`autobridge`)
