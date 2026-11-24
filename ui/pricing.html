@@ -90,7 +90,7 @@
         </button>
         <button id="billingAnnual" type="button" class="px-5 py-1.5 rounded-full text-xs font-semibold text-muted hover:text-white transition-all flex items-center gap-1.5">
           <span>Annual Billing</span>
-          <span class="px-1.5 py-0.5 rounded-full bg-sage/20 text-sage text-[10px] font-mono">SAVE 20%</span>
+          <span class="px-1.5 py-0.5 rounded-full bg-sage/20 text-sage text-[10px] font-mono">SAVE 5%</span>
         </button>
       </div>
     </div>
@@ -111,7 +111,7 @@
 
           <div class="mb-6 pb-6 border-b border-border">
             <div class="flex items-baseline gap-1">
-              <span class="text-3xl sm:text-4xl font-extrabold text-white price-amount" data-monthly="199" data-annual="159">$199</span>
+              <span class="text-3xl sm:text-4xl font-extrabold text-white price-amount" data-monthly="199" data-annual="189">$199</span>
               <span class="text-xs text-muted font-mono price-period">/ month</span>
             </div>
             <p class="text-[11px] text-muted mt-1 billing-note">Billed monthly • Cancel anytime</p>
@@ -164,7 +164,7 @@
 
           <div class="mb-6 pb-6 border-b border-border">
             <div class="flex items-baseline gap-1">
-              <span class="text-3xl sm:text-4xl font-extrabold text-white price-amount" data-monthly="499" data-annual="399">$499</span>
+              <span class="text-3xl sm:text-4xl font-extrabold text-white price-amount" data-monthly="499" data-annual="474">$499</span>
               <span class="text-xs text-muted font-mono price-period">/ month</span>
             </div>
             <p class="text-[11px] text-muted mt-1 billing-note">Billed monthly • Instant cryptographic key</p>
@@ -217,7 +217,7 @@
 
           <div class="mb-6 pb-6 border-b border-border">
             <div class="flex items-baseline gap-1">
-              <span class="text-3xl sm:text-4xl font-extrabold text-white price-amount" data-monthly="1499" data-annual="1199">$1,499</span>
+              <span class="text-3xl sm:text-4xl font-extrabold text-white price-amount" data-monthly="1499" data-annual="1424">$1,499</span>
               <span class="text-xs text-muted font-mono price-period">/ month</span>
             </div>
             <p class="text-[11px] text-muted mt-1 billing-note">Billed monthly or Net-30 Invoice</p>
@@ -426,7 +426,7 @@
       });
 
       document.querySelectorAll(".billing-note").forEach(el => {
-        el.textContent = annual ? "Billed annually • 2 months free included" : "Billed monthly • Cancel anytime";
+        el.textContent = annual ? "Billed annually • 5% discount applied" : "Billed monthly • Cancel anytime";
       });
     }
 
@@ -436,21 +436,21 @@
         title: "Plant Pilot Subscription",
         badge: "Tier-3 Pilot",
         monthly: 199,
-        annual: 159 * 12,
+        annual: 189 * 12,
         desc: "Unlimited Web Pre-Flight Audits for 1 plant facility."
       },
       pro: {
         title: "Production Firewall Subscription",
         badge: "Production Tier-1",
         monthly: 499,
-        annual: 399 * 12,
+        annual: 474 * 12,
         desc: "Auto-Repair Engine & Plant Sidecar Watcher Daemon for up to 5 facilities."
       },
       enterprise: {
         title: "Enterprise Fleet License",
         badge: "Global Fleet",
         monthly: 1499,
-        annual: 1199 * 12,
+        annual: 1424 * 12,
         desc: "Unlimited facilities, custom rulesets, dedicated systems architect hotline."
       }
     };
@@ -467,7 +467,7 @@
       document.getElementById("modalTierBadge").textContent = data.badge;
       document.getElementById("modalPlanTitle").textContent = data.title;
       document.getElementById("modalProductSummary").textContent = `AutoBridge ${data.title}`;
-      document.getElementById("modalCycleSummary").textContent = isAnnual ? "Annual (20% Off)" : "Monthly";
+      document.getElementById("modalCycleSummary").textContent = isAnnual ? "Annual (5% Off)" : "Monthly";
       
       const amount = isAnnual ? data.annual : data.monthly;
       document.getElementById("modalTotalDue").textContent = "$" + amount.toLocaleString() + ".00";
