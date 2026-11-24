@@ -8,10 +8,11 @@
 > Zero-dependency ANSI X12 856 (Advance Ship Notice) AST parser, deterministic auto-repair firewall, and Driver Dock Clearance Certificate engine for Ford AIAG B-10, GM 1724, and Stellantis OEM receiving docks.
 
 [![CI](https://github.com/gana04982-ship-it/autobridge/actions/workflows/ci.yml/badge.svg)](https://github.com/gana04982-ship-it/autobridge/actions/workflows/ci.yml)
+[![Pages Deployment](https://github.com/gana04982-ship-it/autobridge/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/gana04982-ship-it/autobridge/actions/workflows/deploy-pages.yml)
+[![Live Web Inspector](https://img.shields.io/badge/live%20web%20inspector-air--gapped-emerald.svg)](https://gana04982-ship-it.github.io/autobridge/)
 [![Tests](https://img.shields.io/badge/tests-40%20passed-brightgreen.svg)](tests/)
 [![Latency](https://img.shields.io/badge/audit%20latency-0.2ms-blue.svg)]()
-[![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)]()
-[![Zero Dependencies](https://img.shields.io/badge/dependencies-0-success.svg)]()
+[![Security](https://img.shields.io/badge/security-zero--data%20retention-blue.svg)](ui/security.html)
 [![License](https://img.shields.io/badge/license-MIT-purple.svg)](LICENSE)
 
 ---
@@ -185,7 +186,7 @@ python autobridge/server.py 8085
 
 ---
 
-## 🧪 Comprehensive Test Suite (29 Tests Passing in 0.002s)
+## 🧪 Comprehensive Test Suite (40 Tests Passing in 0.13s)
 
 ```bash
 python -m unittest discover tests -v
@@ -200,6 +201,19 @@ Test coverage includes:
 * **Idempotency**: Running repair twice produces 100% compliant, bit-for-bit identical output.
 
 ---
+
+## 🔒 Enterprise Security, Privacy & Compliance Policies
+
+AutoBridge is designed for automotive Tier-1 and Tier-2 suppliers with strict data governance mandates:
+
+* **[Security Architecture Whitepaper](ui/security.html)**: Details our 100% client-side, in-memory execution model, offline air-gap capabilities, and cryptographic SHA-256 manifest signing.
+* **[Automotive Data Privacy Policy](ui/privacy.html)**: Guarantees Zero-Data Retention (ZDR), zero analytics trackers, zero advertising pixels, and strict compliance with GDPR Art. 25 & CCPA.
+* **[Enterprise Terms of Service](ui/terms.html)**: Clear commercial terms, AIAG B-10 & GM 1724 deterministic validation scopes, and dock chargeback disclaimers.
+
+---
+
+## 🏢 Corporate Entity & Attribution
+AutoBridge Labs is an autonomous industrial systems engineering division of **Sarkaar Groups** ([sarkaargroups.com](https://sarkaargroups.com)).
 
 ## 📄 License
 Licensed under the [MIT License](LICENSE).

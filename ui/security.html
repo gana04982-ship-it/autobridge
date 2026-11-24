@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security & Air-Gapped Architecture — AutoBridge Labs</title>
+  <link rel="icon" type="image/png" href="logo_icon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            void: '#000000',
+            surface: '#0A0A0A',
+            elevated: '#111111',
+            border: '#1F1F1F',
+            hairline: '#262626',
+            sage: '#30A46C',
+            crimson: '#E5484D',
+            muted: '#888888',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #000000; color: #EDEDED; font-feature-settings: "cv02", "cv03", "cv04", "cv11"; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0A0A0A; }
+    ::-webkit-scrollbar-thumb { background: #262626; border-radius: 3px; }
+  </style>
+</head>
+<body class="min-h-screen bg-void text-[#EDEDED] antialiased selection:bg-white selection:text-black flex flex-col justify-between">
+
+  <!-- TOP NAVIGATION BAR -->
+  <header class="sticky top-0 z-50 h-16 bg-black/85 backdrop-blur-md border-b border-border">
+    <div class="max-w-5xl mx-auto h-full px-4 sm:px-6 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 group">
+        <img src="logo_brand_transparent.png" alt="AutoBridge Labs" class="h-8 w-auto group-hover:opacity-90 transition-opacity" />
+        <span class="font-mono text-[11px] text-muted border border-border bg-surface px-1.5 py-0.5 rounded">Security Whitepaper</span>
+      </a>
+
+      <div class="flex items-center gap-4 text-xs">
+        <a href="index.html" class="text-muted hover:text-white transition-colors">Home</a>
+        <a href="inspector.html" class="bg-white hover:bg-[#E5E5E5] text-black font-semibold px-3 py-1.5 rounded-full transition-colors inline-flex items-center gap-1.5">
+          <span>Open Inspector</span>
+          <span class="text-xs">→</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN SECURITY ARCHITECTURE CONTENT -->
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+    
+    <!-- Hero Header -->
+    <div class="mb-12 border-b border-border pb-8">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sage/10 border border-sage/20 text-sage font-mono text-xs mb-4">
+        <span class="w-2 h-2 rounded-full bg-sage animate-pulse"></span>
+        Zero-Data Retention • Air-Gapped Client Architecture
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-4">
+        Enterprise Security & Cryptographic Guarantee
+      </h1>
+      <p class="text-muted text-base sm:text-lg leading-relaxed max-w-2xl">
+        Automotive supply chain data contains confidential production schedules, part serials, and trade secrets. 
+        AutoBridge was engineered from first principles so that your EDI payloads <strong class="text-white">never leave your browser</strong>.
+      </p>
+    </div>
+
+    <!-- Security Pillars Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
+      
+      <div class="p-6 rounded-xl bg-surface border border-border">
+        <div class="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-sage mb-4 font-mono font-bold text-lg">
+          01
+        </div>
+        <h3 class="text-lg font-semibold text-white mb-2">100% Client-Side In-Memory Execution</h3>
+        <p class="text-muted text-sm leading-relaxed">
+          The AutoBridge Abstract Syntax Tree (AST) parser executes exclusively inside your local browser JavaScript runtime. 
+          When you drag and drop or paste an ANSI X12 856 payload, it is parsed directly in volatile client memory. No HTTP network requests transmit your EDI content to any external server.
+        </p>
+      </div>
+
+      <div class="p-6 rounded-xl bg-surface border border-border">
+        <div class="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-sage mb-4 font-mono font-bold text-lg">
+          02
+        </div>
+        <h3 class="text-lg font-semibold text-white mb-2">Zero Data Retention (ZDR)</h3>
+        <p class="text-muted text-sm leading-relaxed">
+          AutoBridge does not maintain backend databases, Redis queues, or analytical warehouses for EDI files. 
+          When you close or refresh your browser tab, the AST, raw segments, and dock clearance states are instantly destroyed. 
+          Zero bytes are logged.
+        </p>
+      </div>
+
+      <div class="p-6 rounded-xl bg-surface border border-border">
+        <div class="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-sage mb-4 font-mono font-bold text-lg">
+          03
+        </div>
+        <h3 class="text-lg font-semibold text-white mb-2">Local SHA-256 Cryptographic Sealing</h3>
+        <p class="text-muted text-sm leading-relaxed">
+          Every Dock Clearance Certificate is signed with a deterministic SHA-256 digest computed via the standard W3C Web Crypto API (<code class="text-xs bg-void px-1 py-0.5 rounded text-white font-mono">crypto.subtle.digest</code>). 
+          This proves the exact mathematical payload that was audited without exposing any payload contents over a network.
+        </p>
+      </div>
+
+      <div class="p-6 rounded-xl bg-surface border border-border">
+        <div class="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-sage mb-4 font-mono font-bold text-lg">
+          04
+        </div>
+        <h3 class="text-lg font-semibold text-white mb-2">Air-Gapped & Offline Capable</h3>
+        <p class="text-muted text-sm leading-relaxed">
+          Once the AutoBridge web application assets are loaded into your browser cache, you can physically disconnect your workstation from the internet or Wi-Fi. 
+          The entire pre-flight engine, syntax evaluator, and certificate generator continue to function normally with zero internet connectivity.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Detailed Technical Architecture Section -->
+    <section class="space-y-10 border-t border-border pt-10">
+      
+      <div>
+        <h2 class="text-xl font-bold text-white mb-4">Enterprise Compliance & Regulatory Alignment</h2>
+        <div class="space-y-4 text-sm text-muted leading-relaxed">
+          <p>
+            AutoBridge Labs operates under the stringent data governance frameworks demanded by automotive OEMs (Ford, General Motors, Stellantis, Honda, Toyota) and Tier-1 suppliers:
+          </p>
+          <ul class="list-disc pl-5 space-y-2 text-white/90">
+            <li><strong class="text-white">NIST SP 800-171 & CMMC Alignment:</strong> Protection of Controlled Unclassified Information (CUI) within non-federal systems through local cryptographic isolation.</li>
+            <li><strong class="text-white">SOC 2 Type II Confidentiality Principles:</strong> By maintaining a Zero-Data-Retention (ZDR) architecture, AutoBridge eliminates data liability at the architectural level. There is no central data store subject to breach, subpoena, or unauthorized exfiltration.</li>
+            <li><strong class="text-white">ITAR & Defense Logistics:</strong> Because processing occurs on the customer's controlled local endpoint, defense contractors and dual-use automotive suppliers can inspect logistics manifests without triggering cross-border data transfer violations.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-bold text-white mb-4">How to Verify Locally in Your Browser</h2>
+        <p class="text-sm text-muted leading-relaxed mb-4">
+          We encourage enterprise security teams and IT auditors to verify our client-side isolation directly:
+        </p>
+        <div class="p-4 rounded-lg bg-surface border border-hairline font-mono text-xs space-y-2 text-white/80">
+          <p class="text-muted">// Step 1: Open Chrome / Edge / Firefox Developer Tools</p>
+          <p>Press F12 &rarr; Select the <span class="text-white font-bold">Network</span> tab.</p>
+          <p class="text-muted">// Step 2: Drop your raw ANSI X12 856 EDI file into AutoBridge Inspector</p>
+          <p>Observe that <span class="text-sage font-bold">zero outbound POST/PUT requests</span> are emitted containing your file data.</p>
+          <p class="text-muted">// Step 3: Test completely offline</p>
+          <p>Toggle Developer Tools &rarr; Network &rarr; <span class="text-white font-bold">Offline</span>. Run full audits with 100% speed.</p>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-bold text-white mb-4">Security Inquiries & Vulnerability Disclosure</h2>
+        <p class="text-sm text-muted leading-relaxed">
+          For enterprise SOC 2 audit packages, vendor security questionnaires, or vulnerability reports, contact our architecture security lead at 
+          <a href="mailto:ganesh@sarkaargroups.com" class="text-white underline hover:text-sage transition-colors">ganesh@sarkaargroups.com</a>.
+        </p>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- LEGAL FOOTER -->
+  <footer class="border-t border-border bg-black py-8 px-4 sm:px-6 mt-16">
+    <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted">
+      <div>
+        &copy; 2026 AutoBridge Labs. An autonomous industrial systems unit of <span class="text-white">Sarkaar Groups</span>.
+      </div>
+      <div class="flex items-center gap-6">
+        <a href="security.html" class="text-white font-medium hover:text-sage transition-colors">Security</a>
+        <a href="privacy.html" class="hover:text-white transition-colors">Privacy Policy</a>
+        <a href="terms.html" class="hover:text-white transition-colors">Terms of Service</a>
+        <a href="inspector.html" class="hover:text-white transition-colors">Web Inspector</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

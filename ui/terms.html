@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms of Service — AutoBridge Labs</title>
+  <link rel="icon" type="image/png" href="logo_icon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            void: '#000000',
+            surface: '#0A0A0A',
+            elevated: '#111111',
+            border: '#1F1F1F',
+            hairline: '#262626',
+            sage: '#30A46C',
+            crimson: '#E5484D',
+            muted: '#888888',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #000000; color: #EDEDED; font-feature-settings: "cv02", "cv03", "cv04", "cv11"; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0A0A0A; }
+    ::-webkit-scrollbar-thumb { background: #262626; border-radius: 3px; }
+  </style>
+</head>
+<body class="min-h-screen bg-void text-[#EDEDED] antialiased selection:bg-white selection:text-black flex flex-col justify-between">
+
+  <!-- TOP NAVIGATION BAR -->
+  <header class="sticky top-0 z-50 h-16 bg-black/85 backdrop-blur-md border-b border-border">
+    <div class="max-w-5xl mx-auto h-full px-4 sm:px-6 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 group">
+        <img src="logo_brand_transparent.png" alt="AutoBridge Labs" class="h-8 w-auto group-hover:opacity-90 transition-opacity" />
+        <span class="font-mono text-[11px] text-muted border border-border bg-surface px-1.5 py-0.5 rounded">Terms of Service</span>
+      </a>
+
+      <div class="flex items-center gap-4 text-xs">
+        <a href="index.html" class="text-muted hover:text-white transition-colors">Home</a>
+        <a href="inspector.html" class="bg-white hover:bg-[#E5E5E5] text-black font-semibold px-3 py-1.5 rounded-full transition-colors inline-flex items-center gap-1.5">
+          <span>Open Inspector</span>
+          <span class="text-xs">→</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN TERMS CONTENT -->
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+    
+    <div class="mb-10 border-b border-border pb-8">
+      <span class="font-mono text-xs uppercase tracking-wider text-muted block mb-2">Effective Date: November 24, 2026</span>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-4">
+        Enterprise Terms of Service
+      </h1>
+      <p class="text-muted text-base leading-relaxed">
+        These Terms of Service (&ldquo;Terms&rdquo;) govern access to and use of the pre-flight verification engines, Web Inspector, and documentation provided by <strong class="text-white">AutoBridge Labs</strong>, an industrial engineering unit of <strong class="text-white">Sarkaar Groups</strong>.
+      </p>
+    </div>
+
+    <div class="space-y-8 text-sm text-muted leading-relaxed">
+      
+      <div>
+        <h2 class="text-lg font-bold text-white mb-3">1. Scope of Service & Pre-Flight Validation</h2>
+        <p>
+          AutoBridge provides deterministic Abstract Syntax Tree (AST) validation and automated syntactic repair for ANSI X12 856 Ship Notice / Manifest transactions, calibrated against published OEM implementation guidelines (including Automotive Industry Action Group AIAG B-10, GM 1724, and Stellantis specifications).
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-lg font-bold text-white mb-3">2. Permitted Commercial Use & License</h2>
+        <p>
+          Subject to these Terms, AutoBridge grants Tier-1, Tier-2, Tier-3 automotive suppliers, logistics carriers, 3PL providers, and EDI consultants a non-exclusive, non-transferable license to utilize the AutoBridge Web Inspector for testing, verifying, and preparing electronic shipping manifests prior to physical dock delivery.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-lg font-bold text-white mb-3">3. Nature of Mathematical Verification vs. OEM Discretion</h2>
+        <p>
+          AutoBridge performs mathematical syntax and structural loop verification with sub-millisecond precision. However, you acknowledge that:
+        </p>
+        <ul class="list-disc pl-5 mt-2 space-y-1.5 text-white/90">
+          <li>Final dock clearance and physical gate acceptance remain under the operational authority of the receiving automotive assembly plant or distribution hub.</li>
+          <li>AutoBridge verifies electronic file syntax, segment requirements, and loop integrity; physical cargo discrepancies (e.g. incorrect box labeling, mismatched physical bar codes, trailer damage, or late carrier arrival) are independent operational factors.</li>
+          <li>The issuance of a Dock Clearance Certificate indicates mathematical adherence to the selected OEM electronic specification at the time of client-side execution.</li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="text-lg font-bold text-white mb-3">4. Limitation of Liability & Chargeback Disclaimers</h2>
+        <p>
+          TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL AUTOBRIDGE LABS, SARKAAR GROUPS, OR ITS DIRECTORS, EMPLOYEES, OR AFFILIATES BE LIABLE FOR ANY INDIRECT, PUNITIVE, INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES—INCLUDING WITHOUT LIMITATION OEM CHARGEBACK FINES, RECEIVING DOCK GATE PENALTIES, ASSEMBLY LINE SHUTDOWN ASSESSMENTS, OR LOSS OF BUSINESS REPUTATION—ARISING OUT OF OR RELATED TO THE USE OF OR INABILITY TO USE THE SERVICE.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-lg font-bold text-white mb-3">5. Intellectual Property Rights</h2>
+        <p>
+          The AutoBridge compiler algorithms, Abstract Syntax Tree evaluation models, custom heuristic auto-repair routines, interface designs, logos, and brandmarks are the exclusive intellectual property of <strong class="text-white">AutoBridge Labs / Sarkaar Groups</strong>. You may not reverse-engineer, decompile, or copy the underlying parser codebase without explicit written authorization.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-lg font-bold text-white mb-3">6. Confidentiality & Zero Data Retention</h2>
+        <p>
+          AutoBridge covenants that all EDI 856 payloads submitted to the Web Inspector are executed locally in client memory and are never retained, stored, or mined for third-party commercial purposes, as guaranteed under our <a href="privacy.html" class="text-sage underline">Privacy Policy</a> and <a href="security.html" class="text-sage underline">Security Whitepaper</a>.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-lg font-bold text-white mb-3">7. Contact Information</h2>
+        <p>
+          For enterprise agreements, customized OEM profile rulesets, or legal notices:
+        </p>
+        <div class="p-4 rounded-lg bg-surface border border-hairline mt-2 space-y-1 font-mono text-xs text-white/90">
+          <p><span class="text-muted">Entity:</span> AutoBridge Labs (Sarkaar Groups)</p>
+          <p><span class="text-muted">Executive Contact:</span> Ganesh Sarkaar</p>
+          <p><span class="text-muted">Email:</span> <a href="mailto:ganesh@sarkaargroups.com" class="text-sage underline">ganesh@sarkaargroups.com</a></p>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- LEGAL FOOTER -->
+  <footer class="border-t border-border bg-black py-8 px-4 sm:px-6 mt-16">
+    <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted">
+      <div>
+        &copy; 2026 AutoBridge Labs. An autonomous industrial systems unit of <span class="text-white">Sarkaar Groups</span>.
+      </div>
+      <div class="flex items-center gap-6">
+        <a href="security.html" class="hover:text-white transition-colors">Security</a>
+        <a href="privacy.html" class="hover:text-white transition-colors">Privacy Policy</a>
+        <a href="terms.html" class="text-white font-medium hover:text-sage transition-colors">Terms of Service</a>
+        <a href="inspector.html" class="hover:text-white transition-colors">Web Inspector</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

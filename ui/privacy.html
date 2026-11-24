@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — AutoBridge Labs</title>
+  <link rel="icon" type="image/png" href="logo_icon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            void: '#000000',
+            surface: '#0A0A0A',
+            elevated: '#111111',
+            border: '#1F1F1F',
+            hairline: '#262626',
+            sage: '#30A46C',
+            crimson: '#E5484D',
+            muted: '#888888',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #000000; color: #EDEDED; font-feature-settings: "cv02", "cv03", "cv04", "cv11"; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0A0A0A; }
+    ::-webkit-scrollbar-thumb { background: #262626; border-radius: 3px; }
+  </style>
+</head>
+<body class="min-h-screen bg-void text-[#EDEDED] antialiased selection:bg-white selection:text-black flex flex-col justify-between">
+
+  <!-- TOP NAVIGATION BAR -->
+  <header class="sticky top-0 z-50 h-16 bg-black/85 backdrop-blur-md border-b border-border">
+    <div class="max-w-5xl mx-auto h-full px-4 sm:px-6 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 group">
+        <img src="logo_brand_transparent.png" alt="AutoBridge Labs" class="h-8 w-auto group-hover:opacity-90 transition-opacity" />
+        <span class="font-mono text-[11px] text-muted border border-border bg-surface px-1.5 py-0.5 rounded">Privacy Policy</span>
+      </a>
+
+      <div class="flex items-center gap-4 text-xs">
+        <a href="index.html" class="text-muted hover:text-white transition-colors">Home</a>
+        <a href="inspector.html" class="bg-white hover:bg-[#E5E5E5] text-black font-semibold px-3 py-1.5 rounded-full transition-colors inline-flex items-center gap-1.5">
+          <span>Open Inspector</span>
+          <span class="text-xs">→</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN PRIVACY CONTENT -->
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+    
+    <div class="mb-10 border-b border-border pb-8">
+      <span class="font-mono text-xs uppercase tracking-wider text-muted block mb-2">Effective Date: November 24, 2026</span>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-4">
+        Automotive Supply Chain Privacy Policy
+      </h1>
+      <p class="text-muted text-base leading-relaxed">
+        AutoBridge Labs (&ldquo;AutoBridge&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;), an autonomous industrial systems division of <strong class="text-white">Sarkaar Groups</strong>, respects and enforces strict data confidentiality. This Privacy Policy details how we handle information across our web applications, pre-flight tools, and verification engines.
+      </p>
+    </div>
+
+    <div class="space-y-8 text-sm text-muted leading-relaxed">
+      
+      <div>
+        <h2 class="text-lg font-bold text-white mb-3">1. Our Core Privacy Principle: Zero-Data Retention</h2>
+        <p>
+          Unlike conventional software platforms, AutoBridge is architected under <strong class="text-white">Privacy by Design (GDPR Art. 25)</strong>:
+        </p>
+        <ul class="list-disc pl-5 mt-2 space-y-1.5 text-white/90">
+          <li>We <strong class="text-white">never</strong> store, log, harvest, or aggregate your ANSI X12 856 Electronic Data Interchange (EDI) files, Advanced Ship Notices (ASNs), bill of lading numbers, purchase orders, or part quantities.</li>
+          <li>All parsing, validation, and clearance certificate generation occur <strong class="text-white">locally inside your client browser</strong> using client-side JavaScript.</li>
+          <li>Your proprietary automotive payloads never touch an AutoBridge server or third-party cloud database.</li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="text-lg font-bold text-white mb-3">2. Zero Tracking & No Commercial Analytics</h2>
+        <p>
+          We respect operational engineering privacy:
+        </p>
+        <ul class="list-disc pl-5 mt-2 space-y-1.5 text-white/90">
+          <li><strong class="text-white">No Tracking Cookies:</strong> We do not place advertising, profiling, or cross-site tracking cookies on your device.</li>
+          <li><strong class="text-white">No Ad Pixels:</strong> We do not embed Meta Pixel, Google AdSense, or data-broker trackers.</li>
+          <li><strong class="text-white">No Fingerprinting:</strong> We do not profile browser canvas configurations or hardware telemetry.</li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="text-lg font-bold text-white mb-3">3. Information Collected Automatically by Web Infrastructure</h2>
+        <p>
+          When you request static web assets (HTML, CSS, JS, images) from our public CDN/hosting infrastructure (such as GitHub Pages or Cloudflare), standard HTTP request headers are processed in real-time by the host network for transmission:
+        </p>
+        <ul class="list-disc pl-5 mt-2 space-y-1.5 text-white/90">
+          <li>IP address and standard User-Agent string (for basic DDoS mitigation and content delivery).</li>
+          <li>Referrer headers and timestamp of static resource requests.</li>
+        </ul>
+        <p class="mt-2">
+          These infrastructural connection logs are managed by our hosting network providers in compliance with global security baselines and are never correlated with your local EDI auditing activity.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-lg font-bold text-white mb-3">4. Proprietary Manufacturing Data & Trade Secrets</h2>
+        <p>
+          We recognize that automotive bill-of-material schedules, Just-In-Time (JIT) dock timings, and tier supplier codes constitute mission-critical trade secrets under the <strong class="text-white">Defend Trade Secrets Act (DTSA)</strong>. 
+          Because our system operates on an isolated client-side execution model, AutoBridge never obtains custody, ownership, or licensing rights over any EDI data you inspect.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-lg font-bold text-white mb-3">5. Global Compliance Alignment (GDPR & CCPA/CPRA)</h2>
+        <ul class="list-disc pl-5 space-y-1.5 text-white/90">
+          <li><strong class="text-white">European Union GDPR:</strong> We collect zero personal data from end-users of the Web Inspector. No personal data processing records are generated or stored.</li>
+          <li><strong class="text-white">California Consumer Privacy Act (CCPA):</strong> We do not sell, share, or monetize consumer or enterprise data. We have zero third-party commercial data partnerships.</li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="text-lg font-bold text-white mb-3">6. Contact & Data Protection Officer</h2>
+        <p>
+          For privacy audits, compliance inquiries, or corporate verification:
+        </p>
+        <div class="p-4 rounded-lg bg-surface border border-hairline mt-2 space-y-1 font-mono text-xs text-white/90">
+          <p><span class="text-muted">Entity:</span> AutoBridge Labs (Sarkaar Groups)</p>
+          <p><span class="text-muted">Data Protection Officer:</span> Ganesh Sarkaar</p>
+          <p><span class="text-muted">Email:</span> <a href="mailto:ganesh@sarkaargroups.com" class="text-sage underline">ganesh@sarkaargroups.com</a></p>
+          <p><span class="text-muted">Parent Domain:</span> sarkaargroups.com</p>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- LEGAL FOOTER -->
+  <footer class="border-t border-border bg-black py-8 px-4 sm:px-6 mt-16">
+    <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted">
+      <div>
+        &copy; 2026 AutoBridge Labs. An autonomous industrial systems unit of <span class="text-white">Sarkaar Groups</span>.
+      </div>
+      <div class="flex items-center gap-6">
+        <a href="security.html" class="hover:text-white transition-colors">Security</a>
+        <a href="privacy.html" class="text-white font-medium hover:text-sage transition-colors">Privacy Policy</a>
+        <a href="terms.html" class="hover:text-white transition-colors">Terms of Service</a>
+        <a href="inspector.html" class="hover:text-white transition-colors">Web Inspector</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
