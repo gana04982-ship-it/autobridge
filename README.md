@@ -10,6 +10,7 @@
 [![CI](https://github.com/gana04982-ship-it/autobridge/actions/workflows/ci.yml/badge.svg)](https://github.com/gana04982-ship-it/autobridge/actions/workflows/ci.yml)
 [![Pages Deployment](https://github.com/gana04982-ship-it/autobridge/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/gana04982-ship-it/autobridge/actions/workflows/deploy-pages.yml)
 [![Live Web Inspector](https://img.shields.io/badge/live%20web%20inspector-air--gapped-emerald.svg)](https://gana04982-ship-it.github.io/autobridge/)
+[![Pricing & Plans](https://img.shields.io/badge/pricing-plant%20licenses-blue.svg)](ui/pricing.html)
 [![Tests](https://img.shields.io/badge/tests-40%20passed-brightgreen.svg)](tests/)
 [![Latency](https://img.shields.io/badge/audit%20latency-0.2ms-blue.svg)]()
 [![Security](https://img.shields.io/badge/security-zero--data%20retention-blue.svg)](ui/security.html)

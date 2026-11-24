@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>License Activation & Delivery — AutoBridge Labs</title>
+  <link rel="icon" type="image/png" href="logo_icon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            void: '#000000',
+            surface: '#0A0A0A',
+            elevated: '#111111',
+            border: '#1F1F1F',
+            hairline: '#262626',
+            sage: '#30A46C',
+            crimson: '#E5484D',
+            muted: '#888888',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #000000; color: #EDEDED; font-feature-settings: "cv02", "cv03", "cv04", "cv11"; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0A0A0A; }
+    ::-webkit-scrollbar-thumb { background: #262626; border-radius: 3px; }
+  </style>
+</head>
+<body class="min-h-screen bg-void text-[#EDEDED] antialiased selection:bg-white selection:text-black flex flex-col justify-between">
+
+  <!-- TOP NAVIGATION BAR -->
+  <header class="sticky top-0 z-50 h-16 bg-black/85 backdrop-blur-md border-b border-border">
+    <div class="max-w-5xl mx-auto h-full px-4 sm:px-6 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 group">
+        <img src="logo_brand_transparent.png" alt="AutoBridge Labs" class="h-8 w-auto group-hover:opacity-90 transition-opacity" />
+        <span class="font-mono text-[11px] text-muted border border-border bg-surface px-1.5 py-0.5 rounded">License Authority</span>
+      </a>
+
+      <div class="flex items-center gap-4 text-xs">
+        <a href="pricing.html" class="text-muted hover:text-white transition-colors">Pricing Plans</a>
+        <a href="inspector.html" class="bg-white hover:bg-[#E5E5E5] text-black font-semibold px-3 py-1.5 rounded-full transition-colors inline-flex items-center gap-1.5">
+          <span>Open Inspector</span>
+          <span class="text-xs">→</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN ACTIVATION CONTAINER -->
+  <main class="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-16 flex-1 w-full">
+    
+    <!-- Hero Status Banner -->
+    <div class="text-center mb-10">
+      <div class="w-14 h-14 rounded-full bg-sage/15 border border-sage/30 text-sage flex items-center justify-center mx-auto mb-4">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+        </svg>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mb-2">
+        Air-Gapped License Generated & Signed
+      </h1>
+      <p class="text-sm text-muted max-w-lg mx-auto">
+        Your cryptographically sealed license key is active. It operates 100% offline with zero cloud phone-homes or plant telemetry.
+      </p>
+    </div>
+
+    <!-- License Payload Card -->
+    <div class="bg-surface border border-hairline rounded-2xl p-6 sm:p-8 space-y-6 shadow-2xl">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-border">
+        <div>
+          <span class="font-mono text-[11px] uppercase tracking-wider text-sage block mb-1">Authenticated Entity</span>
+          <h2 class="text-lg font-bold text-white" id="licenseCompany">Acme Automotive Stamping Inc.</h2>
+          <div class="flex items-center gap-3 mt-1 text-xs text-muted font-mono">
+            <span>DUNS: <strong class="text-white" id="licenseDuns">001234567</strong></span>
+            <span>•</span>
+            <span id="licenseTier">Production Firewall</span>
+          </div>
+        </div>
+
+        <div class="sm:text-right font-mono text-xs text-muted">
+          <span>Status:</span>
+          <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-sage/20 border border-sage/30 text-sage font-bold">
+            <span class="w-1.5 h-1.5 rounded-full bg-sage"></span>
+            ACTIVE
+          </span>
+          <div class="mt-1 text-[11px]" id="licenseValidUntil">Valid until: Nov 24, 2027</div>
+        </div>
+      </div>
+
+      <!-- Raw Signed JSON License Block -->
+      <div>
+        <div class="flex items-center justify-between text-xs text-muted mb-2 font-mono">
+          <span>Cryptographic Manifest (autobridge.license)</span>
+          <button id="copyJsonBtn" type="button" class="text-white hover:text-sage transition-colors cursor-pointer">
+            Copy JSON
+          </button>
+        </div>
+        <pre id="licenseJsonPre" class="p-4 rounded-xl bg-black border border-hairline font-mono text-[11px] text-[#A1A1A1] overflow-x-auto leading-5 select-all"></pre>
+      </div>
+
+      <!-- Download Button -->
+      <div class="flex flex-col sm:flex-row items-center gap-4 pt-2">
+        <button id="downloadLicenseBtn" type="button"
+                class="w-full sm:w-auto flex-1 py-3 px-6 rounded-xl bg-white hover:bg-[#E5E5E5] text-black font-semibold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+          </svg>
+          <span>Download autobridge.license</span>
+        </button>
+
+        <a href="inspector.html"
+           class="w-full sm:w-auto py-3 px-6 rounded-xl bg-surface hover:bg-elevated border border-hairline hover:border-white text-white font-medium text-xs transition-all text-center">
+          Open Web Inspector →
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Deployment & Installation Guide -->
+    <div class="mt-12 space-y-6">
+      <h3 class="text-lg font-bold text-white">How to Install Your License in Plant Systems</h3>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+        
+        <div class="p-5 rounded-xl bg-surface border border-border space-y-2">
+          <div class="font-mono text-sage font-semibold uppercase text-[11px]">Option A: Plant Sidecar & CLI</div>
+          <p class="text-muted leading-relaxed">
+            Drop the downloaded <code class="text-white font-mono">autobridge.license</code> into your plant runtime directory:
+          </p>
+          <div class="p-2.5 rounded bg-black font-mono text-[10px] text-white/90 border border-hairline space-y-1">
+            <p>cp autobridge.license /opt/autobridge/</p>
+            <p class="text-muted"># Verify license integrity offline:</p>
+            <p>python autobridge/cli.py verify-license</p>
+          </div>
+        </div>
+
+        <div class="p-5 rounded-xl bg-surface border border-border space-y-2">
+          <div class="font-mono text-sage font-semibold uppercase text-[11px]">Option B: Web Pre-Flight Inspector</div>
+          <p class="text-muted leading-relaxed">
+            Your license is cached locally in this browser's <code class="text-white font-mono">localStorage</code>. All web audits, dock certificates, and auto-repairs are unlocked automatically.
+          </p>
+          <div class="p-2.5 rounded bg-black font-mono text-[10px] text-white/90 border border-hairline">
+            <p class="text-sage">✓ Browser Storage Initialized</p>
+            <p class="text-muted">No configuration required.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="p-4 rounded-xl bg-surface border border-hairline flex items-center justify-between text-xs text-muted">
+        <span>Need assistance with ERP integration (SAP, Plex, Epicor, IQMS)?</span>
+        <a href="mailto:ganesh@sarkaargroups.com" class="text-white underline hover:text-sage font-medium">Contact Engineering Support</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- LEGAL FOOTER -->
+  <footer class="border-t border-border bg-black py-8 px-4 sm:px-6">
+    <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted">
+      <div>
+        &copy; 2026 AutoBridge Labs. An autonomous industrial systems unit of <span class="text-white">Sarkaar Groups</span>.
+      </div>
+      <div class="flex items-center gap-6">
+        <a href="security.html" class="hover:text-white transition-colors">Security</a>
+        <a href="privacy.html" class="hover:text-white transition-colors">Privacy Policy</a>
+        <a href="terms.html" class="hover:text-white transition-colors">Terms of Service</a>
+        <a href="pricing.html" class="hover:text-white transition-colors">Pricing</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- LICENSE GENERATION & DOWNLOAD SCRIPT -->
+  <script>
+    // Embedded client HMAC-SHA256 signature simulator compatible with autobridge/core/licensing.py
+    async function hmacSha256Hex(keyStr, messageStr) {
+      const enc = new TextEncoder();
+      const keyData = enc.encode(keyStr);
+      const msgData = enc.encode(messageStr);
+      
+      const cryptoKey = await window.crypto.subtle.importKey(
+        "raw", keyData, { name: "HMAC", hash: "SHA-256" }, false, ["sign"]
+      );
+      const signature = await window.crypto.subtle.sign("HMAC", cryptoKey, msgData);
+      return Array.from(new Uint8Array(signature)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function initLicense() {
+      const params = new URLSearchParams(window.location.search);
+      const company = params.get("company") || "Acme Automotive Stamping Inc.";
+      const duns = params.get("duns") || "001234567";
+      const email = params.get("email") || "edi@acme-automotive.com";
+      const tier = params.get("tier") || "pro";
+      const isAnnual = params.get("cycle") === "annual";
+
+      document.getElementById("licenseCompany").textContent = company;
+      document.getElementById("licenseDuns").textContent = duns;
+      
+      const tierLabels = {
+        starter: "Plant Pilot",
+        pro: "Production Firewall",
+        enterprise: "Enterprise Fleet"
+      };
+      document.getElementById("licenseTier").textContent = tierLabels[tier] || "Production Firewall";
+
+      const now = Math.floor(Date.now() / 1000);
+      const validDays = isAnnual ? 365 : 30;
+      const validUntil = now + (validDays * 86400);
+      const validIso = new Date(validUntil * 1000).toISOString();
+
+      document.getElementById("licenseValidUntil").textContent = `Valid until: ${validIso.split('T')[0]}`;
+
+      // Construct canonical license payload strictly following autobridge/core/licensing.py
+      const licensePayload = {
+        "allowed_docks": tier === "starter" ? 2 : (tier === "pro" ? 10 : 999),
+        "customer_id": `CUST-${company.replace(/[^a-zA-Z0-9]/g, "").toUpperCase().slice(0, 12) || "OEM-SUPPLIER"}`,
+        "issued_at_ts": now,
+        "machine_fingerprint": "ANY_DEVICE",
+        "plant_code": `DUNS-${duns}`,
+        "product": `AutoBridge ${tierLabels[tier] || "Enterprise"} Air-Gapped License`,
+        "valid_until_iso": validIso,
+        "valid_until_ts": validUntil
+      };
+
+      // Generate deterministic HMAC-SHA256 signature using the Master Key
+      const MASTER_KEY = "AUTOBRIDGE_MASTER_ED25519_VERIFY_KEY_SECRET_PROD_2026";
+      const canonicalStr = JSON.stringify(licensePayload, Object.keys(licensePayload).sort());
+      const sig = await hmacSha256Hex(MASTER_KEY, canonicalStr);
+      licensePayload["signature"] = sig;
+
+      const formattedJson = JSON.stringify(licensePayload, null, 2);
+      document.getElementById("licenseJsonPre").textContent = formattedJson;
+
+      // Cache locally for in-browser client unlocks
+      localStorage.setItem("autobridge_active_license", formattedJson);
+
+      // Download Handler
+      document.getElementById("downloadLicenseBtn").addEventListener("click", () => {
+        const blob = new Blob([formattedJson], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "autobridge.license";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      });
+
+      // Copy Handler
+      document.getElementById("copyJsonBtn").addEventListener("click", () => {
+        navigator.clipboard.writeText(formattedJson);
+        const btn = document.getElementById("copyJsonBtn");
+        btn.textContent = "Copied!";
+        setTimeout(() => btn.textContent = "Copy JSON", 2000);
+      });
+    }
+
+    initLicense();
+  </script>
+
+</body>
+</html>

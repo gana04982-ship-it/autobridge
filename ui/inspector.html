@@ -70,14 +70,20 @@
         </button>
       </div>
 
-      <!-- Upload / Reset Action -->
-      <button id="topUploadTriggerBtn" type="button"
-              class="hidden sm:inline-flex items-center gap-2 bg-surface hover:bg-elevated border border-hairline hover:border-[#333333] text-xs font-medium text-white px-3.5 py-2 rounded-lg transition cursor-pointer">
-        <svg class="w-3.5 h-3.5 text-[#888888]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
-        </svg>
-        <span id="topUploadBtnText">Upload EDI</span>
-      </button>
+      <!-- Upload & Pricing Actions -->
+      <div class="flex items-center gap-2">
+        <a href="pricing.html"
+           class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-hairline hover:border-white/40 bg-surface text-xs font-mono text-muted hover:text-white transition-colors">
+          <span>License Plans</span>
+        </a>
+        <button id="topUploadTriggerBtn" type="button"
+                class="hidden sm:inline-flex items-center gap-2 bg-surface hover:bg-elevated border border-hairline hover:border-[#333333] text-xs font-medium text-white px-3.5 py-2 rounded-lg transition cursor-pointer">
+          <svg class="w-3.5 h-3.5 text-[#888888]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+          </svg>
+          <span id="topUploadBtnText">Upload EDI</span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -274,6 +280,7 @@
         &copy; 2026 AutoBridge Labs • An industrial systems unit of <span class="text-white">Sarkaar Groups</span>.
       </div>
       <div class="flex items-center gap-6">
+        <a href="pricing.html" class="hover:text-white transition-colors">Pricing & License</a>
         <a href="security.html" class="hover:text-white transition-colors">Security & Air-Gap</a>
         <a href="privacy.html" class="hover:text-white transition-colors">Privacy Policy</a>
         <a href="terms.html" class="hover:text-white transition-colors">Terms of Service</a>

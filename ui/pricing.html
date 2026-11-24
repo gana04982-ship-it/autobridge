@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing & Licenses — AutoBridge Labs</title>
+  <link rel="icon" type="image/png" href="logo_icon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            void: '#000000',
+            surface: '#0A0A0A',
+            elevated: '#111111',
+            border: '#1F1F1F',
+            hairline: '#262626',
+            sage: '#30A46C',
+            crimson: '#E5484D',
+            muted: '#888888',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #000000; color: #EDEDED; font-feature-settings: "cv02", "cv03", "cv04", "cv11"; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0A0A0A; }
+    ::-webkit-scrollbar-thumb { background: #262626; border-radius: 3px; }
+  </style>
+</head>
+<body class="min-h-screen bg-void text-[#EDEDED] antialiased selection:bg-white selection:text-black flex flex-col justify-between">
+
+  <!-- TOP NAVIGATION BAR -->
+  <header class="sticky top-0 z-50 h-16 bg-black/85 backdrop-blur-md border-b border-border">
+    <div class="max-w-6xl mx-auto h-full px-4 sm:px-6 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 group">
+        <img src="logo_brand_transparent.png" alt="AutoBridge Labs" class="h-8 w-auto group-hover:opacity-90 transition-opacity" />
+        <span class="font-mono text-[11px] text-muted border border-border bg-surface px-1.5 py-0.5 rounded">Commercial Licensing</span>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-7 text-[13px] text-muted">
+        <a href="index.html" class="hover:text-white transition-colors">Home</a>
+        <a href="inspector.html" class="hover:text-white transition-colors">Web Inspector</a>
+        <a href="security.html" class="hover:text-white transition-colors">Security Whitepaper</a>
+        <a href="activate.html" class="hover:text-white transition-colors">Activate License</a>
+      </nav>
+
+      <div class="flex items-center gap-4 text-xs">
+        <a href="activate.html" class="text-muted hover:text-white transition-colors font-mono hidden sm:inline-block">Have a Key?</a>
+        <a href="inspector.html" class="bg-white hover:bg-[#E5E5E5] text-black font-semibold px-3 py-1.5 rounded-full transition-colors inline-flex items-center gap-1.5">
+          <span>Open Inspector</span>
+          <span class="text-xs">→</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN PRICING HERO & CARDS -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-20 flex-1 w-full">
+    
+    <!-- Hero Header -->
+    <div class="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sage/10 border border-sage/20 text-sage font-mono text-xs mb-4">
+        <span class="w-2 h-2 rounded-full bg-sage"></span>
+        Zero Dock Chargebacks • Instant Cryptographic Delivery
+      </div>
+      <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-4">
+        Predictable Industrial Pricing.<br/>Zero Assembly Line Fines.
+      </h1>
+      <p class="text-muted text-base sm:text-lg leading-relaxed">
+        A single rejected Ford or GM 856 ASN costs between <span class="text-white font-semibold">$5,000 and $15,000</span> in chargebacks. 
+        AutoBridge pays for itself on the first intercepted dock trap.
+      </p>
+
+      <!-- Billing Cycle Switcher -->
+      <div class="inline-flex items-center bg-surface border border-hairline rounded-full p-1 mt-8">
+        <button id="billingMonthly" type="button" class="px-5 py-1.5 rounded-full text-xs font-semibold bg-white text-black transition-all">
+          Monthly Billing
+        </button>
+        <button id="billingAnnual" type="button" class="px-5 py-1.5 rounded-full text-xs font-semibold text-muted hover:text-white transition-all flex items-center gap-1.5">
+          <span>Annual Billing</span>
+          <span class="px-1.5 py-0.5 rounded-full bg-sage/20 text-sage text-[10px] font-mono">SAVE 20%</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 3 Pricing Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch mb-20">
+      
+      <!-- Tier 1: Starter / Single Plant -->
+      <div class="rounded-2xl bg-surface border border-border p-6 sm:p-8 flex flex-col justify-between hover:border-hairline transition-colors">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold text-white">Plant Pilot</h3>
+            <span class="px-2 py-0.5 rounded text-[11px] font-mono bg-white/5 border border-white/10 text-muted">Tier-3 Supplier</span>
+          </div>
+          <p class="text-xs text-muted mb-6 leading-relaxed">
+            Ideal for a single stamping, machining, or plastics plant shipping to 1 or 2 OEM docks.
+          </p>
+
+          <div class="mb-6 pb-6 border-b border-border">
+            <div class="flex items-baseline gap-1">
+              <span class="text-3xl sm:text-4xl font-extrabold text-white price-amount" data-monthly="199" data-annual="159">$199</span>
+              <span class="text-xs text-muted font-mono price-period">/ month</span>
+            </div>
+            <p class="text-[11px] text-muted mt-1 billing-note">Billed monthly • Cancel anytime</p>
+          </div>
+
+          <ul class="space-y-3 text-xs text-muted mb-8">
+            <li class="flex items-start gap-2.5">
+              <svg class="w-4 h-4 text-sage shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              <span><strong class="text-white">1 Manufacturing Facility</strong> (1 DUNS Code)</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <svg class="w-4 h-4 text-sage shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              <span>Unlimited Web Pre-Flight Audits</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <svg class="w-4 h-4 text-sage shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              <span>Ford AIAG B-10 & GM 1724 Receiving Rules</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <svg class="w-4 h-4 text-sage shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              <span>Printable Driver BOL Clearance Certificates</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <svg class="w-4 h-4 text-sage shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              <span>Standard Email Support (24h SLA)</span>
+            </li>
+          </ul>
+        </div>
+
+        <button type="button" class="checkout-btn w-full py-2.5 rounded-lg bg-surface hover:bg-elevated border border-white/20 hover:border-white text-xs font-semibold text-white transition-all text-center"
+                data-tier="starter">
+          Select Plant Pilot
+        </button>
+      </div>
+
+      <!-- Tier 2: Pro Production Firewall (FEATURED) -->
+      <div class="rounded-2xl bg-surface border-2 border-sage/60 p-6 sm:p-8 flex flex-col justify-between relative shadow-[0_0_50px_-12px_rgba(48,164,108,0.25)]">
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-sage text-black font-mono text-[10px] font-bold tracking-wider uppercase">
+          Most Popular for Tier-1s
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold text-white">Production Firewall</h3>
+            <span class="px-2 py-0.5 rounded text-[11px] font-mono bg-sage/20 border border-sage/30 text-sage">Production Ready</span>
+          </div>
+          <p class="text-xs text-muted mb-6 leading-relaxed">
+            Full automated pre-flight defense for high-volume automotive suppliers shipping multiple loads daily.
+          </p>
+
+          <div class="mb-6 pb-6 border-b border-border">
+            <div class="flex items-baseline gap-1">
+              <span class="text-3xl sm:text-4xl font-extrabold text-white price-amount" data-monthly="499" data-annual="399">$499</span>
+              <span class="text-xs text-muted font-mono price-period">/ month</span>
+            </div>
+            <p class="text-[11px] text-muted mt-1 billing-note">Billed monthly • Instant cryptographic key</p>
+          </div>
+
+          <ul class="space-y-3 text-xs text-muted mb-8">
+            <li class="flex items-start gap-2.5">
+              <svg class="w-4 h-4 text-sage shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              <span><strong class="text-white">Up to 5 Manufacturing Plants</strong> (5 DUNS Codes)</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <svg class="w-4 h-4 text-sage shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              <span><strong class="text-white">Deterministic Auto-Repair Engine</strong> (0.2ms AST fix)</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <svg class="w-4 h-4 text-sage shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              <span>CLI & Automated Plant Sidecar Watcher Daemon</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <svg class="w-4 h-4 text-sage shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              <span>Ford, GM, Stellantis & Honda OEM Rulesets</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <svg class="w-4 h-4 text-sage shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              <span>Signed Offline Cryptographic License (<code class="text-white font-mono text-[10px]">autobridge.license</code>)</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <svg class="w-4 h-4 text-sage shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              <span>Priority EDI Escalation (4h SLA)</span>
+            </li>
+          </ul>
+        </div>
+
+        <button type="button" class="checkout-btn w-full py-2.5 rounded-lg bg-sage hover:bg-[#3ec483] text-xs font-semibold text-black transition-all text-center shadow-lg"
+                data-tier="pro">
+          Deploy Production Firewall
+        </button>
+      </div>
+
+      <!-- Tier 3: Enterprise / Fleet -->
+      <div class="rounded-2xl bg-surface border border-border p-6 sm:p-8 flex flex-col justify-between hover:border-hairline transition-colors">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold text-white">Enterprise Fleet</h3>
+            <span class="px-2 py-0.5 rounded text-[11px] font-mono bg-white/5 border border-white/10 text-muted">Global Tier-1 & MSP</span>
+          </div>
+          <p class="text-xs text-muted mb-6 leading-relaxed">
+            For multi-national manufacturing conglomerates, 3PL brokers, and EDI Managed Service Providers.
+          </p>
+
+          <div class="mb-6 pb-6 border-b border-border">
+            <div class="flex items-baseline gap-1">
+              <span class="text-3xl sm:text-4xl font-extrabold text-white price-amount" data-monthly="1499" data-annual="1199">$1,499</span>
+              <span class="text-xs text-muted font-mono price-period">/ month</span>
+            </div>
+            <p class="text-[11px] text-muted mt-1 billing-note">Billed monthly or Net-30 Invoice</p>
+          </div>
+
+          <ul class="space-y-3 text-xs text-muted mb-8">
+            <li class="flex items-start gap-2.5">
+              <svg class="w-4 h-4 text-sage shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              <span><strong class="text-white">Unlimited Facilities & DUNS Codes</strong></span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <svg class="w-4 h-4 text-sage shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              <span>REST API, Webhook & ERP Connector Integration</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <svg class="w-4 h-4 text-sage shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              <span>Custom OEM Ruleset Calibration (Toyota, Nissan, etc.)</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <svg class="w-4 h-4 text-sage shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              <span>Air-Gapped Multi-Host Hardware Fingerprinting</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <svg class="w-4 h-4 text-sage shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              <span>99.99% Availability SLA & Security Review Package</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <svg class="w-4 h-4 text-sage shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              <span>Dedicated Systems Architect & 1h Hotline SLA</span>
+            </li>
+          </ul>
+        </div>
+
+        <button type="button" class="checkout-btn w-full py-2.5 rounded-lg bg-surface hover:bg-elevated border border-white/20 hover:border-white text-xs font-semibold text-white transition-all text-center"
+                data-tier="enterprise">
+          Get Enterprise Fleet
+        </button>
+      </div>
+
+    </div>
+
+    <!-- STRIPE CHECKOUT / INVOICING MODAL -->
+    <div id="checkoutModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="bg-surface border border-hairline rounded-2xl max-w-lg w-full p-6 sm:p-8 space-y-6 relative">
+        <button id="closeModalBtn" type="button" class="absolute top-5 right-5 text-muted hover:text-white font-mono text-sm">✕</button>
+
+        <div>
+          <span class="font-mono text-xs uppercase tracking-wider text-sage block mb-1" id="modalTierBadge">Selected Plan</span>
+          <h3 class="text-xl font-bold text-white" id="modalPlanTitle">Complete Your Subscription</h3>
+          <p class="text-xs text-muted mt-1" id="modalPlanDesc">Instant cryptographic license delivery via Stripe Secure Checkout.</p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-black border border-hairline space-y-3 font-mono text-xs">
+          <div class="flex justify-between text-muted">
+            <span>Product</span>
+            <span class="text-white" id="modalProductSummary">AutoBridge Production Firewall</span>
+          </div>
+          <div class="flex justify-between text-muted">
+            <span>Billing Cycle</span>
+            <span class="text-white" id="modalCycleSummary">Monthly</span>
+          </div>
+          <div class="flex justify-between border-t border-hairline/80 pt-2 text-sm font-bold text-white">
+            <span>Total Due Today</span>
+            <span class="text-sage" id="modalTotalDue">$499.00</span>
+          </div>
+        </div>
+
+        <!-- Plant Information Form -->
+        <form id="checkoutForm" class="space-y-4">
+          <div>
+            <label class="block text-xs font-medium text-muted mb-1">Company / Organization Name</label>
+            <input type="text" id="custCompany" required placeholder="e.g. Acme Automotive Stamping Inc."
+                   class="w-full bg-elevated border border-hairline rounded-lg px-3 py-2 text-xs text-white placeholder-muted/50 focus:outline-none focus:border-white transition-colors" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-medium text-muted mb-1">Plant DUNS Number</label>
+              <input type="text" id="custDuns" required placeholder="e.g. 001234567"
+                     class="w-full bg-elevated border border-hairline rounded-lg px-3 py-2 text-xs text-white placeholder-muted/50 focus:outline-none focus:border-white transition-colors font-mono" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-muted mb-1">Primary EDI Email</label>
+              <input type="email" id="custEmail" required placeholder="edi@company.com"
+                     class="w-full bg-elevated border border-hairline rounded-lg px-3 py-2 text-xs text-white placeholder-muted/50 focus:outline-none focus:border-white transition-colors" />
+            </div>
+          </div>
+
+          <div class="pt-2">
+            <button type="submit" id="proceedStripeBtn"
+                    class="w-full py-3 rounded-lg bg-white hover:bg-[#E5E5E5] text-black font-semibold text-xs transition-colors flex items-center justify-center gap-2">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14h2v2h-2v-2zm1-12c2.21 0 4 1.79 4 4 0 1.54-.87 2.88-2.15 3.56L13.1 12.2c-.39.21-.6.64-.6 1.09V14h-2v-.71c0-1.12.63-2.15 1.63-2.67l1.01-.52C13.68 9.84 14 9.17 14 8.5c0-1.38-1.12-2.5-2.5-2.5S9 7.12 9 8.5H7c0-2.48 2.02-4.5 4.5-4.5z"/></svg>
+              <span>Proceed to Stripe Checkout</span>
+            </button>
+            <p class="text-[11px] text-center text-muted mt-2">
+              Encrypted 256-bit Stripe processing • Corporate Card or ACH Wire
+            </p>
+          </div>
+        </form>
+
+      </div>
+    </div>
+
+    <!-- Enterprise FAQ Section -->
+    <div class="border-t border-border pt-16 max-w-3xl mx-auto">
+      <h2 class="text-2xl font-bold text-white text-center mb-8">Frequently Answered Questions</h2>
+      <div class="space-y-6 text-sm">
+        
+        <div class="p-5 rounded-xl bg-surface border border-hairline">
+          <h4 class="font-semibold text-white mb-2">How do I receive my cryptographic license key after payment?</h4>
+          <p class="text-muted leading-relaxed text-xs">
+            Immediately upon successful Stripe checkout, you are redirected to the AutoBridge Activation Portal. 
+            You can download your signed <code class="text-white font-mono">autobridge.license</code> file with one click and receive an automated copy at your billing email.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-xl bg-surface border border-hairline">
+          <h4 class="font-semibold text-white mb-2">Does the software require internet connectivity to validate files?</h4>
+          <p class="text-muted leading-relaxed text-xs">
+            No. The <code class="text-white font-mono">autobridge.license</code> contains an HMAC-SHA256 digital signature that runs 100% offline inside your plant network. 
+            It has zero telemetry phone-homes, making it completely compliant with air-gapped industrial plant security policies.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-xl bg-surface border border-hairline">
+          <h4 class="font-semibold text-white mb-2">Can we pay via Purchase Order (PO) or Net-30 Invoicing?</h4>
+          <p class="text-muted leading-relaxed text-xs">
+            Yes. Enterprise Fleet plans can be invoiced on Net-30 payment terms via ACH or wire transfer. 
+            We provide completed W-9 forms, vendor registration documentation, and SOC 2 security packets upon request. Contact <a href="mailto:ganesh@sarkaargroups.com" class="text-white underline">ganesh@sarkaargroups.com</a>.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-xl bg-surface border border-hairline">
+          <h4 class="font-semibold text-white mb-2">Can our EDI coordinators expense this on a corporate credit card?</h4>
+          <p class="text-muted leading-relaxed text-xs">
+            Yes. Stripe automatically generates formal VAT/Tax compliant receipts and commercial invoices with your company name and plant DUNS number for easy monthly expense reimbursement.
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- LEGAL FOOTER -->
+  <footer class="border-t border-border bg-black py-8 px-4 sm:px-6">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted">
+      <div>
+        &copy; 2026 AutoBridge Labs. An autonomous industrial systems unit of <span class="text-white">Sarkaar Groups</span>.
+      </div>
+      <div class="flex items-center gap-6">
+        <a href="security.html" class="hover:text-white transition-colors">Security</a>
+        <a href="privacy.html" class="hover:text-white transition-colors">Privacy Policy</a>
+        <a href="terms.html" class="hover:text-white transition-colors">Terms of Service</a>
+        <a href="activate.html" class="hover:text-white transition-colors">License Activation</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- PRICING & STRIPE INTEGRATION SCRIPT -->
+  <script>
+    // -------------------------------------------------------------
+    // STRIPE CONFIGURATION
+    // When you obtain your Stripe Payment Links or publishable keys,
+    // paste your Stripe Payment Links below.
+    // -------------------------------------------------------------
+    const STRIPE_LINKS = {
+      starter_monthly: "",
+      starter_annual: "",
+      pro_monthly: "",
+      pro_annual: "",
+      enterprise_monthly: "",
+      enterprise_annual: ""
+    };
+
+    let isAnnual = false;
+    let selectedTier = "pro";
+
+    const billingMonthlyBtn = document.getElementById("billingMonthly");
+    const billingAnnualBtn = document.getElementById("billingAnnual");
+    const checkoutModal = document.getElementById("checkoutModal");
+    const closeModalBtn = document.getElementById("closeModalBtn");
+    const checkoutForm = document.getElementById("checkoutForm");
+
+    // Toggle billing cycle
+    billingMonthlyBtn.addEventListener("click", () => setBilling(false));
+    billingAnnualBtn.addEventListener("click", () => setBilling(true));
+
+    function setBilling(annual) {
+      isAnnual = annual;
+      if (annual) {
+        billingAnnualBtn.className = "px-5 py-1.5 rounded-full text-xs font-semibold bg-white text-black transition-all flex items-center gap-1.5";
+        billingMonthlyBtn.className = "px-5 py-1.5 rounded-full text-xs font-semibold text-muted hover:text-white transition-all";
+      } else {
+        billingMonthlyBtn.className = "px-5 py-1.5 rounded-full text-xs font-semibold bg-white text-black transition-all";
+        billingAnnualBtn.className = "px-5 py-1.5 rounded-full text-xs font-semibold text-muted hover:text-white transition-all flex items-center gap-1.5";
+      }
+
+      document.querySelectorAll(".price-amount").forEach(el => {
+        const val = annual ? el.getAttribute("data-annual") : el.getAttribute("data-monthly");
+        el.textContent = "$" + parseInt(val, 10).toLocaleString();
+      });
+
+      document.querySelectorAll(".price-period").forEach(el => {
+        el.textContent = annual ? "/ mo (billed annually)" : "/ month";
+      });
+
+      document.querySelectorAll(".billing-note").forEach(el => {
+        el.textContent = annual ? "Billed annually • 2 months free included" : "Billed monthly • Cancel anytime";
+      });
+    }
+
+    // Modal Trigger
+    const TIER_DETAILS = {
+      starter: {
+        title: "Plant Pilot Subscription",
+        badge: "Tier-3 Pilot",
+        monthly: 199,
+        annual: 159 * 12,
+        desc: "Unlimited Web Pre-Flight Audits for 1 plant facility."
+      },
+      pro: {
+        title: "Production Firewall Subscription",
+        badge: "Production Tier-1",
+        monthly: 499,
+        annual: 399 * 12,
+        desc: "Auto-Repair Engine & Plant Sidecar Watcher Daemon for up to 5 facilities."
+      },
+      enterprise: {
+        title: "Enterprise Fleet License",
+        badge: "Global Fleet",
+        monthly: 1499,
+        annual: 1199 * 12,
+        desc: "Unlimited facilities, custom rulesets, dedicated systems architect hotline."
+      }
+    };
+
+    document.querySelectorAll(".checkout-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        selectedTier = btn.getAttribute("data-tier");
+        openCheckoutModal(selectedTier);
+      });
+    });
+
+    function openCheckoutModal(tier) {
+      const data = TIER_DETAILS[tier] || TIER_DETAILS.pro;
+      document.getElementById("modalTierBadge").textContent = data.badge;
+      document.getElementById("modalPlanTitle").textContent = data.title;
+      document.getElementById("modalProductSummary").textContent = `AutoBridge ${data.title}`;
+      document.getElementById("modalCycleSummary").textContent = isAnnual ? "Annual (20% Off)" : "Monthly";
+      
+      const amount = isAnnual ? data.annual : data.monthly;
+      document.getElementById("modalTotalDue").textContent = "$" + amount.toLocaleString() + ".00";
+
+      checkoutModal.classList.remove("hidden");
+    }
+
+    closeModalBtn.addEventListener("click", () => checkoutModal.classList.add("hidden"));
+    checkoutModal.addEventListener("click", (e) => {
+      if (e.target === checkoutModal) checkoutModal.classList.add("hidden");
+    });
+
+    // Handle Form Submit
+    checkoutForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const company = document.getElementById("custCompany").value;
+      const duns = document.getElementById("custDuns").value;
+      const email = document.getElementById("custEmail").value;
+      
+      const key = `${selectedTier}_${isAnnual ? "annual" : "monthly"}`;
+      const stripeUrl = STRIPE_LINKS[key];
+
+      if (stripeUrl && stripeUrl.startsWith("http")) {
+        // Redirect directly to Stripe Payment Link with prefilled metadata
+        const finalUrl = new URL(stripeUrl);
+        finalUrl.searchParams.set("prefilled_email", email);
+        finalUrl.searchParams.set("client_reference_id", `${company}_${duns}`);
+        window.location.href = finalUrl.toString();
+      } else {
+        // If Stripe payment link is not yet pasted, seamlessly route to the instant activation & demo delivery portal
+        const targetUrl = `activate.html?tier=${selectedTier}&company=${encodeURIComponent(company)}&duns=${encodeURIComponent(duns)}&email=${encodeURIComponent(email)}&cycle=${isAnnual ? "annual" : "monthly"}`;
+        window.location.href = targetUrl;
+      }
+    });
+  </script>
+
+</body>
+</html>
