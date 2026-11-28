@@ -17,6 +17,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
 
+RESOURCE_ROOT = getattr(sys, "_MEIPASS", BASE_DIR)
+
 from autobridge.engine import AutoBridgeEngine
 from autobridge.repair import AutoRepairEngine
 from autobridge.forensic import ForensicAuditor
@@ -24,7 +26,7 @@ from autobridge.core.safety import FailOpenWatchdog, DualWriteArchiver
 from autobridge.core.licensing import OfflineLicenseGuard, get_machine_fingerprint
 
 
-UI_DIR = os.path.join(BASE_DIR, "ui")
+UI_DIR = os.path.join(RESOURCE_ROOT, "ui")
 
 
 class AutoBridgeRequestHandler(SimpleHTTPRequestHandler):
@@ -457,9 +459,18 @@ class AutoBridgeRequestHandler(SimpleHTTPRequestHandler):
         self.wfile.write(json.dumps(cert_data).encode("utf-8"))
 
 
-def run_server(port: int = 8085):
-    server = ThreadingHTTPServer(("0.0.0.0", port), AutoBridgeRequestHandler)
-    print(f"AutoBridge Precision Server listening on http://localhost:{port}")
+def bind_server(port: int = 8085, host: str = "127.0.0.1") -> ThreadingHTTPServer:
+    """Bind the offline AutoBridge HTTP server, falling back to an ephemeral port if taken."""
+    try:
+        return ThreadingHTTPServer((host, port), AutoBridgeRequestHandler)
+    except OSError:
+        return ThreadingHTTPServer((host, 0), AutoBridgeRequestHandler)
+
+
+def run_server(port: int = 8085, host: str = "127.0.0.1"):
+    server = bind_server(port=port, host=host)
+    actual_port = server.server_address[1]
+    print(f"AutoBridge Offline Server listening on http://{host}:{actual_port}")
     try:
         server.serve_forever()
     except KeyboardInterrupt:

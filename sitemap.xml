@@ -13,6 +13,10 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://autobridge.sarkaargroups.com/ui/download.html</loc>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://autobridge.sarkaargroups.com/ui/pricing.html</loc>
     <priority>0.9</priority>
   </url>

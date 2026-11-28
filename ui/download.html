@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Download Air-Gapped Windows .EXE — AutoBridge Labs</title>
+  <meta name="description" content="Download standalone offline AutoBridge-Windows-x64.exe for air-gapped factory PCs and Windows servers. Zero Python install, zero internet required after download.">
+  <link rel="icon" type="image/png" href="logo_icon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            void: '#000000',
+            surface: '#0A0A0A',
+            elevated: '#111111',
+            border: '#1F1F1F',
+            hairline: '#262626',
+            sage: '#30A46C',
+            crimson: '#E5484D',
+            muted: '#888888',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #000000; color: #EDEDED; font-feature-settings: "cv02", "cv03", "cv04", "cv11"; }
+  </style>
+</head>
+<body class="min-h-screen bg-void text-[#EDEDED] antialiased selection:bg-white selection:text-black flex flex-col justify-between">
+
+  <!-- TOP NAVIGATION BAR -->
+  <header class="sticky top-0 z-50 h-16 bg-black/85 backdrop-blur-md border-b border-border">
+    <div class="max-w-5xl mx-auto h-full px-4 sm:px-6 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 group">
+        <img src="logo_brand_transparent.png" alt="AutoBridge Labs" class="h-8 w-auto group-hover:opacity-90 transition-opacity" />
+        <span class="font-mono text-[11px] text-sage border border-sage/30 bg-sage/10 px-2 py-0.5 rounded">Offline Binary</span>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-6 text-[13px] text-muted">
+        <a href="index.html" class="hover:text-white transition-colors">Home</a>
+        <a href="pricing.html" class="hover:text-white transition-colors">Pricing</a>
+        <a href="security.html" class="hover:text-white transition-colors">Security</a>
+        <a href="activate.html" class="hover:text-white transition-colors">Activate License</a>
+      </nav>
+
+      <a href="inspector.html" class="bg-white hover:bg-[#E5E5E5] text-black font-semibold text-xs px-3.5 py-2 rounded-lg transition-colors inline-flex items-center gap-1.5">
+        <span>Web Inspector</span>
+        <span>→</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16 flex-1 w-full space-y-10">
+
+    <!-- HERO -->
+    <div class="text-center space-y-4">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sage/10 border border-sage/30 text-sage font-mono text-xs">
+        <span class="w-1.5 h-1.5 rounded-full bg-sage"></span>
+        <span>100% Air-Gapped Plant Execution • Zero Cloud Calls</span>
+      </div>
+      <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+        Download Offline AutoBridge (.EXE)
+      </h1>
+      <p class="text-sm sm:text-base text-muted max-w-2xl mx-auto leading-relaxed">
+        Single standalone Windows binary bundling the full Python AST validation engine, folder-watcher daemon, and local Studio UI (<span class="font-mono text-white">127.0.0.1</span>). Runs on disconnected factory floor PCs with zero Python setup and zero internet access.
+      </p>
+    </div>
+
+    <!-- PRIMARY DOWNLOAD CARD -->
+    <section class="bg-surface border border-hairline rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-border">
+        <div class="space-y-2">
+          <div class="flex items-center gap-2.5">
+            <span class="font-mono text-xs px-2 py-0.5 rounded bg-elevated border border-border text-white">Windows 10 / 11 / Server x64</span>
+            <span class="font-mono text-xs px-2 py-0.5 rounded bg-sage/15 border border-sage/30 text-sage">Standalone Single File</span>
+          </div>
+          <h2 class="text-xl font-bold text-white font-mono">AutoBridge-Windows-x64.exe</h2>
+          <p class="text-xs text-muted">
+            Double-click to launch your local Studio in Chrome/Edge, or invoke CLI / folder-watcher flags directly from PowerShell or your ERP job scheduler.
+          </p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3 shrink-0">
+          <a href="https://github.com/gana04982-ship-it/autobridge/releases/latest/download/AutoBridge-Windows-x64.exe"
+             class="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-white hover:bg-[#E5E5E5] text-black font-bold text-sm transition-colors shadow-lg">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            <span>Download .EXE</span>
+          </a>
+          <a href="https://github.com/gana04982-ship-it/autobridge/releases/latest/download/AutoBridge-Windows-x64.exe.sha256"
+             class="inline-flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl bg-elevated hover:bg-[#191919] border border-hairline text-xs font-mono text-[#D4D4D4] transition-colors">
+            <span>SHA-256 Checksum</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- TWO LAUNCH MODES -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="bg-black border border-border rounded-xl p-5 space-y-2.5">
+          <div class="font-mono text-xs text-sage uppercase tracking-wider">Mode 1: Double-Click Desktop Studio</div>
+          <p class="text-xs text-muted leading-relaxed">
+            Double-clicking <code class="text-white">AutoBridge-Windows-x64.exe</code> starts a private local server strictly on <code class="text-white">127.0.0.1:8085</code> and opens the Studio inside your browser—zero internet connection required.
+          </p>
+        </div>
+        <div class="bg-black border border-border rounded-xl p-5 space-y-2.5">
+          <div class="font-mono text-xs text-white uppercase tracking-wider">Mode 2: Headless ERP Watcher / CLI</div>
+          <p class="text-xs text-muted leading-relaxed">
+            Drop straight in front of your AS2 / Plex / QAD / SAP outbound spool directory to quarantine bad 856 ASNs before transmission.
+          </p>
+        </div>
+      </div>
+
+      <!-- COMMAND EXAMPLES -->
+      <div class="space-y-2">
+        <div class="text-xs font-mono text-muted">Offline PowerShell / CMD Quickstart (verify hash + audit + start watcher):</div>
+        <pre class="p-4 rounded-xl bg-black border border-hairline font-mono text-xs text-[#D4D4D4] overflow-x-auto leading-6"># 1. Verify binary integrity (IT Security check)
+Get-FileHash .\AutoBridge-Windows-x64.exe -Algorithm SHA256
+
+# 2. Audit & auto-repair a single EDI 856 file (0.2ms, zero network calls)
+.\AutoBridge-Windows-x64.exe audit .\shipment_856.edi --oem FORD-AIAG-B10
+.\AutoBridge-Windows-x64.exe repair .\shipment_856.edi --out .\certified_856.edi
+
+# 3. Run continuous ERP folder firewall daemon
+.\AutoBridge-Windows-x64.exe watch --in C:\ERP\outbound --out C:\AS2\send</pre>
+      </div>
+    </section>
+
+    <!-- AIR-GAP GUARANTEE -->
+    <section class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="bg-surface border border-border rounded-xl p-5 space-y-1.5">
+        <div class="font-mono text-xs text-sage">Zero Telemetry</div>
+        <div class="text-sm font-semibold text-white">Disconnect Ethernet</div>
+        <p class="text-xs text-muted leading-relaxed">Unplug the plant PC from the internet after download. All AST rulesets and license verification run locally offline.</p>
+      </div>
+      <div class="bg-surface border border-border rounded-xl p-5 space-y-1.5">
+        <div class="font-mono text-xs text-sage">Zero Runtime Deps</div>
+        <div class="text-sm font-semibold text-white">No Python Install</div>
+        <p class="text-xs text-muted leading-relaxed">Everything—parser, rulesets, certificate generator, and Studio UI—is compiled into one self-contained Windows executable.</p>
+      </div>
+      <div class="bg-surface border border-border rounded-xl p-5 space-y-1.5">
+        <div class="font-mono text-xs text-sage">Source Auditable</div>
+        <div class="text-sm font-semibold text-white">Verify Build Checksum</div>
+        <p class="text-xs text-muted leading-relaxed">Built transparently via GitHub Actions from <a href="https://github.com/gana04982-ship-it/autobridge/releases" class="underline text-white hover:text-sage">public release builds</a> with SHA-256 verification.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="border-t border-border py-6 text-center text-xs text-muted font-mono">
+    AutoBridge Labs — Sarkaar Groups | <a href="security.html" class="hover:text-white">Air-Gap Security Whitepaper</a> | <a href="https://github.com/gana04982-ship-it/autobridge/releases" class="hover:text-white">All Releases</a>
+  </footer>
+
+</body>
+</html>

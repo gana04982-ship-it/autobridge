@@ -1,0 +1,66 @@
+name: Build & Release Offline Windows EXE
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows-exe:
+    name: Build Standalone Air-Gapped Windows EXE
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run Deterministic Engine Unit Tests
+        run: python -m unittest discover tests -v
+
+      - name: Install PyInstaller
+        run: python -m pip install --upgrade pip pyinstaller
+
+      - name: Bundle Standalone AutoBridge-Windows-x64.exe
+        shell: pwsh
+        run: |
+          pyinstaller --onefile --clean `
+            --name AutoBridge-Windows-x64 `
+            --add-data "ui;ui" `
+            --add-data "samples;samples" `
+            autobridge/desktop.py
+
+      - name: Verify Offline EXE CLI & Sample Audit
+        shell: pwsh
+        run: |
+          ./dist/AutoBridge-Windows-x64.exe audit samples/ford_clean_shipment.edi
+          if ($LASTEXITCODE -ne 0) { throw "Clean sample audit failed" }
+          ./dist/AutoBridge-Windows-x64.exe license fingerprint
+          if ($LASTEXITCODE -ne 0) { throw "Fingerprint check failed" }
+          $hash = (Get-FileHash ./dist/AutoBridge-Windows-x64.exe -Algorithm SHA256).Hash.ToLower()
+          "$hash  AutoBridge-Windows-x64.exe" | Set-Content ./dist/AutoBridge-Windows-x64.exe.sha256 -Encoding ascii
+          Get-Content ./dist/AutoBridge-Windows-x64.exe.sha256
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AutoBridge-Windows-x64
+          path: |
+            dist/AutoBridge-Windows-x64.exe
+            dist/AutoBridge-Windows-x64.exe.sha256
+
+      - name: Publish GitHub Release Asset
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/AutoBridge-Windows-x64.exe
+            dist/AutoBridge-Windows-x64.exe.sha256
+          generate_release_notes: true
