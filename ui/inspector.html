@@ -458,40 +458,43 @@
       const spec = OEM_SPECS[oemKey];
       const rawLines = text.replace(/\r/g, "").split("~").map(s => s.trim()).filter(Boolean).map(s => s + "~");
 
-      // Attempt Python Core Brain execution via /api/audit
-      try {
-        const apiResp = await fetch("/api/audit", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ edi: text, oem: oemKey })
-        });
-        if (apiResp.ok) {
-          const data = await apiResp.json();
-          const cleanLines = data.repaired_segments || rawLines;
-          const changedIdx = new Set((data.changed_lines || []).map(l => l - 1));
-          const errors = (data.violations || []).map(v => ({
-            line: v.line_number,
-            title: v.message,
-            desc: `${v.rule} (${v.severity})`,
-            fix: v.fix
-          }));
+      // Attempt local Python Core Brain execution via /api/audit only on loopback
+      const isLocalServer = ["localhost", "127.0.0.1", "[::1]"].includes(window.location.hostname);
+      if (isLocalServer) {
+        try {
+          const apiResp = await fetch("/api/audit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ edi: text, oem: oemKey })
+          });
+          if (apiResp.ok) {
+            const data = await apiResp.json();
+            const cleanLines = data.repaired_segments || rawLines;
+            const changedIdx = new Set((data.changed_lines || []).map(l => l - 1));
+            const errors = (data.violations || []).map(v => ({
+              line: v.line_number,
+              title: v.message,
+              desc: `${v.rule} (${v.severity})`,
+              fix: v.fix
+            }));
 
-          return {
-            rawLines,
-            cleanLines,
-            errors,
-            changedIdx,
-            changes: data.changes || [],
-            ms: data.parse_time_ms || 0.4,
-            fineRisk: data.fine_risk || 12500,
-            bol: data.shipment_summary?.bill_of_lading || "BOL-948201-B",
-            trailer: "TRLR-4491",
-            cleanPayload: data.repaired_edi || cleanLines.join("\n"),
-            hash: data.sha256
-          };
+            return {
+              rawLines,
+              cleanLines,
+              errors,
+              changedIdx,
+              changes: data.changes || [],
+              ms: data.parse_time_ms || 0.4,
+              fineRisk: data.fine_risk || 12500,
+              bol: data.shipment_summary?.bill_of_lading || "BOL-948201-B",
+              trailer: "TRLR-4491",
+              cleanPayload: data.repaired_edi || cleanLines.join("\n"),
+              hash: data.sha256
+            };
+          }
+        } catch (err) {
+          console.warn("Backend API offline; running client-side AST engine:", err);
         }
-      } catch (err) {
-        console.warn("Backend API offline; running client-side AST engine:", err);
       }
 
       // Resilient client-side fallback engine
