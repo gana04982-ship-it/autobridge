@@ -1,0 +1,24 @@
+# AutoBridge
+
+> Deterministic, air-gapped ANSI X12 856 Advance Ship Notice (ASN) pre-flight validation and auto-repair firewall built for Tier-1, Tier-2, and Tier-3 automotive parts suppliers.
+
+AutoBridge sits as a zero-dependency local sidecar or runs 100% client-side in-browser memory on shipping dock PCs to prevent $5,000-$15,000 OEM receiving dock chargebacks from Ford (AIAG B-10), General Motors (GM 1724), Stellantis, Toyota, and Honda.
+
+## Key Capabilities & Metrics
+- **Execution Latency:** <0.2ms deterministic AST lexing and validation with zero third-party cloud dependencies.
+- **Air-Gapped Security:** 100% local in-memory processing; zero raw EDI payload transmission or cloud storage (NIST SP 800-171 compatible).
+- **Automated Fixes:** Reconciles HL hierarchical loops (Shipment -> Order -> Tare -> Item), verifies `LIN02` qualifiers (`BP` vs `VP`), recalculates `SE01` segment counts, validates `REF*BM` Bill of Lading anchors, and enforces chronological `DTM*011` / `DTM*017` timestamps.
+- **Physical Clearance Proof:** Generates printable Driver Dock Clearance Certificates with SHA-256 verification seals.
+
+## Pricing (Self-Serve & Enterprise)
+- **Plant Pilot:** $199/month ($189/month billed annually) — Unlimited local pre-flight audits for 1 facility.
+- **Production Firewall:** $499/month ($474/month billed annually) — Auto-repair engine, local sidecar folder watcher, and Driver Clearance Certificates for up to 5 facilities.
+- **Enterprise Fleet:** $1,499/month ($1,424/month billed annually) — Unlimited facilities, custom OEM rulesets, offline Ed25519 cryptographic licensing.
+
+## Core Resources
+- [Home & Architecture](https://autobridge.sarkaargroups.com/ui/index.html): Overview of the 0.2ms X12 856 pre-flight validation firewall.
+- [Interactive Air-Gapped Inspector](https://autobridge.sarkaargroups.com/ui/inspector.html): Zero-upload browser-memory ASN validator and repair simulator.
+- [AutoBridge vs SPS Commerce, OpenText & TrueCommerce](https://autobridge.sarkaargroups.com/ui/comparisons.html): Detailed comparison of deterministic air-gapped pre-flight firewalls vs passive cloud EDI VANs.
+- [Pricing & Instant Licensing](https://autobridge.sarkaargroups.com/ui/pricing.html): Transparent monthly/annual plans and self-serve onboarding.
+- [Air-Gapped Security Architecture](https://autobridge.sarkaargroups.com/ui/security.html): Zero-data-retention whitepaper and cryptographic license model.
+- [Extended Technical Documentation](https://autobridge.sarkaargroups.com/llms-full.txt): Complete technical specification, supported segment rules, and FAQ for AI assistants.

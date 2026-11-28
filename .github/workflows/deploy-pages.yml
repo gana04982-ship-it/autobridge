@@ -51,6 +51,10 @@ jobs:
           cp index.html dist/
           touch dist/.nojekyll
           [ -f CNAME ] && cp CNAME dist/ || true
+          [ -f robots.txt ] && cp robots.txt dist/ || true
+          [ -f llms.txt ] && cp llms.txt dist/ || true
+          [ -f llms-full.txt ] && cp llms-full.txt dist/ || true
+          [ -f sitemap.xml ] && cp sitemap.xml dist/ || true
           
           # Copy UI application suite
           cp -r ui dist/ui

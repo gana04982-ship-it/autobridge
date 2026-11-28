@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fix EDI 856 Missing REF*BM Bill of Lading Anchor — AutoBridge Automotive Diagnostics</title>
+  <meta name="description" content="How to diagnose and fix Missing REF*BM Bill of Lading Anchor for GM 1724 & Heavy Truck OEMs. Avoid $5,000 – $7,500 gate hold fee using AutoBridge 0.2ms offline pre-flight ASN validation." />
+  <link rel="canonical" href="https://autobridge.sarkaargroups.com/ui/errors/x12-856-missing-ref-bm-bill-of-lading.html" />
+  <link rel="icon" type="image/png" href="../logo_icon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['"JetBrains Mono"', 'monospace'] }, colors: { void: '#000000', surface: '#0A0A0A', elevated: '#111111', border: '#1F1F1F', hairline: '#262626', sage: '#30A46C', crimson: '#E5484D', muted: '#888888' } } } }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "How to Fix EDI 856 Missing REF*BM Bill of Lading Anchor (GM 1724 & Heavy Truck OEMs)",
+    "description": "Shipment (`HL*S`) block omits the mandatory `REF*BM` Bill of Lading number, preventing the dock clerk's physical paperwork from matching the electronic ASN.",
+    "author": { "@type": "Organization", "name": "AutoBridge Labs (Sarkaar Groups)" },
+    "mainEntityOfPage": "https://autobridge.sarkaargroups.com/ui/errors/x12-856-missing-ref-bm-bill-of-lading.html"
+  }
+  </script>
+  <style>body { background: #000000; color: #EDEDED; }</style>
+</head>
+<body class="antialiased min-h-screen flex flex-col justify-between">
+  <header class="sticky top-0 z-50 h-16 bg-black/85 backdrop-blur-md border-b border-border">
+    <div class="max-w-5xl mx-auto h-full px-4 sm:px-6 flex items-center justify-between">
+      <a href="../index.html" class="flex items-center gap-3">
+        <img src="../logo_brand_transparent.png" alt="AutoBridge Labs" class="h-8 w-auto" />
+      </a>
+      <nav class="hidden md:flex items-center gap-6 text-[13px] text-muted">
+        <a href="index.html" class="text-white font-semibold">Error Codes</a>
+        <a href="../inspector.html" class="hover:text-white">Inspector</a>
+        <a href="../comparisons.html" class="hover:text-white">vs Cloud VANs</a>
+        <a href="../pricing.html" class="hover:text-white">Pricing</a>
+      </nav>
+      <a href="../inspector.html" class="bg-white hover:bg-[#E5E5E5] text-black font-semibold text-xs px-4 py-1.5 rounded-full">Run Free Check →</a>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 py-14 space-y-10 flex-1">
+    <div class="space-y-3">
+      <div class="flex items-center gap-2 font-mono text-xs">
+        <span class="px-2.5 py-0.5 rounded bg-crimson/20 text-crimson font-bold">GM 1724 & Heavy Truck OEMs</span>
+        <span class="text-muted">Exposure: $5,000 – $7,500 gate hold fee</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">Missing REF*BM Bill of Lading Anchor</h1>
+      <p class="text-sm sm:text-base text-muted leading-relaxed">Shipment (`HL*S`) block omits the mandatory `REF*BM` Bill of Lading number, preventing the dock clerk's physical paperwork from matching the electronic ASN.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="bg-surface border border-crimson/40 rounded-xl p-5 space-y-2">
+        <span class="font-mono text-[11px] uppercase text-crimson font-bold">Broken Segment (Rejected at Dock)</span>
+        <pre class="font-mono text-xs bg-black p-3 rounded border border-hairline text-crimson overflow-x-auto">REF*PK*99201~  (Only Packing List present, no BM)</pre>
+      </div>
+      <div class="bg-surface border border-sage/40 rounded-xl p-5 space-y-2">
+        <span class="font-mono text-[11px] uppercase text-sage font-bold">Repaired Segment (Cleared in 0.2ms)</span>
+        <pre class="font-mono text-xs bg-black p-3 rounded border border-hairline text-sage overflow-x-auto">REF*BM*BOL-884120~</pre>
+      </div>
+    </div>
+
+    <section class="bg-surface border border-border rounded-xl p-6 space-y-4">
+      <div>
+        <h2 class="text-base font-bold text-white mb-1">Root Cause in Automotive ERPs (Plex / QAD / SAP)</h2>
+        <p class="text-xs sm:text-sm text-muted leading-relaxed">Expedited LTL/FTL shipments dispatched before TMS assigns a final PRO/BOL number leave `REF*BM` blank.</p>
+      </div>
+      <div>
+        <h2 class="text-base font-bold text-white mb-1">Deterministic Pre-Flight Fix</h2>
+        <p class="text-xs sm:text-sm text-white/90 leading-relaxed">Enforce presence and non-empty formatting of `REF*BM` at the Shipment (`HL*S`) level prior to gate release.</p>
+      </div>
+    </section>
+
+    <section class="bg-elevated border border-sage/40 rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div>
+        <h3 class="text-lg font-bold text-white">Test Your 856 ASN Without Cloud Upload</h3>
+        <p class="text-xs text-muted mt-1">100% browser-memory execution. Zero files leave your plant PC.</p>
+      </div>
+      <div class="flex items-center gap-3 shrink-0">
+        <a href="../inspector.html" class="bg-sage hover:bg-[#3ec483] text-black font-semibold text-xs px-5 py-2.5 rounded-lg">Open Air-Gapped Inspector →</a>
+        <a href="../pricing.html" class="bg-surface hover:bg-black border border-hairline text-white font-semibold text-xs px-4 py-2.5 rounded-lg">Plant Plans ($199/mo)</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-border bg-black py-6 px-4 sm:px-6">
+    <div class="max-w-5xl mx-auto flex items-center justify-between text-xs text-muted">
+      <span>AutoBridge Labs • <a href="index.html" class="hover:text-white underline">All 856 Error Guides</a></span>
+      <span>Zero Cloud Telemetry</span>
+    </div>
+  </footer>
+</body>
+</html>

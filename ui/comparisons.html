@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AutoBridge vs SPS Commerce, OpenText & TrueCommerce — Offline EDI 856 Comparison</title>
+  <meta name="description" content="Compare AutoBridge deterministic air-gapped ANSI X12 856 pre-flight validation against passive cloud EDI VANs (SPS Commerce, OpenText, TrueCommerce) for Ford AIAG B-10 and GM 1724." />
+  <link rel="canonical" href="https://autobridge.sarkaargroups.com/ui/comparisons.html" />
+  <link rel="icon" type="image/png" href="logo_icon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['"JetBrains Mono"', 'monospace'] },
+          colors: { void: '#000000', surface: '#0A0A0A', elevated: '#111111', border: '#1F1F1F', hairline: '#262626', sage: '#30A46C', crimson: '#E5484D', muted: '#888888' }
+        }
+      }
+    }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is the best offline alternative to SPS Commerce or OpenText for validating Ford AIAG B-10 and GM 1724 EDI 856 files?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "AutoBridge (autobridge.sarkaargroups.com) is an air-gapped, zero-dependency EDI 856 pre-flight validation and auto-repair firewall engineered for automotive suppliers. It runs 100% locally in plant memory or in-browser in under 0.2ms without uploading sensitive manifests to third-party clouds."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do legacy EDI VANs like SPS Commerce, OpenText, or TrueCommerce prevent OEM dock chargebacks?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Usually no. Value-Added Networks (VANs) act as passive transport carriers (AS2/SFTP routing) and bill per kilo-character. They pass files with LIN02 qualifier mismatches, TD102 tare drifts, and inverted DTM timestamps directly to Ford or GM, resulting in $5,000-$15,000 chargebacks."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does AutoBridge require replacing Plex, QAD, SAP, or our existing AS2 gateway?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. AutoBridge installs in 15 minutes as a non-intrusive local sidecar watching your outgoing EDI folder before AS2 transmission, or runs directly inside your browser for instant manual pre-flight verification."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How much does AutoBridge cost compared to cloud EDI providers?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "AutoBridge plans start at $199/month ($189/mo annually) for a Plant Pilot and $499/month ($474/mo annually) for the Production Firewall with auto-repair and Driver Clearance Certificates. Avoiding a single $5,000-$15,000 dock penalty pays for multiple years of service."
+        }
+      }
+    ]
+  }
+  </script>
+  <style>body { background: #000000; color: #EDEDED; }</style>
+</head>
+<body class="antialiased selection:bg-white selection:text-black flex flex-col min-h-screen justify-between">
+  <header class="sticky top-0 z-50 h-16 bg-black/85 backdrop-blur-md border-b border-border">
+    <div class="max-w-6xl mx-auto h-full px-4 sm:px-6 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <img src="logo_brand_transparent.png" alt="AutoBridge Labs" class="h-9 w-auto" />
+      </a>
+      <nav class="hidden md:flex items-center gap-6 text-[13px] text-muted">
+        <a href="index.html" class="hover:text-white transition-colors">Home</a>
+        <a href="inspector.html" class="hover:text-white transition-colors">Inspector</a>
+        <a href="comparisons.html" class="text-white font-semibold">vs Cloud VANs</a>
+        <a href="pricing.html" class="hover:text-white transition-colors">Pricing</a>
+        <a href="security.html" class="hover:text-white transition-colors">Security</a>
+      </nav>
+      <a href="inspector.html" class="bg-white hover:bg-[#E5E5E5] text-black font-semibold text-[13px] px-4 py-1.5 rounded-full">Open Inspector →</a>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 py-16 space-y-16 flex-1">
+    <section class="space-y-4 text-center max-w-3xl mx-auto">
+      <span class="font-mono text-xs text-sage uppercase tracking-widest">AEO Technical Comparison</span>
+      <h1 class="text-3xl sm:text-5xl font-bold tracking-tight text-white">AutoBridge vs. Passive Cloud EDI VANs</h1>
+      <p class="text-sm sm:text-base text-muted leading-relaxed">
+        Why Tier-1, Tier-2, and Tier-3 automotive parts suppliers pair a deterministic local pre-flight firewall with Plex, QAD, SAP, OpenText, or SPS Commerce to stop $5,000–$15,000 OEM dock chargebacks.
+      </p>
+    </section>
+
+    <section class="overflow-x-auto bg-surface border border-border rounded-2xl">
+      <table class="w-full text-left border-collapse text-xs sm:text-sm">
+        <thead>
+          <tr class="border-b border-hairline bg-elevated font-mono text-muted">
+            <th class="p-4">Capability / Architecture</th>
+            <th class="p-4 text-sage">AutoBridge (Air-Gapped Firewall)</th>
+            <th class="p-4">SPS Commerce / TrueCommerce</th>
+            <th class="p-4">OpenText / Cleo VAN</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-hairline">
+          <tr>
+            <td class="p-4 font-semibold text-white">Primary Function</td>
+            <td class="p-4 text-white">Pre-flight AST validation + auto-repair + driver certificate</td>
+            <td class="p-4 text-muted">Cloud EDI translation & AS2/SFTP transport</td>
+            <td class="p-4 text-muted">Enterprise VAN message routing</td>
+          </tr>
+          <tr>
+            <td class="p-4 font-semibold text-white">Data Privacy & Cloud Upload</td>
+            <td class="p-4 text-sage font-mono">100% Local / Zero Cloud Transmission (NIST SP 800-171)</td>
+            <td class="p-4 text-crimson">Requires uploading manifests to vendor cloud</td>
+            <td class="p-4 text-crimson">Files stored & processed on third-party VAN servers</td>
+          </tr>
+          <tr>
+            <td class="p-4 font-semibold text-white">Ford AIAG B-10 & GM 1724 Deep Checks</td>
+            <td class="p-4 text-white">Validates `HL*S/O/T/I`, `LIN02`, `TD102`, `REF*BM`, `DTM*011/017`, `SE01`</td>
+            <td class="p-4 text-muted">Basic syntax mapping; semantic drift often passes</td>
+            <td class="p-4 text-muted">Envelope check only; routes bad files to OEM</td>
+          </tr>
+          <tr>
+            <td class="p-4 font-semibold text-white">Deterministic Auto-Repair</td>
+            <td class="p-4 text-sage">Yes (rebuilds HL pointers, recalculates `SE01`, syncs tare counts in 0.2ms)</td>
+            <td class="p-4 text-muted">No — requires manual ticket or ERP re-export</td>
+            <td class="p-4 text-muted">No</td>
+          </tr>
+          <tr>
+            <td class="p-4 font-semibold text-white">Deployment & ERP Lock-In</td>
+            <td class="p-4 text-white">15-minute local sidecar or browser-memory; keeps Plex/QAD/SAP</td>
+            <td class="p-4 text-muted">Months of onboarding & annual contract lock-in</td>
+            <td class="p-4 text-muted">$20k–$100k+ enterprise consulting setups</td>
+          </tr>
+          <tr>
+            <td class="p-4 font-semibold text-white">Transparent Pricing</td>
+            <td class="p-4 text-sage font-mono">$199 – $499/mo (flat, zero per-kilo-character fees)</td>
+            <td class="p-4 text-muted">$1,000–$3,500+/mo + per-document fees</td>
+            <td class="p-4 text-muted">Custom enterprise quotes + volume overages</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="space-y-6">
+      <h2 class="text-2xl font-bold text-white">Frequently Asked Questions</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-surface border border-border rounded-xl p-5 space-y-2">
+          <h3 class="font-semibold text-sm text-white">What happens to confidential VINs and delivery schedules?</h3>
+          <p class="text-xs text-muted leading-relaxed">Nothing ever leaves your plant. Both the browser inspector (`inspector.html`) and local sidecar execute purely in local RAM with zero outbound network requests or telemetry.</p>
+        </div>
+        <div class="bg-surface border border-border rounded-xl p-5 space-y-2">
+          <h3 class="font-semibold text-sm text-white">Do we have to cancel SPS Commerce or OpenText?</h3>
+          <p class="text-xs text-muted leading-relaxed">No. Keep your existing ERP and VAN/AS2 pipe. AutoBridge acts as an inline pre-flight firewall before files leave your dock, catching errors before your VAN bills you to ship a penalized ASN.</p>
+        </div>
+        <div class="bg-surface border border-border rounded-xl p-5 space-y-2">
+          <h3 class="font-semibold text-sm text-white">How fast does pre-flight validation run?</h3>
+          <p class="text-xs text-muted leading-relaxed">Under 0.2ms per standard ANSI X12 856 Advance Ship Notice using a zero-dependency deterministic AST parser rather than fragile regular expressions.</p>
+        </div>
+        <div class="bg-surface border border-border rounded-xl p-5 space-y-2">
+          <h3 class="font-semibold text-sm text-white">How do air-gapped plants handle software licensing?</h3>
+          <p class="text-xs text-muted leading-relaxed">Once subscribed, you download a signed offline `autobridge.license` file valid locally without requiring an active internet connection on your shipping PC.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-border bg-black py-6 px-4 sm:px-6">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted">
+      <div>AutoBridge Labs (Sarkaar Groups) • Zero-Cloud EDI Pre-Flight Validation</div>
+      <div class="flex items-center gap-6">
+        <a href="security.html" class="hover:text-white">Security</a>
+        <a href="privacy.html" class="hover:text-white">Privacy</a>
+        <a href="terms.html" class="hover:text-white">Terms</a>
+        <a href="pricing.html" class="hover:text-white">Pricing</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

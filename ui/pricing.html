@@ -267,7 +267,7 @@
         <div>
           <span class="font-mono text-xs uppercase tracking-wider text-sage block mb-1" id="modalTierBadge">Selected Plan</span>
           <h3 class="text-xl font-bold text-white" id="modalPlanTitle">Complete Your Subscription</h3>
-          <p class="text-xs text-muted mt-1" id="modalPlanDesc">Instant cryptographic license delivery via Stripe Secure Checkout.</p>
+          <p class="text-xs text-muted mt-1" id="modalPlanDesc">Instant cryptographic license delivery via Dodo Payments Secure Checkout.</p>
         </div>
 
         <div class="p-4 rounded-xl bg-black border border-hairline space-y-3 font-mono text-xs">
@@ -308,13 +308,18 @@
 
           <div class="pt-2">
             <button type="submit" id="proceedStripeBtn"
-                    class="w-full py-3 rounded-lg bg-white hover:bg-[#E5E5E5] text-black font-semibold text-xs transition-colors flex items-center justify-center gap-2">
+                    class="w-full py-3 rounded-lg bg-white hover:bg-[#E5E5E5] text-black font-semibold text-xs transition-colors flex items-center justify-center gap-2 cursor-pointer">
               <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14h2v2h-2v-2zm1-12c2.21 0 4 1.79 4 4 0 1.54-.87 2.88-2.15 3.56L13.1 12.2c-.39.21-.6.64-.6 1.09V14h-2v-.71c0-1.12.63-2.15 1.63-2.67l1.01-.52C13.68 9.84 14 9.17 14 8.5c0-1.38-1.12-2.5-2.5-2.5S9 7.12 9 8.5H7c0-2.48 2.02-4.5 4.5-4.5z"/></svg>
-              <span>Proceed to Stripe Checkout</span>
+              <span>Proceed to Secure Checkout</span>
             </button>
             <p class="text-[11px] text-center text-muted mt-2">
-              Encrypted 256-bit Stripe processing • Corporate Card or ACH Wire
+              Merchant-of-Record Global Billing (Dodo Payments) • Card or Bank Wire
             </p>
+            <div id="invoiceFallbackBox" class="hidden mt-4 p-4 rounded-xl bg-black border border-sage/40 space-y-2 text-xs">
+              <p class="text-sage font-semibold font-mono">Instant Direct Invoice Ready</p>
+              <p class="text-muted">Online card checkout links are being provisioned. Click below to generate your direct invoice & receive your signed plant license within 15 minutes:</p>
+              <a id="directInvoiceLink" href="#" class="block w-full text-center py-2.5 rounded-lg bg-sage text-black font-semibold">Send Order Request to ganesh@sarkaargroups.com →</a>
+            </div>
           </div>
         </form>
 
@@ -329,7 +334,7 @@
         <div class="p-5 rounded-xl bg-surface border border-hairline">
           <h4 class="font-semibold text-white mb-2">How do I receive my cryptographic license key after payment?</h4>
           <p class="text-muted leading-relaxed text-xs">
-            Immediately upon successful Stripe checkout, you are redirected to the AutoBridge Activation Portal. 
+            Immediately upon successful Dodo Payments checkout, you are redirected to the AutoBridge Activation Portal. 
             You can download your signed <code class="text-white font-mono">autobridge.license</code> file with one click and receive an automated copy at your billing email.
           </p>
         </div>
@@ -377,14 +382,13 @@
     </div>
   </footer>
 
-  <!-- PRICING & STRIPE INTEGRATION SCRIPT -->
+  <!-- PRICING & DODO PAYMENTS INTEGRATION SCRIPT -->
   <script>
     // -------------------------------------------------------------
-    // STRIPE CONFIGURATION
-    // When you obtain your Stripe Payment Links or publishable keys,
-    // paste your Stripe Payment Links below.
+    // DODO PAYMENTS CONFIGURATION
+    // Paste your 6 live Dodo Payments Checkout URLs below once approved.
     // -------------------------------------------------------------
-    const STRIPE_LINKS = {
+    const DODO_CHECKOUT_LINKS = {
       starter_monthly: "",
       starter_annual: "",
       pro_monthly: "",
@@ -488,18 +492,24 @@
       const email = document.getElementById("custEmail").value;
       
       const key = `${selectedTier}_${isAnnual ? "annual" : "monthly"}`;
-      const stripeUrl = STRIPE_LINKS[key];
+      const checkoutUrl = DODO_CHECKOUT_LINKS[key];
 
-      if (stripeUrl && stripeUrl.startsWith("http")) {
-        // Redirect directly to Stripe Payment Link with prefilled metadata
-        const finalUrl = new URL(stripeUrl);
-        finalUrl.searchParams.set("prefilled_email", email);
-        finalUrl.searchParams.set("client_reference_id", `${company}_${duns}`);
+      if (checkoutUrl && checkoutUrl.startsWith("http")) {
+        const finalUrl = new URL(checkoutUrl);
+        finalUrl.searchParams.set("email", email);
+        finalUrl.searchParams.set("metadata_company", company);
+        finalUrl.searchParams.set("metadata_duns", duns);
         window.location.href = finalUrl.toString();
       } else {
-        // If Stripe payment link is not yet pasted, seamlessly route to the instant activation & demo delivery portal
-        const targetUrl = `activate.html?tier=${selectedTier}&company=${encodeURIComponent(company)}&duns=${encodeURIComponent(duns)}&email=${encodeURIComponent(email)}&cycle=${isAnnual ? "annual" : "monthly"}`;
-        window.location.href = targetUrl;
+        const data = TIER_DETAILS[selectedTier] || TIER_DETAILS.pro;
+        const amount = isAnnual ? data.annual : data.monthly;
+        const cycle = isAnnual ? "Annual (5% Off)" : "Monthly";
+        const subj = encodeURIComponent(`AutoBridge Order: ${data.title} (${cycle}) - ${company}`);
+        const body = encodeURIComponent(
+          `Company: ${company}\nPlant DUNS: ${duns}\nEDI Email: ${email}\nPlan: ${data.title} (${cycle})\nAmount: $${amount}\n\nPlease send payment link & signed autobridge.license.`
+        );
+        document.getElementById("directInvoiceLink").href = `mailto:ganesh@sarkaargroups.com?subject=${subj}&body=${body}`;
+        document.getElementById("invoiceFallbackBox").classList.remove("hidden");
       }
     });
   </script>

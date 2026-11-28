@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Automotive EDI 856 Error Code Directory — Ford AIAG B-10 & GM 1724</title>
+  <meta name="description" content="Complete diagnostic directory for Ford AIAG B-10 and GM 1724 ANSI X12 856 Advance Ship Notice rejection codes and dock chargeback traps." />
+  <link rel="canonical" href="https://autobridge.sarkaargroups.com/ui/errors/index.html" />
+  <link rel="icon" type="image/png" href="../logo_icon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['"JetBrains Mono"', 'monospace'] }, colors: { void: '#000000', surface: '#0A0A0A', border: '#1F1F1F', hairline: '#262626', sage: '#30A46C', crimson: '#E5484D', muted: '#888888' } } } }</script>
+  <style>body { background: #000000; color: #EDEDED; }</style>
+</head>
+<body class="antialiased min-h-screen flex flex-col justify-between">
+  <header class="sticky top-0 z-50 h-16 bg-black/85 backdrop-blur-md border-b border-border">
+    <div class="max-w-6xl mx-auto h-full px-4 sm:px-6 flex items-center justify-between">
+      <a href="../index.html"><img src="../logo_brand_transparent.png" alt="AutoBridge Labs" class="h-8 w-auto" /></a>
+      <a href="../inspector.html" class="bg-white text-black font-semibold text-xs px-4 py-1.5 rounded-full">Open Inspector →</a>
+    </div>
+  </header>
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 py-14 space-y-10 flex-1">
+    <div class="max-w-3xl space-y-3">
+      <span class="font-mono text-xs text-sage uppercase tracking-widest">Programmatic Diagnostic Knowledge Base</span>
+      <h1 class="text-3xl sm:text-5xl font-bold text-white tracking-tight">Automotive EDI 856 Error Codes & Dock Traps</h1>
+      <p class="text-sm text-muted">Instant fixes for Ford AIAG B-10, GM 1724, and Stellantis 824 rejection causes.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <a href="ford-aiag-b10-lin02-qualifier-mismatch.html" class="block p-5 rounded-xl bg-surface border border-border hover:border-sage/60 transition-colors space-y-2">
+        <span class="font-mono text-[10px] text-crimson uppercase font-bold">Ford AIAG B-10 / GM 1724</span>
+        <h2 class="font-bold text-sm text-white">LIN02 Qualifier Mismatch (BP vs VP/ZZ)</h2>
+        <p class="text-xs text-muted leading-relaxed">Overhead receiving dock barcode scan expects Buyer Part Number (`BP`), but ERP exported `VP` (Vendor Part) or `ZZ`.</p>
+        <span class="inline-block font-mono text-[11px] text-sage pt-1">View Root Cause & Fix →</span>
+      </a>
+      <a href="gm-1724-td102-tare-count-drift.html" class="block p-5 rounded-xl bg-surface border border-border hover:border-sage/60 transition-colors space-y-2">
+        <span class="font-mono text-[10px] text-crimson uppercase font-bold">GM 1724 & Ford AIAG B-10</span>
+        <h2 class="font-bold text-sm text-white">TD102 Declared Lading vs HL*T Tare Drift</h2>
+        <p class="text-xs text-muted leading-relaxed">Header `TD102` declares 24 containers, while the physical `HL*T` Tare nodes inside the ASN tree total 23 or 25.</p>
+        <span class="inline-block font-mono text-[11px] text-sage pt-1">View Root Cause & Fix →</span>
+      </a>
+      <a href="x12-856-se01-segment-count-mismatch.html" class="block p-5 rounded-xl bg-surface border border-border hover:border-sage/60 transition-colors space-y-2">
+        <span class="font-mono text-[10px] text-crimson uppercase font-bold">All Automotive OEMs (Ford, GM, Stellantis, Toyota)</span>
+        <h2 class="font-bold text-sm text-white">SE01 Segment Count Drift (824 Rejection)</h2>
+        <p class="text-xs text-muted leading-relaxed">OEM AS2 gateway immediately returns an ANSI X12 824 or 997 rejection because `SE01` does not match the exact count of segments from `ST` through `SE`.</p>
+        <span class="inline-block font-mono text-[11px] text-sage pt-1">View Root Cause & Fix →</span>
+      </a>
+      <a href="x12-856-hl-orphan-parent-id.html" class="block p-5 rounded-xl bg-surface border border-border hover:border-sage/60 transition-colors space-y-2">
+        <span class="font-mono text-[10px] text-crimson uppercase font-bold">Ford AIAG B-10 / Stellantis</span>
+        <h2 class="font-bold text-sm text-white">HL Loop Orphan Parent ID (HL02 Reference Error)</h2>
+        <p class="text-xs text-muted leading-relaxed">An `HL*T` (Tare) or `HL*I` (Item) segment references an `HL02` parent ID that does not exist or points to the wrong hierarchy level.</p>
+        <span class="inline-block font-mono text-[11px] text-sage pt-1">View Root Cause & Fix →</span>
+      </a>
+      <a href="x12-856-missing-ref-bm-bill-of-lading.html" class="block p-5 rounded-xl bg-surface border border-border hover:border-sage/60 transition-colors space-y-2">
+        <span class="font-mono text-[10px] text-crimson uppercase font-bold">GM 1724 & Heavy Truck OEMs</span>
+        <h2 class="font-bold text-sm text-white">Missing REF*BM Bill of Lading Anchor</h2>
+        <p class="text-xs text-muted leading-relaxed">Shipment (`HL*S`) block omits the mandatory `REF*BM` Bill of Lading number, preventing the dock clerk's physical paperwork from matching the electronic ASN.</p>
+        <span class="inline-block font-mono text-[11px] text-sage pt-1">View Root Cause & Fix →</span>
+      </a>
+      <a href="gm-1724-invalid-packaging-code-plt90.html" class="block p-5 rounded-xl bg-surface border border-border hover:border-sage/60 transition-colors space-y-2">
+        <span class="font-mono text-[10px] text-crimson uppercase font-bold">General Motors GM 1724</span>
+        <h2 class="font-bold text-sm text-white">Non-Compliant GM 1724 Packaging Code (TD101)</h2>
+        <p class="text-xs text-muted leading-relaxed">ASN uses generic `CTN` or `BOX` codes instead of GM 1724 standard 5-character container qualifiers such as `PLT90`, `CTN90`, or `BIN90`.</p>
+        <span class="inline-block font-mono text-[11px] text-sage pt-1">View Root Cause & Fix →</span>
+      </a>
+      <a href="ford-856-inverted-dtm-011-017-timestamps.html" class="block p-5 rounded-xl bg-surface border border-border hover:border-sage/60 transition-colors space-y-2">
+        <span class="font-mono text-[10px] text-crimson uppercase font-bold">Ford AIAG B-10 ILVS</span>
+        <h2 class="font-bold text-sm text-white">Inverted Chronological Timestamps (DTM*011 vs DTM*017)</h2>
+        <p class="text-xs text-muted leading-relaxed">`DTM*017` (Estimated Delivery) timestamp is earlier than `DTM*011` (Shipped) due to UTC vs EST plant timezone drift.</p>
+        <span class="inline-block font-mono text-[11px] text-sage pt-1">View Root Cause & Fix →</span>
+      </a>
+      <a href="x12-isa13-gs06-st02-envelope-control-mismatch.html" class="block p-5 rounded-xl bg-surface border border-border hover:border-sage/60 transition-colors space-y-2">
+        <span class="font-mono text-[10px] text-crimson uppercase font-bold">All OEMs & AS2 Gateways</span>
+        <h2 class="font-bold text-sm text-white">ISA13 / IEA02 & GS06 / GE02 Envelope Control Mismatch</h2>
+        <p class="text-xs text-muted leading-relaxed">Control numbers in `ISA13` vs `IEA02`, `GS06` vs `GE02`, or `ST02` vs `SE02` diverge, causing OEM translators to drop the entire transmission.</p>
+        <span class="inline-block font-mono text-[11px] text-sage pt-1">View Root Cause & Fix →</span>
+      </a>
+      <a href="x12-856-sn102-zero-shipped-quantity.html" class="block p-5 rounded-xl bg-surface border border-border hover:border-sage/60 transition-colors space-y-2">
+        <span class="font-mono text-[10px] text-crimson uppercase font-bold">Ford AIAG B-10 / GM 1724</span>
+        <h2 class="font-bold text-sm text-white">Zero or Negative Shipped Units in SN102</h2>
+        <p class="text-xs text-muted leading-relaxed">`SN102` inside an item (`HL*I`) loop reports `0` units shipped on an active ASN.</p>
+        <span class="inline-block font-mono text-[11px] text-sage pt-1">View Root Cause & Fix →</span>
+      </a>
+      <a href="x12-856-delimiter-collision-parsing-failure.html" class="block p-5 rounded-xl bg-surface border border-border hover:border-sage/60 transition-colors space-y-2">
+        <span class="font-mono text-[10px] text-crimson uppercase font-bold">All Automotive OEMs</span>
+        <h2 class="font-bold text-sm text-white">Unescaped Delimiter Collisions in NTE / REF Notes</h2>
+        <p class="text-xs text-muted leading-relaxed">Free-text shipping notes or supplier names contain `*` or `~`, prematurely terminating segments and corrupting OEM parser trees.</p>
+        <span class="inline-block font-mono text-[11px] text-sage pt-1">View Root Cause & Fix →</span>
+      </a>
+    </div>
+  </main>
+  <footer class="border-t border-border bg-black py-6 px-4 text-center text-xs text-muted">AutoBridge Labs • Zero-Cloud EDI 856 Firewall</footer>
+</body>
+</html>
