@@ -42,6 +42,10 @@ def launch_offline_studio(port: int = 8085) -> None:
 
 
 def main() -> None:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    if hasattr(sys.stderr, "reconfigure"):
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
     args = sys.argv[1:]
     if not args or args[0] in ("serve", "--ui"):
         port = 8085

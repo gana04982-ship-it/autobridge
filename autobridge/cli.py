@@ -246,6 +246,10 @@ def run_license(args):
 
 
 def main():
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    if hasattr(sys.stderr, "reconfigure"):
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
     args = sys.argv[1:]
     if not args or args[0] in ["-h", "--help"]:
         print(f"""{BOLD}AutoBridge CLI{RESET} — Precision Pre-Flight EDI 856 Firewall & Offline Attack Engine
